@@ -1,4 +1,4 @@
-package LaporanJasa;
+package main.java.LaporanJasa;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -24,6 +24,8 @@ public class RincianTindakanJasaDokter {
             workbook = new HSSFWorkbook(poifs);
 
             sheet = workbook.getSheetAt(0);
+            Sheet sheet2 = workbook.createSheet();
+            workbook.setSheetName(1, "2. RINCIAN TINDAKAN JASA DOKTER");
             int lastColumn = sheet.getRow(0).getLastCellNum();
             int lastRow = sheet.getLastRowNum();
             System.out.println("Last Column: " + lastColumn);
@@ -31,24 +33,6 @@ public class RincianTindakanJasaDokter {
 
             sheet.getRow(0).createCell(60).setCellValue("NAMA PASIEN");
             sheet.getRow(0).createCell(61).setCellValue("NORM");
-
-//            ## V1
-//            for (int column=0; column<=lastColumn-1; column++) {
-//                Cell cell = sheet.getRow(0).getCell(column);
-////                System.out.println(cell.getStringCellValue());
-//                if (cell.getStringCellValue().equals("NAMA_PASIEN")) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell NamaPasien = sheet.getRow(i).createCell(60);
-//                        NamaPasien.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-//                    }
-//                }
-//                if (cell.getStringCellValue().equals("NORM")) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell NamaPasien = sheet.getRow(i).createCell(61);
-//                        NamaPasien.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-//                    }
-//                }
-//                NORM
 
             for (int column = 0; column <= lastColumn - 1; column++) {
                 Cell cell = sheet.getRow(0).getCell(column);
@@ -84,6 +68,7 @@ public class RincianTindakanJasaDokter {
                 if (targetColumn != -1) {
                     for (int i = 1; i <= lastRow; i++) {
                         Cell targetCell = sheet.getRow(i).createCell(targetColumn);
+                        sheet.getRow(0).createCell(targetColumn).setCellValue(cellValue);
                         if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
 
                         {
@@ -93,38 +78,41 @@ public class RincianTindakanJasaDokter {
 
                     }
                 }
+
+//                beri nama A1 "NOREG
+                sheet.getRow(0).createCell(62).setCellValue("NOREG");
+
+//              jika cell mengandung "KD_INST" concat jadi noreg
+                if (cell.getStringCellValue().equals("KD_INST")) {
+                    for (int i = 1; i <= lastRow; i++) {
+                        Cell noReg = sheet.getRow(i).createCell(62);
+                        noReg.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue() +
+                                sheet.getRow(i).getCell(column + 1).getStringCellValue() +
+                                sheet.getRow(i).getCell(column + 2).getStringCellValue() +
+                                sheet.getRow(i).getCell(column + 3).getStringCellValue() +
+                                sheet.getRow(i).getCell(column + 4).getStringCellValue());
+                    }
+                }
+
+
+
             }
-//                NO REG
-//                KET INST
-//                KET SUB INST
-//                KET DTL SUB INST
-//                NAMA DOKTER
-//                POSISI
-//                TGL TINDAKAN
-//                NM TINDAKAN
-//                RUANG RAWAT
-//                PAKET JAMINAN
-//                JASA PELAYANAN TARIF
-//                JASA PELAYANAN JAMIN
-//                JML PENDAPATAN
-//                JML PENERIMAAN TUNAI
-//                JML PENERIMAAN PIUTANG
-//                JML PENERIMAAN JMN
-//                JML KOREKSI
-//                JML PAJAK
-//                JML PENGURANG JASA
-//                JML PENGAMBILAN
-//                JML NETTO
+//
 
 
 
+//            for (int i = 0; i < 50; i++) {
+//                sheet.shiftColumns(i + 1, lastColumn, -1);
 //            }
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+//        sheet = workbook.getSheetAt(0);
+//        int lastColumn = sheet.getRow(0).getLastCellNum();
+//        for (int i = 0; i < 50; i++) {
+//            sheet.shiftColumns(i + 1, lastColumn, -1);
+//        }
+
 
         try {
             outputStream = new FileOutputStream("2. RINCIAN TINDAKAN JASA DOKTER.xlsx");
