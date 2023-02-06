@@ -3,20 +3,19 @@ package main.java.LaporanJasa;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 
-public class RincianTindakanJasaDokter {
+public class B_RincianTindakanJasaDokter {
     public static void main(String[] args) {
-        new RincianTindakanJasaDokter();
+        new B_RincianTindakanJasaDokter();
     }
 
     private Workbook workbook;
     private FileOutputStream outputStream;
 
 
-    public RincianTindakanJasaDokter() {
+    public B_RincianTindakanJasaDokter() {
         Sheet sheet = null;
         File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN1.xls");
         try {
