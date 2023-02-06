@@ -30,8 +30,6 @@ public class C_RekapPasienJasaDokter {
             workbook.setSheetName(1, "3. REKAP PASIEN JASA DOKTER");
             int lastColumn = sheet.getRow(0).getLastCellNum();
             int lastRow = sheet.getLastRowNum();
-            System.out.println("Last Column: " + lastColumn);
-            System.out.println("Last Row: "+lastRow);
             for (int row =1;row<=lastRow;row++){
                 sheet2.createRow(row);
             }

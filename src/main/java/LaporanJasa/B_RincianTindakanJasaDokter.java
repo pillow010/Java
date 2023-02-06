@@ -28,8 +28,6 @@ public class B_RincianTindakanJasaDokter {
             workbook.setSheetName(1, "2. RINCIAN TINDAKAN JASA DOKTER");
             int lastColumn = sheet.getRow(0).getLastCellNum();
             int lastRow = sheet.getLastRowNum();
-            System.out.println("Last Column: " + lastColumn);
-            System.out.println("Last Row: "+lastRow);
             for (int row =1;row<=lastRow;row++){
                 sheet2.createRow(row);
             }

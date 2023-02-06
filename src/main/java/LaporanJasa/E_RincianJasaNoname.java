@@ -32,8 +32,6 @@ public class E_RincianJasaNoname {
             workbook.setSheetName(1, "5. RINCIAN JASA NONAME");
             int lastColumn = sheet.getRow(0).getLastCellNum();
             int lastRow = sheet.getLastRowNum();
-            System.out.println("Last Column: " + lastColumn);
-            System.out.println("Last Row: " + lastRow);
             for (int row = 1; row <= lastRow; row++) {
                 sheet2.createRow(row);
             }
