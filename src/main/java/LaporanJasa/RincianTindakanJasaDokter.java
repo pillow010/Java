@@ -34,9 +34,6 @@ public class RincianTindakanJasaDokter {
             for (int row =1;row<=lastRow;row++){
                 sheet2.createRow(row);
             }
-//
-//            sheet.getRow(0).createCell(60).setCellValue("NAMA PASIEN");
-//            sheet.getRow(0).createCell(61).setCellValue("NORM");
 
             Row row = sheet2.getRow(0);
             if (row == null) {
@@ -66,106 +63,6 @@ public class RincianTindakanJasaDokter {
             row.createCell(21).setCellValue("JML PENGAMBILAN");
             row.createCell(22).setCellValue("JML NETTO");
 
-
-//            for (int column = 0; column <= lastColumn - 1; column++) {
-//                Cell cell = sheet.getRow(0).getCell(column);
-//                String cellValue = cell.getStringCellValue();
-//                int targetColumn2 = switch (cellValue) {
-//                    case "NAMA_PASIEN" -> 0;
-//                    case "NORM" -> 1;
-//                    case "NO_REG" -> 2;
-//                    case "KET_INST" -> 3;
-//                    case "KET_SUB_INST" -> 4;
-//                    case "KET_DTL_SUB_INST" -> 5;
-//                    case "NAMA_DOKTER" -> 6;
-//                    case "POSISI" -> 7;
-//                    case "TGL_TINDAKAN" -> 8;
-//                    case "NM_TINDAKAN" -> 9;
-//                    case "RUANG_RAWAT" -> 10;
-//                    case "PAKET_JAMINAN" -> 11;
-//                    case "JASA_PELAYANAN_TARIF" -> 12;
-//                    case "JASA_PELAYANAN_JAMIN" -> 13;
-//                    case "JML_PENDAPATAN" -> 14;
-//                    case "JML_PENERIMAAN_TUNAI" -> 15;
-//                    case "JML_PENERIMAAN_PIUTANG" -> 16;
-//                    case "JML_PENERIMAAN_JMN" -> 17;
-//                    case "JML_KOREKSI" -> 18;
-//                    case "JML_PAJAK" -> 19;
-//                    case "JML_PENGURANG_JASA" -> 20;
-//                    case "JML_PENGAMBILAN" -> 21;
-//                    case "JML_NETTO" -> 22;
-//                    default -> -1;
-//                };
-//                System.out.println(targetColumn2);
-
-//                if (targetColumn2 != -1) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell targetCell = sheet2.createRow(i).createCell(targetColumn2);
-//                        if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
-//                        {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-//                        } else {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
-//
-//                        }
-//                    }
-//                }
-
-//            for (int column = 0; column <= lastColumn - 1; column++) {
-//                Cell cell = sheet.getRow(0).getCell(column);
-//                String cellValue = cell.getStringCellValue();
-//                int targetColumn = switch (cellValue) {
-//                    case "NAMA_PASIEN" -> 60;
-//                    case "NORM" -> 61;
-//                    case "NO_REG" -> 62;
-//                    case "KET_INST" -> 63;
-//                    case "KET_SUB_INST" -> 64;
-//                    case "KET_DTL_SUB_INST" -> 65;
-//                    case "NAMA_DOKTER" -> 66;
-//                    case "POSISI" -> 67;
-//                    case "TGL_TINDAKAN" -> 68;
-//                    case "NM_TINDAKAN" -> 69;
-//                    case "RUANG_RAWAT" -> 70;
-//                    case "PAKET_JAMINAN" -> 71;
-//                    case "JASA_PELAYANAN_TARIF" -> 72;
-//                    case "JASA_PELAYANAN_JAMIN" -> 73;
-//                    case "JML_PENDAPATAN" -> 74;
-//                    case "JML_PENERIMAAN_TUNAI" -> 75;
-//                    case "JML_PENERIMAAN_PIUTANG" -> 76;
-//                    case "JML_PENERIMAAN_JMN" -> 77;
-//                    case "JML_KOREKSI" -> 78;
-//                    case "JML_PAJAK" -> 79;
-//                    case "JML_PENGURANG_JASA" -> 80;
-//                    case "JML_PENGAMBILAN" -> 81;
-//                    case "JML_NETTO" -> 82;
-//                    default -> -1;
-//                };
-//
-//
-//                if (targetColumn != -1) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell targetCell = sheet.getRow(i).createCell(targetColumn);
-//                        sheet.getRow(0).createCell(targetColumn).setCellValue(cellValue);
-//                        if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
-//
-//                        {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-//                        } else
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
-//
-//                    }
-//                }
-
-
-
-//                beri nama A1 "NOREG
-//                sheet.getRow(0).createCell(62).setCellValue("NOREG");
-
-//
-
-
-
-//            }
 
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
@@ -224,17 +121,11 @@ public class RincianTindakanJasaDokter {
 
             }
 
-//            for (int i = 0; i < 50; i++) {
-//                sheet.shiftColumns(i + 1, lastColumn, -1);
-//            }
+            workbook.removeSheetAt(0);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        sheet = workbook.getSheetAt(0);
-//        int lastColumn = sheet.getRow(0).getLastCellNum();
-//        for (int i = 0; i < 50; i++) {
-//            sheet.shiftColumns(i + 1, lastColumn, -1);
-//        }
 
 
         try {
