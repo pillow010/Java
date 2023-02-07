@@ -8,7 +8,6 @@ import java.io.*;
 
 public class B_RincianTindakanJasaDokter {
     public static void main(String[] args) {
-        new B_RincianTindakanJasaDokter();
     }
 
     private Workbook workbook;

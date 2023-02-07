@@ -11,7 +11,6 @@ import java.io.IOException;
 public class E_RincianJasaNoname {
 
     public static void main(String[] args) {
-        new E_RincianJasaNoname();
     }
     private Workbook workbook;
     private FileOutputStream outputStream;

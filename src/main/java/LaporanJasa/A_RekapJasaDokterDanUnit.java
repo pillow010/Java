@@ -10,7 +10,6 @@ import java.util.*;
 public class A_RekapJasaDokterDanUnit {
 
     public static void main(String[] args) {
-        new A_RekapJasaDokterDanUnit();
     }
     private Workbook workbook;
 
@@ -24,7 +23,7 @@ public class A_RekapJasaDokterDanUnit {
         File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN1.xls");
         try {
             POIFSFileSystem poifs = new POIFSFileSystem(jasaDokter);
-            POIFSFileSystem poifs2 = new POIFSFileSystem(jasaDokter);
+            POIFSFileSystem poifs2 = new POIFSFileSystem(jasaUnit);
             workbook = new HSSFWorkbook(poifs);
             Workbook workbook2 = new HSSFWorkbook(poifs2);
 
@@ -52,38 +51,53 @@ public class A_RekapJasaDokterDanUnit {
 
 
             // Perform pivot simulation
-            Map<String, Double> pivotData = new HashMap<>();
-//            for (int i = 1; i <= sheetA.getLastRowNum(); i++) {
-//                Row row = sheetA.getRow(i);
-//                String p = row.getCell(11).getStringCellValue();
-//                Integer count = pivotData.getOrDefault(p, 0);
-////                System.out.println(row.getCell(46).getNumericCellValue());
-//                count += (int) row.getCell(46).getNumericCellValue();
-//                pivotData.put(p, count);
-//            }
-
+            Map<String, Double> pivotDataDoctor = new HashMap<>();
             for (int i = 1; i <= sheetA.getLastRowNum(); i++) {
                 Row row = sheetA.getRow(i);
                 String doctor = row.getCell(11).getStringCellValue();
-                Double count = pivotData.getOrDefault(doctor, 0.0);
+                Double count = pivotDataDoctor.getOrDefault(doctor, 0.0);
                 count += row.getCell(46).getNumericCellValue();
-                pivotData.put(doctor, count);
+                pivotDataDoctor.put(doctor, count);
             }
 
-            List<Map.Entry<String, Double>> entries = new ArrayList<>(pivotData.entrySet());
-            entries.sort(Map.Entry.comparingByKey());
-            pivotData = new LinkedHashMap<>();
-            for (Map.Entry<String, Double> entry : entries) {
-                pivotData.put(entry.getKey(), entry.getValue());
+            Map<String, Double> pivotDataUnit = new HashMap<>();
+            for (int i = 1; i <= sheetB.getLastRowNum(); i++) {
+                Row row = sheetB.getRow(i);
+                String doctor = row.getCell(5).getStringCellValue();
+                Double count = pivotDataUnit.getOrDefault(doctor, 0.0);
+                count += row.getCell(19).getNumericCellValue();
+                pivotDataUnit.put(doctor, count);
             }
 
+
+            List<Map.Entry<String, Double>> entriesDoctor = new ArrayList<>(pivotDataDoctor.entrySet());
+            entriesDoctor.sort(Map.Entry.comparingByKey());
+            pivotDataDoctor = new LinkedHashMap<>();
+            for (Map.Entry<String, Double> entry : entriesDoctor) {
+                pivotDataDoctor.put(entry.getKey(), entry.getValue());
+            }
+
+            List<Map.Entry<String, Double>> entriesUnit = new ArrayList<>(pivotDataUnit.entrySet());
+            entriesUnit.sort(Map.Entry.comparingByKey());
+            pivotDataUnit = new LinkedHashMap<>();
+            for (Map.Entry<String, Double> entry : entriesUnit) {
+                pivotDataUnit.put(entry.getKey(), entry.getValue());
+            }
 
             // Write pivot data to sheetA
 //            int rowNum = sheetA.getLastRowNum() + 1;
             int rowNum = 6;
-            for (Map.Entry<String, Double> entry : pivotData.entrySet()) {
+            for (Map.Entry<String, Double> entry : pivotDataDoctor.entrySet()) {
                 Row row = sheetA2.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum-6);
+                row.createCell(1).setCellValue(entry.getKey());
+                row.createCell(2).setCellValue(entry.getValue());
+            }
+
+            int rowNumA3 = 6;
+            for (Map.Entry<String, Double> entry : pivotDataUnit.entrySet()) {
+                Row row = sheetA3.createRow(rowNumA3++);
+                row.createCell(0).setCellValue(rowNumA3-6);
                 row.createCell(1).setCellValue(entry.getKey());
                 row.createCell(2).setCellValue(entry.getValue());
             }

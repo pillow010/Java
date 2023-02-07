@@ -11,7 +11,6 @@ import java.io.IOException;
 public class D_RekapPasienJasaUnit {
 
     public static void main(String[] args) {
-       new  D_RekapPasienJasaUnit();
     }
 
     private Workbook workbook;
