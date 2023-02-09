@@ -38,6 +38,26 @@ public class A_Pertindakan2 {
             AllBorderStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
 
             Sheet pertindakan_New_Raw = BookPertindakanNew.getSheetAt(0);
+            BookPertindakanNew.setSheetName(0, "pertindakan_New_Raw");
+
+            pertindakan_New_Raw.getRow(0).createCell(28).setCellValue("SUB INST");
+            for (int i = 1; i<pertindakan_New_Raw.getLastRowNum();i++) {
+                Row row = pertindakan_New_Raw.getRow(i);
+                Cell cell = row.getCell(24);
+                if (cell == null){
+                    row.createCell(28).setCellValue("RUJUKAN LUAR RS");
+                } else if (pertindakan_New_Raw.getRow(i).getCell(24).getStringCellValue().equals("IGD")) {
+                    if (pertindakan_New_Raw.getRow(i).getCell(27).getStringCellValue().equals("01")) {
+                        pertindakan_New_Raw.getRow(i).createCell(28).setCellValue("UMUM");
+                    } else if (pertindakan_New_Raw.getRow(i).getCell(27).getStringCellValue().equals("02")) {
+                        pertindakan_New_Raw.getRow(i).createCell(28).setCellValue("PONEK");
+                    }
+                }
+            }
+
+            System.out.println(pertindakan_New_Raw.getRow(1).getCell(27).getStringCellValue().equals("01"));
+
+
 
             Sheet Pertindakan = BookPertindakanNew.createSheet();
             BookPertindakanNew.setSheetName(1, "1 Pertindakan");
@@ -47,14 +67,16 @@ public class A_Pertindakan2 {
                 }
             }
 
-            // Perform pivot simulation
+            // Perform pivot simulation, and check if it not contain paket
             Map<String, Integer> pivotJumlahTindakan = new HashMap<>();
             for (int i = 1; i <= pertindakan_New_Raw.getLastRowNum(); i++) {
                 Row row = pertindakan_New_Raw.getRow(i);
                 String Tindakan = row.getCell(15).getStringCellValue();
-                Integer count = pivotJumlahTindakan.getOrDefault(Tindakan, 0);
-                count++;
-                pivotJumlahTindakan.put(Tindakan, count);
+                if (!Tindakan.contains("PAKET")) {
+                    Integer count = pivotJumlahTindakan.getOrDefault(Tindakan, 0);
+                    count++;
+                    pivotJumlahTindakan.put(Tindakan, count);
+                }
             }
 
 //          Sort any value it contains
