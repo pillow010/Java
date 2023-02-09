@@ -116,7 +116,16 @@ public class E_RincianJasaNoname {
                 }
 
             }
-
+            int columnCountA2 = sheet2.getRow(0).getLastCellNum();
+            for (int columnIndex = 0; columnIndex < columnCountA2; columnIndex++) {
+                sheet2.autoSizeColumn(columnIndex);
+            }
+            CellStyle centerTextStyle = workbook.createCellStyle();
+            centerTextStyle.setAlignment(HorizontalAlignment.CENTER);
+            int lastCellA2 = sheet2.getRow(0).getLastCellNum();
+            for (int title=0;title<lastCellA2;title++){
+                sheet2.getRow(0).getCell(title).setCellStyle(centerTextStyle);
+            }
             workbook.removeSheetAt(0);
 
         } catch (Exception e) {

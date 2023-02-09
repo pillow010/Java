@@ -8,6 +8,7 @@ import java.io.*;
 
 public class B_RincianTindakanJasaDokter {
     public static void main(String[] args) {
+//        new B_RincianTindakanJasaDokter();
     }
 
     private Workbook workbook;
@@ -114,7 +115,45 @@ public class B_RincianTindakanJasaDokter {
                         }
                     }
                 }
+            }
 
+            // Create a cell style for the target column
+            CellStyle targetColumnStyleNetto = workbook.createCellStyle();
+            CellStyle targetColumnColourNetto = workbook.createCellStyle();
+
+
+            // Create a data format for the target column
+            short format = workbook.createDataFormat().getFormat("#,##0.00_);[Red](#,##0.00)");
+
+            // Set the data format to the target column style
+            targetColumnStyleNetto.setDataFormat(format);
+
+            // Set the background color of the cells in the target column to yellow
+            targetColumnColourNetto.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
+
+            // Apply the style to the cells in the target column
+            for (int i = 0; i <= sheet2.getLastRowNum(); i++) {
+                sheet2.getRow(i).getCell(22).setCellStyle(targetColumnStyleNetto);
+                sheet2.getRow(i).getCell(22).setCellStyle(targetColumnColourNetto);
+
+//                row = sheet2.getRow(i);
+//                if (row == null) continue;
+//                Cell cell = row.getCell(22);
+//                if (cell == null) continue;
+//                cell.setCellStyle(targetColumnStyleNetto);
+            }
+
+
+            int columnCountA2 = sheet2.getRow(0).getLastCellNum();
+            for (int columnIndex = 0; columnIndex < columnCountA2; columnIndex++) {
+                sheet2.autoSizeColumn(columnIndex);
+            }
+
+            CellStyle centerTextStyle = workbook.createCellStyle();
+            centerTextStyle.setAlignment(HorizontalAlignment.CENTER);
+            int lastCellA2 = sheet2.getRow(0).getLastCellNum();
+            for (int title=0;title<lastCellA2;title++){
+                sheet2.getRow(0).getCell(title).setCellStyle(centerTextStyle);
             }
 
             workbook.removeSheetAt(0);

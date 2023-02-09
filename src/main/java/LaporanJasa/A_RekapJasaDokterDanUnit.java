@@ -3,6 +3,7 @@ package main.java.LaporanJasa;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import java.io.*;
 import java.util.*;
@@ -10,6 +11,7 @@ import java.util.*;
 public class A_RekapJasaDokterDanUnit {
 
     public static void main(String[] args) {
+//        new A_RekapJasaDokterDanUnit();
     }
     private Workbook workbook;
 
@@ -27,6 +29,9 @@ public class A_RekapJasaDokterDanUnit {
             workbook = new HSSFWorkbook(poifs);
             Workbook workbook2 = new HSSFWorkbook(poifs2);
 
+            CellStyle centerTextStyle = workbook.createCellStyle();
+            centerTextStyle.setAlignment(HorizontalAlignment.CENTER);
+
 
             sheetA = workbook.getSheetAt(0);
             int lastRow = sheetA.getLastRowNum();
@@ -35,7 +40,7 @@ public class A_RekapJasaDokterDanUnit {
 
             Sheet sheetA2 = workbook.createSheet();
             workbook.setSheetName(1, "JASA DOKTER");
-            for (int cell = 0; cell <= 6; cell++) {
+            for (int cell = 0; cell <= 2; cell++) {
                 for (int row = 0; row <= lastRow-1; row++) {
                     sheetA2.createRow(row).createCell(cell);
                 }
@@ -43,12 +48,11 @@ public class A_RekapJasaDokterDanUnit {
 
             Sheet sheetA3 = workbook.createSheet();
             workbook.setSheetName(2, "JASA UNIT");
-            for (int cell = 0; cell <= 6; cell++) {
+            for (int cell = 0; cell <= 2; cell++) {
                 for (int row = 0; row <= lastRowB-1; row++) {
                     sheetA3.createRow(row).createCell(cell);
                 }
             }
-
 
             // Perform pivot simulation
             Map<String, Double> pivotDataDoctor = new HashMap<>();
@@ -70,6 +74,7 @@ public class A_RekapJasaDokterDanUnit {
             }
 
 
+//          Sort any value it contain
             List<Map.Entry<String, Double>> entriesDoctor = new ArrayList<>(pivotDataDoctor.entrySet());
             entriesDoctor.sort(Map.Entry.comparingByKey());
             pivotDataDoctor = new LinkedHashMap<>();
@@ -102,6 +107,32 @@ public class A_RekapJasaDokterDanUnit {
                 row.createCell(2).setCellValue(entry.getValue());
             }
 
+            int columnCountA2 = sheetA2.getRow(0).getLastCellNum();
+            for (int columnIndex = 0; columnIndex < columnCountA2; columnIndex++) {
+                sheetA2.autoSizeColumn(columnIndex);
+            }
+            int columnCountA3 = sheetA3.getRow(0).getLastCellNum();
+            for (int columnIndex = 0; columnIndex < columnCountA3; columnIndex++) {
+                sheetA3.autoSizeColumn(columnIndex);
+            }
+
+
+
+            sheetA2.getRow(5).createCell(0).setCellValue("NO");
+            sheetA2.getRow(5).createCell(1).setCellValue("NAMA DOKTER");
+            sheetA2.getRow(5).createCell(2).setCellValue("TOTAL");
+            int lastCellA2 = sheetA2.getRow(5).getLastCellNum();
+            for (int title=0;title<lastCellA2;title++){
+                    sheetA2.getRow(5).getCell(title).setCellStyle(centerTextStyle);
+            }
+
+            sheetA3.getRow(5).createCell(0).setCellValue("NO");
+            sheetA3.getRow(5).createCell(1).setCellValue("NAMA UNIT");
+            sheetA3.getRow(5).createCell(2).setCellValue("TOTAL");
+            int lastCellA3 = sheetA3.getRow(5).getLastCellNum();
+            for (int title=0;title<lastCellA3;title++){
+                sheetA3.getRow(5).getCell(title).setCellStyle(centerTextStyle);
+            }
 
 
             workbook.removeSheetAt(0);
