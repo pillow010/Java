@@ -2,8 +2,11 @@ package main.java.LaporanRad;
 
 import StylingLaporan.StylerRepo;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.helpers.HSSFRowShifter;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.helpers.RowShifter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,6 +16,7 @@ import java.util.*;
 public class A_PertindakanVer2 extends StylerRepo{
     public static void main(String[] args) {
         new main.java.LaporanRad.A_PertindakanVer2 ();
+
     }
     private Workbook BookPertindakanNew;
 
@@ -329,35 +333,131 @@ public class A_PertindakanVer2 extends StylerRepo{
             }
 
 //          buat sheet 3 pertindakan
-            Sheet originalSheet = BookPertindakanNew.getSheetAt(0);
-            String duplicateSheetName = "Genap";
-            BookPertindakanNew.cloneSheet(0);
-            Sheet duplicateSheet = BookPertindakanNew.getSheet(duplicateSheetName);
-            BookPertindakanNew.setSheetName(3, duplicateSheetName);
+            Sheet Genap = BookPertindakanNew.createSheet();
+            BookPertindakanNew.setSheetName(3, "Genap");
 
-//
-//            for (int i=0;i<pertindakanNewRawLastRowNum (pertindakan_New_Raw);i++){
-//                Genap.createRow (i);
-//            }
-//
-////            System.out.println (pertindakan_New_Raw.getRow (2775).getCell (29).getStringCellValue ());
-////            System.out.println (pertindakan_New_Raw.getRow (2775);
-//            for (int cell = 0; cell<pertindakan_New_Raw.getRow (0).getLastCellNum ()-1;cell++) {
-//                for (int row = 0; row < pertindakanNewRawLastRowNum (pertindakan_New_Raw); row++) {
-//                    if (pertindakan_New_Raw.getRow (row).getCell (cell) == null) {
-//                        Genap.getRow (row).createCell (cell);
-//                    } else if (pertindakan_New_Raw.getRow (row).getCell (cell).getCellType () == CellType.STRING) {
-////                        System.out.println (row);
-////                        System.out.println (cell);
-//                        Genap.getRow (row).createCell (cell)
-//                                .setCellValue (pertindakan_New_Raw.getRow (row).getCell (cell).getStringCellValue ());
-//                    } else {
-//                        Genap.getRow (row).createCell (cell)
-//                                .setCellValue (pertindakan_New_Raw.getRow (row).getCell (cell).getNumericCellValue ());
+            for (int cell = 0; cell<=pertindakan_New_Raw.getRow (0).getLastCellNum ();cell++) {
+                for (int i = 0; i <= pertindakanNewRawLastRowNum (pertindakan_New_Raw)+1; i++) {
+                    Genap.createRow (i);
+                }
+            }
+            for (int cell = 0; cell<=pertindakan_New_Raw.getRow (0).getLastCellNum ()-1;cell++) {
+                for (int row = 0; row <= pertindakan_New_Raw.getLastRowNum (); row++) {
+                    String Tindakan = pertindakan_New_Raw.getRow(row).getCell(15).getStringCellValue();
+                    if (!Tindakan.contains("PAKET")) {
+                        Cell currentCell = pertindakan_New_Raw.getRow(row).getCell(cell);
+                        if (currentCell != null) {
+                            if (currentCell.getCellType () == CellType.STRING) {
+                                Genap.getRow (row).createCell (cell)
+                                        .setCellValue (currentCell.getStringCellValue ());
+                            } else {
+                                Genap.getRow (row).createCell (cell)
+                                        .setCellValue (currentCell.getNumericCellValue ());
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            for (int cell = 0; cell<=pertindakan_New_Raw.getRow (0).getLastCellNum ()-1;cell++) {
+                for (int row = 0; row <= pertindakan_New_Raw.getLastRowNum (); row++) {
+                    String Tindakan = pertindakan_New_Raw.getRow (row).getCell (15).getStringCellValue ();
+                    if (Tindakan.contains ("CT Scan")) {
+                        Genap.getRow (row).getCell (15).setCellValue ("CT Scan");
+//                            CT Scan, USG , RONTGENT, Konsul Dokter Spesialis
+                    }
+                }
+            }
+
+            // V1 shifting row up
+//            for (int row = 0; row <= pertindakanNewRawLastRowNum(pertindakan_New_Raw); row++) {
+//                boolean isRowBlank = true;
+//                for (int cell = 0; cell <= 30; cell++) {
+//                    if (Genap.getRow(row).getCell(cell) != null) {
+//                        isRowBlank = false;
+//                        break;
 //                    }
-//
+//                }
+//                if (isRowBlank) {
+//                    Genap.shiftRows(row + 1, row + 1, -1);
 //                }
 //            }
+
+            // V2 shifting row up
+//            System.out.println (pertindakanNewRawLastRowNum(pertindakan_New_Raw));
+//            for (int row = 0; row <= pertindakanNewRawLastRowNum(pertindakan_New_Raw); row++) {
+//                boolean isRowBlank = true;
+//                System.out.println (row);
+//                for (int cell = 0; cell <= 30; cell++) {
+//                    if (Genap.getRow(row).getCell(cell) != null) {
+//                        System.out.println (row + " "+ cell);
+//                        isRowBlank = false;
+//                        break;
+//                    }
+//                }
+//                int rowShouldBeShifted = row+1;
+//                if (isRowBlank) {
+//                    Genap.shiftRows(rowShouldBeShifted, rowShouldBeShifted, -1);
+//                }
+//            }
+
+            // V3 shifting row up
+            for (int row = 0; row <= pertindakanNewRawLastRowNum(pertindakan_New_Raw); row++) {
+                boolean isRowBlank = true;
+                System.out.println ("up " + row);
+                System.out.println (isRowBlank);
+                for (int cell = 0; cell <= 30; cell++) {
+                    if (Genap.getRow(row).getCell(cell) != null) {
+                        System.out.println (row + " "+ cell);
+                        isRowBlank = false;
+                        break;
+                    }
+                }
+                int rowShouldBeShifted = row + 1;
+                if (isRowBlank) {
+                    Genap.shiftRows(rowShouldBeShifted, rowShouldBeShifted, -1);
+                }
+            }
+                //v4
+//            for (int row = 0; row <= pertindakanNewRawLastRowNum(pertindakan_New_Raw); row++) {
+//                boolean isRowBlank = true;
+//                System.out.println (row);
+//                for (int cell = 0; cell <= 30; cell++) {
+//                    if (Genap.getRow(row).getCell(cell) != null) {
+//                        System.out.println (row + " "+ cell);
+//                        isRowBlank = false;
+//                        break;
+//                    }
+//                }
+//                int rowShouldBeShifted = row + 1;
+//                if (isRowBlank) {
+//                    Genap.shiftRows(rowShouldBeShifted, rowShouldBeShifted, -1);
+//                }
+//            }
+            //V5
+//            int row = 0;
+//            while (row <= pertindakanNewRawLastRowNum(pertindakan_New_Raw)) {
+//                boolean isRowBlank = true;
+//                for (int cell = 0; cell <= 30; cell++) {
+//                    if (Genap.getRow(row).getCell(cell) != null) {
+//                        isRowBlank = false;
+//                        break;
+//                    }
+//                }
+//                int rowShouldBeShifted = row + 1;
+//                if (isRowBlank) {
+//                    Genap.shiftRows(rowShouldBeShifted, rowShouldBeShifted, -1);
+//                } else {
+//                    row++;
+//                }
+//            }
+
+
+
+
+
+
 
 //          buat sheet 2 pertindakan
             Sheet Tindakan_crByr_Hari = BookPertindakanNew.createSheet();
@@ -407,4 +507,32 @@ public class A_PertindakanVer2 extends StylerRepo{
     private static int pertindakanNewRawLastRowNum(Sheet pertindakan_New_Raw) {
         return pertindakan_New_Raw.getLastRowNum ();
     }
+
+    private static void removeDuplicates(@NotNull Sheet sheet) {
+        Set<String> uniqueRows = new HashSet<>();
+        int lastRowNum = sheet.getLastRowNum();
+        for (int i = 0; i <= lastRowNum; i++) {
+            Row currentRow = sheet.getRow(i);
+            if (currentRow == null) {
+                continue;
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < currentRow.getLastCellNum(); j++) {
+                Cell currentCell = currentRow.getCell(j, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                switch (currentCell.getCellType ()) {
+                    case STRING -> sb.append (currentCell.getStringCellValue ());
+                    case NUMERIC -> sb.append (currentCell.getNumericCellValue ());
+                }
+            }
+            String rowAsString = sb.toString();
+            if (uniqueRows.contains(rowAsString)) {
+                sheet.removeRow(currentRow);
+                i--;
+                lastRowNum--;
+            } else {
+                uniqueRows.add(rowAsString);
+            }
+        }
+    }
+
 }
