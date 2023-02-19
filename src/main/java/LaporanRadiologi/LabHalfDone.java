@@ -1,16 +1,8 @@
-package main.java.LaporanRad;
+package LaporanRadiologi;
 
 import StylingLaporan.StylerRepo;
 
-import org.apache.poi.ss.SpreadsheetVersion;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.*;
-
-import org.apache.poi.ss.util.AreaReference;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFPivotTable;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,16 +13,16 @@ import java.util.*;
 
 import java.util.stream.IntStream;
 
-public class A_PertindakanVer2 extends StylerRepo{
+public class LabHalfDone extends StylerRepo{
     public static void main(String[] args) {
-        new main.java.LaporanRad.A_PertindakanVer2 ();
+        new LabHalfDone ();
 
     }
     private Workbook BookPertindakanNew;
 
     private FileOutputStream outputStream;
 
-    public A_PertindakanVer2(){
+    public LabHalfDone(){
         Sheet SheetA = null;
         Sheet sheetB = null;
 //        File pertindakanNew = new File("C:\\sat work\\test\\rad pertindakan new.xlsx");
@@ -69,6 +61,7 @@ public class A_PertindakanVer2 extends StylerRepo{
 //          taruh pertindakan new ke sheet 0
             Sheet pertindakan_New_Raw = BookPertindakanNew.getSheetAt(0);
             BookPertindakanNew.setSheetName(0, "pertindakan_New_Raw");
+            System.out.println ("0. Doing "+ BookPertindakanNew.getSheetAt (0).getSheetName ());
 
 //          tambah sub inst for later use
             pertindakan_New_Raw.getRow(0).createCell(28).setCellValue("SUB INST");
@@ -261,21 +254,29 @@ public class A_PertindakanVer2 extends StylerRepo{
                     }
                 }
             }
+            System.out.println ("0. "+ BookPertindakanNew.getSheetAt (0).getSheetName ()+" Complete");
 
 
 //          buat sheet 1 Ganjil
             Sheet Ganjil = BookPertindakanNew.createSheet();
             BookPertindakanNew.setSheetName(1, "Ganjil");
+            System.out.println ("1. Doing "+ BookPertindakanNew.getSheetAt (1).getSheetName ());
+
 
             Set<String> uniqueValues = new HashSet<>();
             for (int row = 1; row <= pertindakan_New_Raw.getLastRowNum(); row++) {
-                String cellValue = pertindakan_New_Raw.getRow(row).getCell(29).getStringCellValue ();
-                if (!uniqueValues.contains(cellValue)) {
-                    uniqueValues.add(cellValue);
+                if (pertindakan_New_Raw.getRow(row) != null) { // check if row is not empty
+                    Cell cell = pertindakan_New_Raw.getRow(row).getCell(29);
+                    if (cell != null) { // check if cell is not empty
+                        String cellValue = cell.getStringCellValue();
+                        if (!cellValue.isBlank()) { // check if cell value is not blank
+                            uniqueValues.add(cellValue);
+                        }
+                    }
                 }
             }
 
-//            for (int i=0;i<pertindakanNewRawLastRowNum (pertindakan_New_Raw);i++){
+
             for (int i=0;i<= uniqueValues.size ();i++){
                 Ganjil.createRow (i);
             }
@@ -312,10 +313,14 @@ public class A_PertindakanVer2 extends StylerRepo{
             for (int columnIndex = 0; columnIndex < Ganjil.getRow (0).getLastCellNum (); columnIndex++) {
                 Ganjil.autoSizeColumn(columnIndex);
             }
+            System.out.println ("1. "+ BookPertindakanNew.getSheetAt (1).getSheetName ()+" Complete");
+
 
 //          buat sheet 2 Genap
             Sheet Genap = BookPertindakanNew.createSheet();
             BookPertindakanNew.setSheetName(2, "Genap");
+            System.out.println ("2. Doing "+ BookPertindakanNew.getSheetAt (2).getSheetName ());
+
 //
             List<String> values = new ArrayList<> ();
             for (int row = 1; row <= pertindakan_New_Raw.getLastRowNum(); row++) {
@@ -325,7 +330,6 @@ public class A_PertindakanVer2 extends StylerRepo{
                     values.add (cellValue);
                 }
             }
-//            System.out.println ("0. "+values.size ());
 
             Genap.createRow (0);
             for (int cell=0;cell<pertindakan_New_Raw.getRow (0).getLastCellNum ();cell++){
@@ -334,15 +338,12 @@ public class A_PertindakanVer2 extends StylerRepo{
                 );
             }
 
-
             List<String> sortedGenapValues = values.stream ().sorted ().toList ();
             IntStream.range(0, sortedGenapValues.size())
                     .forEach(i -> {
-                            String value = sortedGenapValues.get (i);
-                            Genap.createRow (i + 1).createCell (30).setCellValue (value);
+                        String value = sortedGenapValues.get (i);
+                        Genap.createRow (i + 1).createCell (30).setCellValue (value);
                     });
-//            System.out.println ("0,5 "+Genap.getLastRowNum ());
-//            System.out.println ("1. "+Genap.getRow (1).getCell (30).getStringCellValue ());
 
             for (int row = 1; row <= sortedGenapValues.size (); row++) {
                 String cellValue = Genap.getRow(row).getCell(30).getStringCellValue();
@@ -370,32 +371,32 @@ public class A_PertindakanVer2 extends StylerRepo{
                     }
                 }
             }
-//            System.out.println ("2. "+Genap.getRow (1).getCell (30).getStringCellValue ());
 
-                for (int row = 1; row <= sortedGenapValues.size (); row++) {
-                    String Tindakan = Genap.getRow (row).getCell (15).getStringCellValue ();
-//                            CT Scan, USG , RONTGENT, Konsul Dokter Spesialis
-                    if (Tindakan.contains ("CT Scan")) {
-                        Genap.getRow (row).createCell (15).setCellValue ("CT Scan");
-                    }else if (Tindakan.contains ("USG")) {
-                        Genap.getRow (row).createCell (15).setCellValue ("USG");
-                    } else if (Tindakan.contains ("Konsul Dokter Spesialis")) {
-                        Genap.getRow (row).createCell (15).setCellValue ("Konsul Dokter Spesialis");
-                    }else {
-                        Genap.getRow (row).createCell (15).setCellValue ("RONTGENT");
-                    }
+//          CT Scan, USG , RONTGENT, Konsul Dokter Spesialis
+            for (int row = 1; row <= sortedGenapValues.size (); row++) {
+                String Tindakan = Genap.getRow (row).getCell (15).getStringCellValue ();
+                if (Tindakan.contains ("CT Scan")) {
+                    Genap.getRow (row).createCell (15).setCellValue ("CT Scan");
+                }else if (Tindakan.contains ("USG")) {
+                    Genap.getRow (row).createCell (15).setCellValue ("USG");
+                } else if (Tindakan.contains ("Konsul Dokter Spesialis")) {
+                    Genap.getRow (row).createCell (15).setCellValue ("Konsul Dokter Spesialis");
+                }else {
+                    Genap.getRow (row).createCell (15).setCellValue ("RONTGENT");
                 }
+            }
 
-//            System.out.println ("3. "+Genap.getRow (1).getCell (30).getStringCellValue ());
 
 //          cek per row. sesuaikan width nya
             for (int columnIndex = 0; columnIndex < Genap.getRow (0).getLastCellNum (); columnIndex++) {
                 Genap.autoSizeColumn(columnIndex);
             }
+            System.out.println ("2. "+ BookPertindakanNew.getSheetAt (2).getSheetName ()+" Complete");
 
 //          buat sheet 3 pertindakan
             Sheet Pertindakan = BookPertindakanNew.createSheet();
             BookPertindakanNew.setSheetName(3, "1 Pertindakan");
+            System.out.println ("3. Doing "+ BookPertindakanNew.getSheetAt (3).getSheetName ());
 
 //          buat judul dan kasih kotak
             Pertindakan.createRow(5).createCell(0).setCellValue("NO");
@@ -433,19 +434,20 @@ public class A_PertindakanVer2 extends StylerRepo{
                 row.createCell (2).setCellValue (entry.getValue ());
             }
 
-
+//          buat header center kemudian border semuanya
             for (int rightCell = 0; rightCell<Pertindakan.getRow (rowNum-1).getLastCellNum ();rightCell++){
                 Pertindakan.getRow (startRow-1).getCell (rightCell).setCellStyle(BorderCenterCellStyle);
                 for (int downRow = startRow; downRow<= pertindakanNewRawLastRowNum (Pertindakan); downRow++){
                     Pertindakan.getRow (downRow).getCell (rightCell).setCellStyle(AllBorderCellStyle);
                 }
             }
-
 //          cek per row. sesuaikan width nya
             int columnCountA2 = Pertindakan.getRow (startRow-1).getLastCellNum();
             for (int columnIndex = 0; columnIndex < columnCountA2; columnIndex++) {
                 Pertindakan.autoSizeColumn(columnIndex);
             }
+            System.out.println ("3. "+ BookPertindakanNew.getSheetAt (3).getSheetName ()+" Complete");
+
 
 
 
@@ -453,74 +455,179 @@ public class A_PertindakanVer2 extends StylerRepo{
             BookPertindakanNew.createSheet ();
             Sheet TndkanCrByrHr = BookPertindakanNew.getSheetAt (4);
             BookPertindakanNew.setSheetName (4, "2.Jml tndakan per cr Byr pr hri");
+            System.out.println ("4. Sheet "+ BookPertindakanNew.getSheetAt (4).getSheetName ()+" Created");
 
-//            Map<String, Integer> countMap = new HashMap<> ();
-//            String key;
+
+//            List<String> masterCaraBayar = new ArrayList<>();
+//            List<String> masterTanggal = new ArrayList<>();
+//            List<String> masterTindakan = new ArrayList<>();
+//
+//            for (Row row = Genap.getRow(1); row != null; row = Genap.getRow(row.getRowNum()+1)) {
+//                String caraBayar = row.getCell(8).getStringCellValue();
+//                String tglMsk = row.getCell(9).getStringCellValue().substring(0, 10);
+//                String tndk = row.getCell(15).getStringCellValue();
+//
+//                if (!masterCaraBayar.contains(caraBayar)) {
+//                    masterCaraBayar.add(caraBayar);
+//                }
+//                if (!masterTanggal.contains(tglMsk)) {
+//                    masterTanggal.add(tglMsk);
+//                }
+//                if (!masterTindakan.contains(tndk)) {
+//                    masterTindakan.add(tndk);
+//                }
+//            }
+//
+//            masterTanggal.stream().sorted ();
+//            masterCaraBayar.stream().sorted ();
+//            masterTindakan.stream().sorted ();
+//
+//
+//            TndkanCrByrHr.createRow (0).createCell(0);
+//            TndkanCrByrHr.createRow (1).createCell(0);
+//            TndkanCrByrHr.addMergedRegion (new CellRangeAddress (0,1,0,0));
+//            TndkanCrByrHr.getRow (0).getCell (0).setCellValue("Tanggal");
+//
+//            int rowNumx = 2;
+//            for (String tglMsk : masterTanggal) {
+//                Row row = TndkanCrByrHr.createRow(rowNumx++);
+//                row.createCell(0).setCellValue(tglMsk);
+//            }
+//
+//            int cellTndkanCrByrHr = 1;
+//            for (int i = 0; i < masterCaraBayar.size(); i++) {
+//                for (int j = 0; j < masterTindakan.size(); j++) {
+//                    String caraBayar = masterCaraBayar.get(i);
+//                    String tndk = masterTindakan.get(j);
+//                    int currentCellTndkanCrByrHr = cellTndkanCrByrHr + j + (i * masterTindakan.size());
+//                    TndkanCrByrHr.getRow(0).createCell(currentCellTndkanCrByrHr).setCellValue(caraBayar);
+//                    TndkanCrByrHr.getRow(1).createCell(currentCellTndkanCrByrHr).setCellValue(tndk);
+//                }
+//            }
+//
+//            //crbyr 8   rw 0 cl 1-28
+//            //tgl   9   rw 2-31
+//            //tndk  15  rw 1 cl 1-28
+//
 //            for (int row = 1; row <= Genap.getLastRowNum(); row++) {
-//                key = Genap.getRow(row).getCell(9).getStringCellValue().substring (0,10) + "_" + // TGL_MASUK
-//                        Genap.getRow(row).getCell(15).getStringCellValue() + "_" + // NM_TINDAKAN
-//                        Genap.getRow(row).getCell(8).getStringCellValue(); // JNS_CR_BYR
-//                countMap.put(key, countMap.getOrDefault(key, 0) + 1); // increment the count for the key
-//            }
+//                String caraBayar = Genap.getRow(row).getCell(8).getStringCellValue();
+//                String tglMsk = Genap.getRow(row).getCell(9).getStringCellValue().substring(0, 10);
+//                String tndk = Genap.getRow(row).getCell(15).getStringCellValue();
 //
-//
-//            // Create the list of objects
-//            List<Object> master = new ArrayList<>();
-//            for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
-//                String[] parts = entry.getKey().split("_");
-//                String tglMsk = parts[0];
-//                String tindakan = parts[1];
-//                String jnsCrByr = parts[2];
-//                int count = entry.getValue();
-//                master.add(List.of(tglMsk, tindakan, jnsCrByr, count));
+//                if (caraBayar.equals(TndkanCrByrHr.getRow(0).getCell(1).getStringCellValue())
+//                        && tglMsk.equals(TndkanCrByrHr.getRow(2).getCell(1).getStringCellValue())
+//                        && tndk.equals(TndkanCrByrHr.getRow(1).getCell(1).getStringCellValue())) {
+//                    int currentCount = (int) TndkanCrByrHr.getRow(2).getCell(1).getNumericCellValue();
+//                    TndkanCrByrHr.getRow(2).createCell(1).setCellValue(currentCount + 1);
+//                }
 //            }
 
-            // print the master list
-//            System.out.println(master.stream().sorted ());
-            List<String> masterCaraBayar = new ArrayList<>();
-            List<String> masterTanggal = new ArrayList<>();
-            List<String> masterTindakan = new ArrayList<>();
+//        buat sheet 5 Jml tndakan per cr Byr pr hri
+            BookPertindakanNew.createSheet ();
+            Sheet PsnCrByrHr = BookPertindakanNew.getSheetAt (5);
+            BookPertindakanNew.setSheetName (5, "3.Pasien per cara bayar pr hari");
+            System.out.println ("5. Sheet "+ BookPertindakanNew.getSheetAt (5).getSheetName ()+" Created");
 
-//            for (Row row : Genap) {
-            for (Row row = Genap.getRow(1); row != null; row = Genap.getRow(row.getRowNum()+1)) {
-//                System.out.println (row.getCell (9).getStringCellValue ());
-                String caraBayar = row.getCell(8).getStringCellValue();
-                String tglMsk = row.getCell(9).getStringCellValue().substring(0, 10);
-                String tndk = row.getCell(15).getStringCellValue();
 
-                if (!masterCaraBayar.contains(caraBayar)) {
-                    masterCaraBayar.add(caraBayar);
-                }
-                if (!masterTanggal.contains(tglMsk)) {
-                    masterTanggal.add(tglMsk);
-                }
-                if (!masterTindakan.contains(tndk)) {
-                    masterTindakan.add(tndk);
-                }
+//        buat sheet 6 Jml tndakan per cr Byr pr hri
+            BookPertindakanNew.createSheet ();
+            Sheet TndCrByr = BookPertindakanNew.getSheetAt (6);
+            BookPertindakanNew.setSheetName (6, "4.Tindakan Percara bayar ");
+            System.out.println ("6. Doing "+ BookPertindakanNew.getSheetAt (6).getSheetName ());
+
+
+            Map<String, Integer> tndkCount = new TreeMap<> ();
+            for (int row = 1; row <= Genap.getLastRowNum(); row++) {
+//                String tndk = Genap.getRow(row).getCell(8).getStringCellValue();
+//                if (tndkCount.containsKey(tndk)) {
+//                    tndkCount.put(tndk, tndkCount.get(tndk) + 1);
+//                } else {
+//                    tndkCount.put(tndk, 1);
+//                }
+                String tndk = Genap.getRow(row).getCell(8).getStringCellValue();
+                tndkCount.put(tndk, tndkCount.getOrDefault(tndk, 0) + 1);
             }
 
-            TndkanCrByrHr.addMergedRegion (new CellRangeAddress (0,1,0,0));
-            TndkanCrByrHr.createRow (0).createCell(0).setCellValue("Tanggal");
+            TndCrByr.createRow(0).createCell(0).setCellValue("Jenis Cara Bayar");
+            TndCrByr.getRow(0).createCell(1).setCellValue("Jumlah");
 
-            System.out.println("Cara Bayar:");
-            masterCaraBayar.stream().sorted().forEach(System.out::println);
-
-            int rowNumx = 2;
-            for (String tglMsk : masterTanggal) {
-                Row row = TndkanCrByrHr.createRow(rowNumx++);
-                row.createCell(0).setCellValue(tglMsk);
+            int TndCrByrrow = 0;
+            int TndCrByrSum = 0;
+            for (Map.Entry<String, Integer> entry : tndkCount.entrySet()) {
+                TndCrByrrow++;
+                TndCrByr.createRow(TndCrByrrow).createCell(0).setCellValue(entry.getKey());
+                TndCrByr.getRow(TndCrByrrow).createCell(1).setCellValue(entry.getValue());
+                TndCrByrSum+=entry.getValue ();
             }
 
-            int cellTndkanCrByrHr = 1;
-            for (String caraBayar:masterCaraBayar){
-                for (String tndk: masterTindakan){
-                    TndkanCrByrHr.getRow (0).createCell (cellTndkanCrByrHr++).setCellValue (caraBayar);
-                    TndkanCrByrHr.getRow (1).createCell (cellTndkanCrByrHr++).setCellValue (tndk);
+            int TndCrByrLastRow = TndCrByr.getLastRowNum ()+1;
+            TndCrByr.createRow (TndCrByrLastRow).createCell (0).setCellValue ("Grand Total");
+            TndCrByr.getRow (TndCrByrLastRow).createCell (1).setCellValue (TndCrByrSum);
+
+//          buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
+            for (int rightCell = 0; rightCell<TndCrByr.getRow (0).getLastCellNum ();rightCell++){
+                TndCrByr.getRow (0).getCell (rightCell).setCellStyle(BorderCenterCellStyle);
+                for (int downRow = 1; downRow<= TndCrByr.getLastRowNum (); downRow++){
+                    TndCrByr.getRow (downRow).getCell (rightCell).setCellStyle(AllBorderCellStyle);
                 }
             }
+//          cek per row. sesuaikan width nya
+            int columnCountTndCrByr = TndCrByr.getRow (0).getLastCellNum();
+            for (int columnIndex = 0; columnIndex < columnCountTndCrByr; columnIndex++) {
+                TndCrByr.autoSizeColumn(columnIndex);
+            }
+            System.out.println ("6. "+ BookPertindakanNew.getSheetAt (6).getSheetName ()+" Completed");
 
-            System.out.println("\nTindakan:");
-            masterTindakan.stream().sorted().forEach(System.out::println);
+
+
+//        buat sheet 7 Jml tndakan per cr Byr pr hri
+            BookPertindakanNew.createSheet ();
+            Sheet PsnCrByr = BookPertindakanNew.getSheetAt (7);
+            BookPertindakanNew.setSheetName (7, "5.Pasien per cara bayar");
+            System.out.println ("7. Doing "+ BookPertindakanNew.getSheetAt (7).getSheetName ());
+
+
+            Map<String, Integer> PsncrByrCount = new TreeMap<> ();
+            for (int row = 1; row <= Ganjil.getLastRowNum(); row++) {
+//                String crByr = Ganjil.getRow(row).getCell(1).getStringCellValue();
+//                if (PsncrByrCount.containsKey(crByr)) {
+//                    PsncrByrCount.put(crByr, PsncrByrCount.get(crByr) + 1);
+//                } else {
+//                    PsncrByrCount.put(crByr, 1);
+//                }
+                String crByr = Ganjil.getRow(row).getCell(1).getStringCellValue();
+                PsncrByrCount.put(crByr, PsncrByrCount.getOrDefault(crByr, 0) + 1);
+            }
+
+            PsnCrByr.createRow(0).createCell(0).setCellValue("Jenis Cara Bayar");
+            PsnCrByr.getRow(0).createCell(1).setCellValue("Jumlah");
+
+            int PsnCrByrrow = 0;
+            int PsnCrByrSum = 0;
+            for (Map.Entry<String, Integer> entry : PsncrByrCount.entrySet()) {
+                PsnCrByrrow++;
+                PsnCrByr.createRow(PsnCrByrrow).createCell(0).setCellValue(entry.getKey());
+                PsnCrByr.getRow(PsnCrByrrow).createCell(1).setCellValue(entry.getValue());
+                PsnCrByrSum += entry.getValue ();
+            }
+            int PsnCrByrLastRow = PsnCrByr.getLastRowNum ()+1;
+            PsnCrByr.createRow (PsnCrByrLastRow).createCell (0).setCellValue ("Grand Total");
+            PsnCrByr.getRow (PsnCrByrLastRow).createCell (1).setCellValue (PsnCrByrSum);
+
+//          buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
+            for (int rightCell = 0; rightCell<PsnCrByr.getRow (0).getLastCellNum ();rightCell++){
+                PsnCrByr.getRow (0).getCell (rightCell).setCellStyle(BorderCenterCellStyle);
+                for (int downRow = 1; downRow<= PsnCrByr.getLastRowNum (); downRow++){
+                    PsnCrByr.getRow (downRow).getCell (rightCell).setCellStyle(AllBorderCellStyle);
+                }
+            }
+//          cek per row. sesuaikan width nya
+            int columnCountPsnCrByr = PsnCrByr.getRow (0).getLastCellNum();
+            for (int columnIndex = 0; columnIndex < columnCountPsnCrByr; columnIndex++) {
+                PsnCrByr.autoSizeColumn(columnIndex);
+            }
+            System.out.println ("7. "+ BookPertindakanNew.getSheetAt (0).getSheetName ()+" Completed");
+
 
 
 
