@@ -1,11 +1,10 @@
-package FunctionalLearning.imperative;
+package z_FunctionalLearning.imperative;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static FunctionalLearning.imperative.Main.Gender.*;
+import static z_FunctionalLearning.imperative.Main.Gender.*;
 
 public class Main {
     public static void main(String[] args) {

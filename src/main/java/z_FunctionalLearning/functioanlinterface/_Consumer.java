@@ -1,4 +1,4 @@
-package FunctionalLearning.functioanlinterface;
+package z_FunctionalLearning.functioanlinterface;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
