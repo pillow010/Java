@@ -54,7 +54,7 @@ public class LabHalfDone extends StylerRepo{
 //          taruh pertindakan new ke sheet 0
             Sheet pertindakan_New_Raw = BookPertindakanNew.getSheetAt (0);
             BookPertindakanNew.setSheetName (0, "pertindakan_New_Raw");
-            System.out.println ("0. Doing " + BookPertindakanNew.getSheetAt (0).getSheetName ());
+            System.out.println ("00. Doing " + BookPertindakanNew.getSheetAt (0).getSheetName ());
 
 //          tambah sub inst for later use
             pertindakan_New_Raw.getRow (0).createCell (28).setCellValue ("SUB INST");
@@ -275,13 +275,13 @@ public class LabHalfDone extends StylerRepo{
                     }
                 }
             }
-            System.out.println ("0. " + BookPertindakanNew.getSheetAt (0).getSheetName () + " Complete");
+            System.out.println ("00. " + BookPertindakanNew.getSheetAt (0).getSheetName () + " Complete");
 
 
 //          buat sheet 1 Ganjil
             Sheet Ganjil = BookPertindakanNew.createSheet ();
             BookPertindakanNew.setSheetName (1, "Ganjil");
-            System.out.println ("1. " + BookPertindakanNew.getSheetAt (1).getSheetName () + " Start");
+            System.out.println ("01. " + BookPertindakanNew.getSheetAt (1).getSheetName () + " Start");
 
 
             Set<String> uniqueValues = new HashSet<> ();
@@ -334,13 +334,13 @@ public class LabHalfDone extends StylerRepo{
             for (int columnIndex = 0; columnIndex < Ganjil.getRow (0).getLastCellNum (); columnIndex++) {
                 Ganjil.autoSizeColumn (columnIndex);
             }
-            System.out.println ("1. " + BookPertindakanNew.getSheetAt (1).getSheetName () + " Complete");
+            System.out.println ("01. " + BookPertindakanNew.getSheetAt (1).getSheetName () + " Complete");
 
 
 //          buat sheet 2 Genap
             Sheet Genap = BookPertindakanNew.createSheet ();
             BookPertindakanNew.setSheetName (2, "Genap");
-            System.out.println ("2. " + BookPertindakanNew.getSheetAt (2).getSheetName () + " Start");
+            System.out.println ("02. " + BookPertindakanNew.getSheetAt (2).getSheetName () + " Start");
 
 //
             List<String> values = new ArrayList<> ();
@@ -372,10 +372,7 @@ public class LabHalfDone extends StylerRepo{
                     String pertCellValue = pertindakan_New_Raw.getRow (pertRow).getCell (30).getStringCellValue ();
                     if (cellValue.equals (pertCellValue)) {
                         for (int cell = pertindakan_New_Raw.getRow (0).getLastCellNum (); cell >= 0; cell--) {
-//                            Cell currentCell = pertindakan_New_Raw.getRow (row).getCell (cell);
-                            if (pertindakan_New_Raw
-                                    .getRow (pertRow)
-                                    .getCell (cell) != null) {
+                            if (pertindakan_New_Raw.getRow (pertRow).getCell (cell) != null) {
                                 if (pertindakan_New_Raw
                                         .getRow (pertRow)
                                         .getCell (cell).getCellType () == CellType.STRING) {
@@ -412,12 +409,12 @@ public class LabHalfDone extends StylerRepo{
             for (int columnIndex = 0; columnIndex < Genap.getRow (0).getLastCellNum (); columnIndex++) {
                 Genap.autoSizeColumn (columnIndex);
             }
-            System.out.println ("2. " + BookPertindakanNew.getSheetAt (2).getSheetName () + " Complete");
+            System.out.println ("02. " + BookPertindakanNew.getSheetAt (2).getSheetName () + " Complete");
 
 //          buat sheet 3 pertindakan
             Sheet Pertindakan = BookPertindakanNew.createSheet ();
             BookPertindakanNew.setSheetName (3, "1 Pertindakan");
-            System.out.println ("3. " + BookPertindakanNew.getSheetAt (3).getSheetName () + " Start");
+            System.out.println ("03. " + BookPertindakanNew.getSheetAt (3).getSheetName () + " Start");
 
 //          buat judul dan kasih kotak
             Pertindakan.createRow (5).createCell (0).setCellValue ("NO");
@@ -467,14 +464,14 @@ public class LabHalfDone extends StylerRepo{
             for (int columnIndex = 0; columnIndex < columnCountA2; columnIndex++) {
                 Pertindakan.autoSizeColumn (columnIndex);
             }
-            System.out.println ("3. " + BookPertindakanNew.getSheetAt (3).getSheetName () + " Complete");
+            System.out.println ("03. " + BookPertindakanNew.getSheetAt (3).getSheetName () + " Complete");
 
 
 //        buat sheet 4 Jml tndakan per cr Byr pr hri
             BookPertindakanNew.createSheet ();
 //            Sheet TndkanCrByrHr = BookPertindakanNew.getSheetAt (4);
             BookPertindakanNew.setSheetName (4, "2.Jml tndakan per cr Byr pr hri");
-            System.out.println ("4. Sheet " + BookPertindakanNew.getSheetAt (4).getSheetName () + " Created");
+            System.out.println ("04. Sheet " + BookPertindakanNew.getSheetAt (4).getSheetName () + " Created");
 
 
 //            List<String> masterCaraBayar = new ArrayList<>();
@@ -545,14 +542,14 @@ public class LabHalfDone extends StylerRepo{
             BookPertindakanNew.createSheet ();
 //            Sheet PsnCrByrHr = BookPertindakanNew.getSheetAt (5);
             BookPertindakanNew.setSheetName (5, "3.Pasien per cara bayar pr hari");
-            System.out.println ("5. Sheet " + BookPertindakanNew.getSheetAt (5).getSheetName () + " Created");
+            System.out.println ("05. Sheet " + BookPertindakanNew.getSheetAt (5).getSheetName () + " Created");
 
 
 //        buat sheet 6 Jml tndakan per cr Byr pr hri
             BookPertindakanNew.createSheet ();
             Sheet TndCrByr = BookPertindakanNew.getSheetAt (6);
             BookPertindakanNew.setSheetName (6, "4.Tindakan Percara bayar ");
-            System.out.println ("6. " + BookPertindakanNew.getSheetAt (6).getSheetName () + " Start");
+            System.out.println ("06. " + BookPertindakanNew.getSheetAt (6).getSheetName () + " Start");
 
 
             Map<String, Integer> tndkCount = new TreeMap<> ();
@@ -589,14 +586,14 @@ public class LabHalfDone extends StylerRepo{
             for (int columnIndex = 0; columnIndex < columnCountTndCrByr; columnIndex++) {
                 TndCrByr.autoSizeColumn (columnIndex);
             }
-            System.out.println ("6. " + BookPertindakanNew.getSheetAt (6).getSheetName () + " Completed");
+            System.out.println ("06. " + BookPertindakanNew.getSheetAt (6).getSheetName () + " Completed");
 
 
 //        buat sheet 7 Jml tndakan per cr Byr pr hri
             BookPertindakanNew.createSheet ();
             Sheet PsnCrByr = BookPertindakanNew.getSheetAt (7);
             BookPertindakanNew.setSheetName (7, "5.Pasien per cara bayar");
-            System.out.println ("7. " + BookPertindakanNew.getSheetAt (7).getSheetName () + " Start");
+            System.out.println ("07. " + BookPertindakanNew.getSheetAt (7).getSheetName () + " Start");
 
 
             Map<String, Integer> PsncrByrCount = new TreeMap<> ();
@@ -632,13 +629,13 @@ public class LabHalfDone extends StylerRepo{
             for (int columnIndex = 0; columnIndex < columnCountPsnCrByr; columnIndex++) {
                 PsnCrByr.autoSizeColumn (columnIndex);
             }
-            System.out.println ("7. " + BookPertindakanNew.getSheetAt (7).getSheetName () + " Completed");
+            System.out.println ("07. " + BookPertindakanNew.getSheetAt (7).getSheetName () + " Completed");
 
 //        buat sheet 8 Jml tndakan per cr Byr pr hri
             BookPertindakanNew.createSheet ();
             Sheet TndInstAsal = BookPertindakanNew.getSheetAt (8);
             BookPertindakanNew.setSheetName (8, "6.Tindakan Per instalasi asal");
-            System.out.println ("8. " + BookPertindakanNew.getSheetAt (8).getSheetName () + " Start");
+            System.out.println ("08. " + BookPertindakanNew.getSheetAt (8).getSheetName () + " Start");
             //count inst asal
             Map<String, Integer> TndInstAsalCount = new TreeMap<> ();
             for (int row = 1; row <= Genap.getLastRowNum (); row++) {
@@ -671,13 +668,13 @@ public class LabHalfDone extends StylerRepo{
                     }
                 }
 
-                System.out.println ("8. "+ BookPertindakanNew.getSheetAt (8).getSheetName ()+" Completed");
+                System.out.println ("08. "+ BookPertindakanNew.getSheetAt (8).getSheetName ()+" Completed");
 
 //        buat sheet 9 Jml tndakan per cr Byr pr hri
             BookPertindakanNew.createSheet ();
             Sheet PsnInstAsal = BookPertindakanNew.getSheetAt (9);
             BookPertindakanNew.setSheetName (9, "7.Pasien per instalasi asal");
-            System.out.println ("9. " + BookPertindakanNew.getSheetAt (9).getSheetName () + " Start");
+            System.out.println ("09. " + BookPertindakanNew.getSheetAt (9).getSheetName () + " Start");
 
             Map<String, Integer> PsnInstAsalCount = new TreeMap<> ();
             for (int row = 1; row <= Ganjil.getLastRowNum (); row++) {
@@ -709,13 +706,53 @@ public class LabHalfDone extends StylerRepo{
                 }
             }
 
-            System.out.println ("9. "+ BookPertindakanNew.getSheetAt (9).getSheetName ()+" Completed");
+            System.out.println ("09. "+ BookPertindakanNew.getSheetAt (9).getSheetName ()+" Completed");
 
 //        buat sheet 10 Jml tndakan per cr Byr pr hri
             BookPertindakanNew.createSheet ();
 //            Sheet PsnCrByrHr = BookPertindakanNew.getSheetAt (10);
             BookPertindakanNew.setSheetName (10, "8.Jumlah pendapatan");
             System.out.println ("10. Sheet " + BookPertindakanNew.getSheetAt (10).getSheetName () + " Created");
+
+//        buat sheet 11 Jml tndakan per cr Byr pr hri
+            InputStream responTime = new FileInputStream("C:\\sat work\\test\\rad respon time rad.xlsx");
+            Workbook bookRespontime = new XSSFWorkbook(responTime);
+            BookPertindakanNew.createSheet ("9. Monitoring Hasil Rad");
+            Sheet ResponTime = BookPertindakanNew.getSheetAt (11);
+            Sheet ResponTimeRaw = bookRespontime.getSheetAt (0);
+//            for (int row =0; row<=ResponTimeRaw.getLastRowNum ();row++){
+//                ResponTime.createRow (row);
+//                for (int cell=0;cell<ResponTimeRaw.getRow (0).getLastCellNum ();cell++){
+////                    ResponTime.getRow (row).createCell (cell).setCellValue (ResponTimeRaw.getRow (row).getCell (cell).getStringCellValue ());
+//                    Cell responTimeCell = ResponTimeRaw.getRow(row).getCell(cell);
+//                    if (responTimeCell.getCellType() == CellType.STRING) {
+//                        ResponTime.getRow(row).createCell(cell).setCellValue(responTimeCell.getStringCellValue());
+//                    } else if (responTimeCell.getCellType() == CellType.NUMERIC) {
+//                        ResponTime.getRow(row).createCell(cell).setCellValue(responTimeCell.getNumericCellValue());
+//                    }
+//                }
+//            }
+            for (int row = 0; row <= ResponTimeRaw.getLastRowNum() && ResponTimeRaw.getRow(row) != null; row++) {
+                ResponTime.createRow(row);
+                for (int cell = 0; cell < ResponTimeRaw.getRow(0).getLastCellNum(); cell++) {
+                    Cell responTimeCell = ResponTimeRaw.getRow(row).getCell(cell);
+                    if (responTimeCell == null) {
+                        ResponTime.getRow(row).createCell(cell).setCellValue("");
+                    } else if (responTimeCell.getCellType() == CellType.STRING) {
+                        ResponTime.getRow(row).createCell(cell).setCellValue(responTimeCell.getStringCellValue());
+                    } else if (responTimeCell.getCellType() == CellType.NUMERIC) {
+                        ResponTime.getRow(row).createCell(cell).setCellValue(responTimeCell.getNumericCellValue());
+                    }
+                }
+            }
+            System.out.println ("11. "+ BookPertindakanNew.getSheetAt (11).getSheetName ()+" Completed");
+
+
+
+
+
+
+
 
 
 
