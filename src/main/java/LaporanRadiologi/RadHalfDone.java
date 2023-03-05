@@ -597,7 +597,6 @@ public class RadHalfDone extends StylerRepo{
                 String accId = String.valueOf (monitoringHasilRad.getRow (monitoringRow).getCell (7).getNumericCellValue ()).substring (0,5);
                 if (!accIDHashMap.containsKey (accId)){
                     accIDHashMap.put (accId,new ArrayList<> ());
-//                    System.out.println ("accId1 = "+accId);
                 }
                 accIDHashMap.get (accId).add (monitoringRow);
             }
@@ -607,11 +606,9 @@ public class RadHalfDone extends StylerRepo{
                 List<Integer> monitoringRows = accIDHashMap.get (accId);
                 Cell menyerahkan = monitoringHasilRadF2.getRow (row).getCell (20);
                 Cell menerima = monitoringHasilRadF2.getRow (row).getCell (21);
-//                System.out.println ("accId2 = " + accId);
                 if (monitoringRows!=null){
                     for (Integer monitoringRow:monitoringRows) {
                         if (menyerahkan != null) {
-//                            System.out.println (menerima.getStringCellValue () + " : " + menyerahkan);
                             monitoringHasilRad.getRow (monitoringRow).createCell (13).setCellValue (
                                     menerima.getStringCellValue ()
                             );
