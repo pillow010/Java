@@ -12,18 +12,21 @@ import java.util.*;
 
 import java.util.stream.IntStream;
 
-public class LabHalfDone extends StylerRepo{
+public class RadHalfDone extends StylerRepo{
     public static void main(String[] args) {
-        new LabHalfDone ();
+        new RadHalfDone ();
 
     }
     private Workbook BookPertindakanNew;
 
     private FileOutputStream outputStream;
 
-    public LabHalfDone(){
+    String fileNamePertindakanNew = "23 02 rad pertindakan new";
+    String fileNameMonitoringf1 = "23 02 rad monitorring f1";
+
+    public RadHalfDone(){
         try {
-            InputStream pertindakanNew = new FileInputStream ("C:\\sat work\\test\\rad pertindakan new.xlsx");
+            InputStream pertindakanNew = new FileInputStream ("C:\\sat work\\test\\"+ fileNamePertindakanNew +".xlsx");
             BookPertindakanNew = new XSSFWorkbook (pertindakanNew);
 
 
@@ -390,6 +393,8 @@ public class LabHalfDone extends StylerRepo{
                 }
             }
 
+            Genap.getRow (0).createCell (31).setCellValue ("TanggalReg");
+
 //          CT Scan, USG , RONTGENT, Konsul Dokter Spesialis
             for (int row = 1; row <= sortedGenapValues.size (); row++) {
                 String Tindakan = Genap.getRow (row).getCell (15).getStringCellValue ();
@@ -402,6 +407,8 @@ public class LabHalfDone extends StylerRepo{
                 } else {
                     Genap.getRow (row).createCell (15).setCellValue ("RONTGENT");
                 }
+                Genap.getRow (row).createCell (31).setCellValue (Genap.getRow (row).getCell (9)
+                        .getStringCellValue ().substring (0,10));
             }
 
 
@@ -715,7 +722,7 @@ public class LabHalfDone extends StylerRepo{
             System.out.println ("10. Sheet " + BookPertindakanNew.getSheetAt (10).getSheetName () + " Created");
 
 //        buat sheet 11 Jml tndakan per cr Byr pr hri
-            InputStream responTime = new FileInputStream("C:\\sat work\\test\\rad respon time rad.xlsx");
+            InputStream responTime = new FileInputStream("C:\\sat work\\test\\"+fileNameMonitoringf1+".xlsx");
             Workbook bookRespontime = new XSSFWorkbook(responTime);
             BookPertindakanNew.createSheet ("9. Monitoring Hasil Rad");
             Sheet ResponTime = BookPertindakanNew.getSheetAt (11);
@@ -774,7 +781,7 @@ public class LabHalfDone extends StylerRepo{
 
 
         try {
-            outputStream = new FileOutputStream("pertindakanNew.xlsx");
+            outputStream = new FileOutputStream(fileNamePertindakanNew +".xlsx");
             BookPertindakanNew.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();

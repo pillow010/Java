@@ -8,21 +8,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 public class LaporanIgd {
+
     public static void main(String[] args) throws IOException, AssertionError {
         new LaporanIgd ();
 
     }
 
     public LaporanIgd() throws IOException, AssertionError {
-        InputStream LaporanIGD = new FileInputStream ("c:\\sat work\\test\\Register IGD 2023 01.xlsx");
+        String fileName = "23 02 igd register";
+        InputStream LaporanIGD = new FileInputStream ("c:\\sat work\\test\\"+fileName+".xlsx");
         Workbook bookLaporanIGD = new XSSFWorkbook (LaporanIGD);
         Sheet register = bookLaporanIGD.getSheetAt (0);
-        System.out.println ("01. Start doing" + bookLaporanIGD.getSheetName (0));
+
+        System.out.println ("01. Start doing " + bookLaporanIGD.getSheetName (0));
+
         String Year = register.getRow (2).getCell (5)
-                .getStringCellValue ().substring (6, 10);
+                .getStringCellValue ().substring (8, 10);
         String Month = register.getRow (2).getCell (5)
                 .getStringCellValue ().substring (3, 5);
         int registerLastCell = register.getRow (0).getLastCellNum ();
@@ -67,34 +70,96 @@ public class LaporanIgd {
                 }
             }
         }
-            // Sort sheet based on registerLastCell+2
-            DataFormatter formatter = new DataFormatter();
-            List<Row> rows = StreamSupport.stream (register.spliterator (), false)
-                    .sorted (Comparator.comparingInt (row -> {
-                        String value = formatter.formatCellValue (row.getCell (DIAGNOSIS_CODE_CELL));
-                        return value.charAt (0);
-                    })).toList ();
-            rows.stream ().forEach (System.out::println);
+//            // Sort sheet based on registerLastCell+2
+//            DataFormatter formatter = new DataFormatter();
+//            List<Row> rows = StreamSupport.stream (register.spliterator (), false)
+//                    .sorted (Comparator.comparingInt (row -> {
+//                        String value = formatter.formatCellValue (row.getCell (DIAGNOSIS_CODE_CELL));
+//                        return value.charAt (0);
+//                    })).toList ();
+//            rows.stream ().forEach (System.out::println);
 
 
         bookLaporanIGD.createSheet ("Sorted");
         Sheet sorted = bookLaporanIGD.getSheetAt (1);
 
-        // Add sorted rows back to the sheet
-        for (Row sourceRow : rows) {
-            Row targetRow = sorted.createRow(sourceRow.getRowNum());
+        sorted.createRow (0).createCell (0).setCellValue ("NOREG");
+        sorted.getRow (0).createCell (1).setCellValue ("TANGGAL");
+        sorted.getRow (0).createCell (2).setCellValue ("RM");
+        sorted.getRow (0).createCell (3).setCellValue ("NAMA");
+        sorted.getRow (0).createCell (4).setCellValue ("KELAMIN");
+        sorted.getRow (0).createCell (5).setCellValue ("JENIS CARA BAYAR");
+        sorted.getRow (0).createCell (6).setCellValue ("SUB INSTALASI");
+        sorted.getRow (0).createCell (7).setCellValue ("CARA MASUK");
+        sorted.getRow (0).createCell (8).setCellValue ("DIAGNOSA");
+        sorted.getRow (0).createCell (9).setCellValue ("KONDISI AKHIR");
+        sorted.getRow (0).createCell (10).setCellValue ("DOKTER TUGAS");
+        sorted.getRow (0).createCell (11).setCellValue ("DIAGNOSA");
+        sorted.getRow (0).createCell (12).setCellValue ("KET JENIS DIAGNOSA");
 
-            // Copy cell values from source row to target row
-            for (Cell sourceCell : sourceRow) {
-                Cell targetCell = targetRow.createCell(sourceCell.getColumnIndex());
-                if (sourceCell.getCellType ()==CellType.STRING){
-                    targetCell.setCellValue (sourceCell.getStringCellValue ());
-                } else {
-                    targetCell.setCellValue (sourceCell.getNumericCellValue ());
-                }
-
+        Set<String> sortedNoreg = new TreeSet<> ();
+        int sortedRow = 1;
+        for (int row=1;row<=register.getLastRowNum ();row++){
+            Row getRowRegister = register.getRow (row);
+            if (getRowRegister.getCell (67).getStringCellValue ().equals ("Diagnosa Utama")){
+                sorted.createRow (sortedRow);
+                sorted.getRow (sortedRow).createCell (0).setCellValue (getRowRegister.getCell (registerLastCell).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (1).setCellValue (getRowRegister.getCell (5).getStringCellValue ().substring (0, 10));
+                sorted.getRow (sortedRow).createCell (2).setCellValue (getRowRegister.getCell (6).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (3).setCellValue (getRowRegister.getCell (7).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (4).setCellValue (getRowRegister.getCell (10).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (5).setCellValue (getRowRegister.getCell (30).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (6).setCellValue (getRowRegister.getCell (36).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (7).setCellValue (getRowRegister.getCell (38).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (8).setCellValue (getRowRegister.getCell (41).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (9).setCellValue (getRowRegister.getCell (registerLastCell+1).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (10).setCellValue (getRowRegister.getCell (78).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (11).setCellValue (getRowRegister.getCell (41).getStringCellValue ());
+                sorted.getRow (sortedRow).createCell (12).setCellValue (getRowRegister.getCell (67).getStringCellValue ());
+                sortedNoreg.add (getRowRegister.getCell (registerLastCell).getStringCellValue ());
+                sortedRow++;
             }
         }
+
+        int lastSortedRow= sorted.getLastRowNum ()+1;
+        for (int row=1;row<=register.getLastRowNum ();row++) {
+            Row getRowRegister = register.getRow (row);
+            if (!sortedNoreg.contains (getRowRegister.getCell (registerLastCell).getStringCellValue ())){
+                sorted.createRow (lastSortedRow);
+                sorted.getRow (lastSortedRow).createCell (0).setCellValue (getRowRegister.getCell (registerLastCell).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (1).setCellValue (getRowRegister.getCell (5).getStringCellValue ().substring (0, 10));
+                sorted.getRow (lastSortedRow).createCell (2).setCellValue (getRowRegister.getCell (6).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (3).setCellValue (getRowRegister.getCell (7).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (4).setCellValue (getRowRegister.getCell (10).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (5).setCellValue (getRowRegister.getCell (30).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (6).setCellValue (getRowRegister.getCell (36).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (7).setCellValue (getRowRegister.getCell (38).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (8).setCellValue (getRowRegister.getCell (41).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (9).setCellValue (getRowRegister.getCell (registerLastCell+1).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (10).setCellValue (getRowRegister.getCell (78).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (11).setCellValue (getRowRegister.getCell (41).getStringCellValue ());
+                sorted.getRow (lastSortedRow).createCell (12).setCellValue (getRowRegister.getCell (67).getStringCellValue ());
+                sortedNoreg.add (getRowRegister.getCell (registerLastCell).getStringCellValue ());
+                lastSortedRow++;
+            }
+        }
+//        // Add sorted rows back to the sheet
+//        for (Row sourceRow : rows) {
+//            Row targetRow = sorted.createRow(sourceRow.getRowNum());
+//
+//            // Copy cell values from source row to target row
+//            for (Cell sourceCell : sourceRow) {
+//                Cell targetCell = targetRow.createCell(sourceCell.getColumnIndex());
+//                if (sourceCell.getCellType ()==CellType.STRING){
+//                    targetCell.setCellValue (sourceCell.getStringCellValue ());
+//                } else {
+//                    targetCell.setCellValue (sourceCell.getNumericCellValue ());
+//                }
+//
+//            }
+//        }
+
+
 
 
         System.out.println ("01. "+bookLaporanIGD.getSheetName (0)+" is done");
