@@ -1,16 +1,11 @@
 package LaporanRadiologi;
 
 import StylingLaporan.StylerRepo;
-
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-
-
 import java.io.*;
 import java.util.*;
 
-import java.util.stream.IntStream;
 
 public class RadHalfDone extends StylerRepo{
     public static void main(String[] args) {
@@ -23,6 +18,8 @@ public class RadHalfDone extends StylerRepo{
 
     String fileNamePertindakanNew = "23 02 rad pertindakan new";
     String fileNameMonitoringf1 = "23 02 rad monitorring f1";
+    String fileNamePelayananPenunjang = "23 02 rad pelayanan penunjang";
+
 
     public RadHalfDone(){
         try {
@@ -59,225 +56,100 @@ public class RadHalfDone extends StylerRepo{
             BookPertindakanNew.setSheetName (0, "pertindakan_New_Raw");
             System.out.println ("00. Doing " + BookPertindakanNew.getSheetAt (0).getSheetName ());
 
-//          tambah sub inst for later use
-            pertindakan_New_Raw.getRow (0).createCell (28).setCellValue ("SUB INST");
-            for (int i = 1; i <= pertindakanNewRawLastRowNum (pertindakan_New_Raw); i++) {
-                Row row = pertindakan_New_Raw.getRow (i);
-                Cell cell = row.getCell (24);
-                if (cell == null) {
-                    row.createCell (28).setCellValue ("RUJUKAN LUAR RS");
-                    row.createCell (24).setCellValue ("RUJUKAN LUAR RS");
-                } else if (pertindakan_New_Raw.getRow (i).getCell (24).getStringCellValue ().equals ("HD")) {
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("01")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("HD");
-                    }
-                } else if (pertindakan_New_Raw.getRow (i).getCell (24).getStringCellValue ().equals ("RHM")) {
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("01")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("RHM");
-                    }
-                } else if (pertindakan_New_Raw.getRow (i).getCell (24).getStringCellValue ().equals ("MCU")) {
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("01")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("MCU");
-                    }
-                } else if (pertindakan_New_Raw.getRow (i).getCell (24).getStringCellValue ().equals ("IGD")) {
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("01")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("UMUM");
-                    } else if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("02")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("PONEK");
-                    }
-                } else if (pertindakan_New_Raw.getRow (i).getCell (24).getStringCellValue ().equals ("IRNA")) {
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("01")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Teratai 1");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("02")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Teratai 2");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("03")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Matahari");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("04")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Tulip");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("05")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Anyelir");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("06")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("ICU");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("07")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("IGD (Mawar)");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("08")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Perinatologi");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("09")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("NICU");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("10")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("VK (Anggrek)");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("11")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("IBS (Sentral)");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("12")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("IBS (IGD)");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("13")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("ISOLASI");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("14")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("TERATAI");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("15")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("ALAMANDA");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("16")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("LILY");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("17")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("CATTLEYA MAGNOLIA");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("18")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("SAKURA");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("19")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("HCU");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("20")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("PICU");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("21")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("ALAMANDA 2");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("22")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("ALAMANDA 3");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("23")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("KEMBANG LILY");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("24")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("LILY 2");
-                    }
+            // hashmap sub-inst
+            HashMap<String, String> subInstMap = new HashMap<>();
+            subInstMap.put("HD01", "HD");
+            subInstMap.put("RHM01", "RHM");
+            subInstMap.put("IGD01", "Umum");
+            subInstMap.put("IGD02", "Ponek");
+            subInstMap.put("IRNA01", "Teratai 1");
+            subInstMap.put("IRNA02", "Teratai 2");
+            subInstMap.put("IRNA03", "Matahari");
+            subInstMap.put("IRNA04", "Tulip");
+            subInstMap.put("IRNA05", "Anyelir");
+            subInstMap.put("IRNA06", "ICU");
+            subInstMap.put("IRNA07", "IGD (Mawar)");
+            subInstMap.put("IRNA08", "Perinatologi");
+            subInstMap.put("IRNA09", "NICU");
+            subInstMap.put("IRNA10", "VK (Anggrek)");
+            subInstMap.put("IRNA11", "IBS (Sentral)");
+            subInstMap.put("IRNA12", "IBS (IGD)");
+            subInstMap.put("IRNA13", "ISOLASI");
+            subInstMap.put("IRNA14", "TERATAI");
+            subInstMap.put("IRNA15", "ALAMANDA");
+            subInstMap.put("IRNA16", "LILY");
+            subInstMap.put("IRNA17", "CATTLEYA MAGNOLIA");
+            subInstMap.put("IRNA18", "SAKURA");
+            subInstMap.put("IRNA19", "HCU");
+            subInstMap.put("IRNA20", "PICU");
+            subInstMap.put("IRNA21", "ALAMANDA 2");
+            subInstMap.put("IRNA22", "ALAMANDA 3");
+            subInstMap.put("IRNA23", "KEMBANG LILY");
+            subInstMap.put("IRNA24", "LILY 2");
+            subInstMap.put("MCU01", "MCU");
+            subInstMap.put("IRJ01", "Umum");
+            subInstMap.put("IRJ02", "Kebidanan dan Kandungan");
+            subInstMap.put("IRJ03", "Gigi Umum");
+            subInstMap.put("IRJ04", "Gigi Anak");
+            subInstMap.put("IRJ05", "Bedah Umum");
+            subInstMap.put("IRJ06", "Bedah Digestif");
+            subInstMap.put("IRJ07", "Penyakit Dalam");
+            subInstMap.put("IRJ08", "THT");
+            subInstMap.put("IRJ09", "Konservasi Gigi");
+            subInstMap.put("IRJ10", "Periodontik");
+            subInstMap.put("IRJ11", "Mata");
+            subInstMap.put("IRJ12", "Akupuntur");
+            subInstMap.put("IRJ13", "Bedah Urologi");
+            subInstMap.put("IRJ14", "Bedah Orthopedi");
+            subInstMap.put("IRJ15", "Klinik Sahabat");
+            subInstMap.put("IRJ16", "Anak");
+            subInstMap.put("IRJ17", "Paru");
+            subInstMap.put("IRJ18", "DOTS");
+            subInstMap.put("IRJ19", "Anestesi");
+            subInstMap.put("IRJ20", "Saraf");
+            subInstMap.put("IRJ21", "Psikiatri");
+            subInstMap.put("IRJ22", "Kulit dan Kelamin");
+            subInstMap.put("IRJ23", "Tumbuh Kembang Anak");
+            subInstMap.put("IRJ24", "Geriatri");
+            subInstMap.put("IRJ25", "KIA -KB");
+            subInstMap.put("IRJ26", "Gizi");
+            subInstMap.put("IRJ27", "Bedah Vaskuler");
+            subInstMap.put("IRJ28", "Jantung");
+            subInstMap.put("IRJ29", "Ispa");
+            subInstMap.put("IRJ30", "NEUROLOGI ANAK");
+            subInstMap.put("IRJ31", "BEDAH ONKOLOGI");
 
-                } else if (pertindakan_New_Raw.getRow (i).getCell (24).getStringCellValue ().equals ("IRJ")) {
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("01")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Umum");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("02")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Kebidanan dan Kandungan");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("03")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Gigi Umum");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("04")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Gigi Anak");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("05")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Bedah Umum");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("06")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Bedah Digestif");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("07")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Penyakit Dalam");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("08")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("THT");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("09")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Konservasi Gigi");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("10")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Periodontik");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("11")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Mata");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("12")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Akupuntur");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("13")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Bedah Urologi");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("14")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Bedah Orthopedi");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("15")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Klinik Sahabat");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("16")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Anak");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("17")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Paru");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("18")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("DOTS");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("19")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Anestesi");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("20")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Saraf");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("21")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Psikiatri");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("22")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Kulit dan Kelamin");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("23")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Tumbuh Kembang Anak");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("24")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Geriatri");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("25")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("KIA -KB");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("26")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Gizi");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("27")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Bedah Vaskuler");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("28")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Jantung");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("29")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("Ispa");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("30")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("NEUROLOGI ANAK");
-                    }
-                    if (pertindakan_New_Raw.getRow (i).getCell (27).getStringCellValue ().equals ("31")) {
-                        pertindakan_New_Raw.getRow (i).createCell (28).setCellValue ("BEDAH ONKOLOGI");
-                    }
 
-                }
-
-            }
-//          add noreg
+            pertindakan_New_Raw.getRow(0).createCell(28).setCellValue("SUB INST");
             pertindakan_New_Raw.getRow (0).createCell (29).setCellValue ("NOREG");
             pertindakan_New_Raw.getRow (0).createCell (30).setCellValue ("NOREGTINDAKAN");
-            for (int column = 0; column < pertindakan_New_Raw.getRow (0).getLastCellNum (); column++) {
-                Cell cell = pertindakan_New_Raw.getRow (0).getCell (column);
-                if (cell.getStringCellValue ().equals ("KD_INST")) {
-                    for (int i = 1; i <= pertindakanNewRawLastRowNum (pertindakan_New_Raw); i++) {
-                        Cell noReg = pertindakan_New_Raw.getRow (i).createCell (29);
-                        Cell noRegTindakan = pertindakan_New_Raw.getRow (i).createCell (30);
-                        noReg.setCellValue (pertindakan_New_Raw.getRow (i).getCell (column).getStringCellValue () +
-                                pertindakan_New_Raw.getRow (i).getCell (column + 1).getStringCellValue () +
-                                pertindakan_New_Raw.getRow (i).getCell (column + 2).getStringCellValue () +
-                                pertindakan_New_Raw.getRow (i).getCell (column + 3).getStringCellValue () +
-                                pertindakan_New_Raw.getRow (i).getCell (column + 4).getStringCellValue ());
-
-                        noRegTindakan.setCellValue (pertindakan_New_Raw.getRow (i).getCell (29).getStringCellValue ()
-                                + pertindakan_New_Raw.getRow (i).getCell (15).getStringCellValue ()
-                        );
-                    }
+            for (int _row = 1; _row <= pertindakanNewRawLastRowNum(pertindakan_New_Raw); _row++) {
+                Row row = pertindakan_New_Raw.getRow(_row);
+                Cell cell = row.getCell(24);
+                //ifnull rujukan luar rs
+                if (cell == null) {
+                    row.createCell(28).setCellValue("RUJUKAN LUAR RS");
+                    row.createCell(24).setCellValue("RUJUKAN LUAR RS");
+                } else {
+                    //not null combile inst and sub inst then get the value
+                    String value = cell.getStringCellValue() + row.getCell (27).getStringCellValue ();
+                    //is there new sub inst?
+                    row.createCell (28).setCellValue (subInstMap.getOrDefault (value, "Not Found"));
                 }
+
+                pertindakan_New_Raw.getRow (_row).createCell (29).setCellValue (
+                        pertindakan_New_Raw.getRow (_row).getCell (0).getStringCellValue () +
+                                pertindakan_New_Raw.getRow (_row).getCell (1).getStringCellValue () +
+                                pertindakan_New_Raw.getRow (_row).getCell (2).getStringCellValue () +
+                                pertindakan_New_Raw.getRow (_row).getCell (3).getStringCellValue () +
+                                pertindakan_New_Raw.getRow (_row).getCell (4).getStringCellValue ()
+                );
+                pertindakan_New_Raw.getRow (_row).createCell (30).setCellValue (
+                        pertindakan_New_Raw.getRow (_row).getCell (29).getStringCellValue ()
+                                + pertindakan_New_Raw.getRow (_row).getCell (15).getStringCellValue ()
+                );
             }
+
             System.out.println ("00. " + BookPertindakanNew.getSheetAt (0).getSheetName () + " Complete");
 
 
@@ -286,49 +158,29 @@ public class RadHalfDone extends StylerRepo{
             BookPertindakanNew.setSheetName (1, "Ganjil");
             System.out.println ("01. " + BookPertindakanNew.getSheetAt (1).getSheetName () + " Start");
 
-
-            Set<String> uniqueValues = new HashSet<> ();
-            for (int row = 1; row <= pertindakan_New_Raw.getLastRowNum (); row++) {
-                if (pertindakan_New_Raw.getRow (row) != null) { // check if row is not empty
-                    Cell cell = pertindakan_New_Raw.getRow (row).getCell (29);
-                    if (cell != null) { // check if cell is not empty
-                        String cellValue = cell.getStringCellValue ();
-                        if (!cellValue.isBlank ()) { // check if cell value is not blank
-                            uniqueValues.add (cellValue);
-                        }
-                    }
-                }
-            }
-
-
-            for (int i = 0; i <= uniqueValues.size (); i++) {
-                Ganjil.createRow (i);
-            }
-            Ganjil.getRow (0).createCell (0).setCellValue ("NOREG");
+            Ganjil.createRow (0).createCell (0).setCellValue ("NOREG");
             Ganjil.getRow (0).createCell (1).setCellValue ("JENIS CARA BAYAR");
             Ganjil.getRow (0).createCell (2).setCellValue ("TANGGAL MASUK");
             Ganjil.getRow (0).createCell (3).setCellValue ("NIC INST ASAL");
 
-            List<String> sortedValues = uniqueValues.stream ().sorted ().toList ();
-
-            IntStream.range (0, sortedValues.size ())
-                    .forEach (i -> {
-                        String value = sortedValues.get (i);
-                        Ganjil.getRow (i + 1).createCell (0).setCellValue (value);
-                    });
-
-            for (int row = 1; row <= sortedValues.size (); row++) {
-                String cellValue = Ganjil.getRow (row).getCell (0).getStringCellValue ();
-                for (int pertRow = 1; pertRow <= pertindakan_New_Raw.getLastRowNum (); pertRow++) {
-                    String pertCellValue = pertindakan_New_Raw.getRow (pertRow).getCell (29).getStringCellValue ();
-                    if (cellValue.equals (pertCellValue)) {
-                        String JnsCrByr = pertindakan_New_Raw.getRow (pertRow).getCell (8).getStringCellValue ();
-                        String TglMsk = pertindakan_New_Raw.getRow (pertRow).getCell (9).getStringCellValue ().substring (0, 10);
-                        String NicInstAsal = pertindakan_New_Raw.getRow (pertRow).getCell (24).getStringCellValue ();
-                        Ganjil.getRow (row).createCell (1).setCellValue (JnsCrByr);
-                        Ganjil.getRow (row).createCell (2).setCellValue (TglMsk);
-                        Ganjil.getRow (row).createCell (3).setCellValue (NicInstAsal);
-                        break;
+            Set<String> uniqueValues = new HashSet<> ();
+            int actualRow=1;
+            for (int row=1;row<=pertindakan_New_Raw.getLastRowNum ();row++){
+                if (pertindakan_New_Raw.getRow (row) != null) { // check if row is not empty
+                    Cell cell = pertindakan_New_Raw.getRow (row).getCell (29);
+                    String cellValue = cell.getStringCellValue ();
+                    if (row>0 && !cellValue.isBlank () && !uniqueValues.contains (cellValue)) { // check if cell is not empty
+                        Ganjil.createRow (actualRow);
+                        String Noreg = pertindakan_New_Raw.getRow (row).getCell (29).getStringCellValue ();
+                        String JnsCrByr = pertindakan_New_Raw.getRow (row).getCell (8).getStringCellValue ();
+                        String TglMsk = pertindakan_New_Raw.getRow (row).getCell (9).getStringCellValue ().substring (0, 10);
+                        String NicInstAsal = pertindakan_New_Raw.getRow (row).getCell (24).getStringCellValue ();
+                        Ganjil.getRow (actualRow).createCell (0).setCellValue (Noreg);
+                        Ganjil.getRow (actualRow).createCell (1).setCellValue (JnsCrByr);
+                        Ganjil.getRow (actualRow).createCell (2).setCellValue (TglMsk);
+                        Ganjil.getRow (actualRow).createCell (3).setCellValue (NicInstAsal);
+                        uniqueValues.add (cellValue);
+                        actualRow++;
                     }
                 }
             }
@@ -345,70 +197,46 @@ public class RadHalfDone extends StylerRepo{
             BookPertindakanNew.setSheetName (2, "Genap");
             System.out.println ("02. " + BookPertindakanNew.getSheetAt (2).getSheetName () + " Start");
 
-//
-            List<String> values = new ArrayList<> ();
-            for (int row = 1; row <= pertindakan_New_Raw.getLastRowNum (); row++) {
-                String cellValue = pertindakan_New_Raw.getRow (row).getCell (30).getStringCellValue ();
-                String Tindakan = pertindakan_New_Raw.getRow (row).getCell (15).getStringCellValue ();
-                if (!Tindakan.contains ("PAKET")) {
-                    values.add (cellValue);
-                }
-            }
-
             Genap.createRow (0);
-            for (int cell = 0; cell < pertindakan_New_Raw.getRow (0).getLastCellNum (); cell++) {
-                Genap.getRow (0).createCell (cell).setCellValue (
-                        pertindakan_New_Raw.getRow (0).getCell (cell).getStringCellValue ()
-                );
+            for (int cell = 0; cell < pertindakan_New_Raw.getRow(0).getLastCellNum(); cell++) { // for each cell
+                Genap.getRow (0).createCell(cell)
+                        .setCellValue(pertindakan_New_Raw.getRow(0).getCell(cell).getStringCellValue());
             }
+            Genap.getRow (0).createCell (31).setCellValue ("TanggalReg");
+            Genap.getRow (0).createCell (32).setCellValue ("KelompokTindakan");
 
-            List<String> sortedGenapValues = values.stream ().sorted ().toList ();
-            IntStream.range (0, sortedGenapValues.size ())
-                    .forEach (i -> {
-                        String value = sortedGenapValues.get (i);
-                        Genap.createRow (i + 1).createCell (30).setCellValue (value);
-                    });
-
-            for (int row = 1; row <= sortedGenapValues.size (); row++) {
-                String cellValue = Genap.getRow (row).getCell (30).getStringCellValue ();
-                for (int pertRow = 1; pertRow <= pertindakan_New_Raw.getLastRowNum (); pertRow++) {
-                    String pertCellValue = pertindakan_New_Raw.getRow (pertRow).getCell (30).getStringCellValue ();
-                    if (cellValue.equals (pertCellValue)) {
-                        for (int cell = pertindakan_New_Raw.getRow (0).getLastCellNum (); cell >= 0; cell--) {
-                            if (pertindakan_New_Raw.getRow (pertRow).getCell (cell) != null) {
-                                if (pertindakan_New_Raw
-                                        .getRow (pertRow)
-                                        .getCell (cell).getCellType () == CellType.STRING) {
-                                    Genap.getRow (row).createCell (cell).setCellValue (pertindakan_New_Raw
-                                            .getRow (pertRow)
-                                            .getCell (cell).getStringCellValue ());
-                                } else {
-                                    Genap.getRow (row).createCell (cell).setCellValue (pertindakan_New_Raw
-                                            .getRow (pertRow)
-                                            .getCell (cell).getNumericCellValue ());
-                                }
-                            }
+            int actualGenapRow = 1;
+            for (int row = 1; row <= pertindakan_New_Raw.getLastRowNum(); row++) { // for each row
+                String Tindakan = pertindakan_New_Raw.getRow(row).getCell(15).getStringCellValue(); // string of tindakan
+                if (!Tindakan.contains("PAKET")) {
+                    Genap.createRow(actualGenapRow); // create one row per non-"PAKET" row
+                    for (int cell = 0; cell < pertindakan_New_Raw.getRow(0).getLastCellNum(); cell++) { // for each cell
+                        Cell pertindakanValue = pertindakan_New_Raw.getRow(row).getCell(cell); // type of value
+                        if (pertindakanValue==null){
+                            Genap.getRow(actualGenapRow).createCell(cell).setCellValue("");
+                        }else if (pertindakanValue.getCellType() == CellType.STRING) {
+                            Genap.getRow(actualGenapRow).createCell(cell)
+                                    .setCellValue(pertindakanValue.getStringCellValue());
+                        } else if (pertindakanValue.getCellType() == CellType.NUMERIC) {
+                            Genap.getRow(actualGenapRow).createCell(cell)
+                                    .setCellValue(pertindakanValue.getNumericCellValue());
                         }
                     }
-                }
-            }
-
-            Genap.getRow (0).createCell (31).setCellValue ("TanggalReg");
-
-//          CT Scan, USG , RONTGENT, Konsul Dokter Spesialis
-            for (int row = 1; row <= sortedGenapValues.size (); row++) {
-                String Tindakan = Genap.getRow (row).getCell (15).getStringCellValue ();
-                if (Tindakan.contains ("CT Scan")) {
-                    Genap.getRow (row).createCell (15).setCellValue ("CT Scan");
-                } else if (Tindakan.contains ("USG")) {
-                    Genap.getRow (row).createCell (15).setCellValue ("USG");
-                } else if (Tindakan.contains ("Konsul Dokter Spesialis")) {
-                    Genap.getRow (row).createCell (15).setCellValue ("Konsul Dokter Spesialis");
-                } else {
-                    Genap.getRow (row).createCell (15).setCellValue ("RONTGENT");
-                }
-                Genap.getRow (row).createCell (31).setCellValue (Genap.getRow (row).getCell (9)
+                    Genap.getRow (actualGenapRow).createCell (31).setCellValue (Genap.getRow (actualGenapRow).getCell (9)
                         .getStringCellValue ().substring (0,10));
+
+                    if (Tindakan.contains ("CT Scan")) {
+                        Genap.getRow (actualGenapRow).createCell (32).setCellValue ("CT Scan");
+                    } else if (Tindakan.contains ("USG")) {
+                        Genap.getRow (actualGenapRow).createCell (32).setCellValue ("USG");
+                    } else if (Tindakan.contains ("Konsul Dokter Spesialis")) {
+                        Genap.getRow (actualGenapRow).createCell (32).setCellValue ("Konsul Dokter Spesialis");
+                    } else {
+                        Genap.getRow (actualGenapRow).createCell (32).setCellValue ("RONTGENT");
+                    }
+
+                    actualGenapRow++; // increment actualGenapRow only once per row in pertindakan_New_Raw
+                }
             }
 
 
@@ -480,70 +308,6 @@ public class RadHalfDone extends StylerRepo{
             BookPertindakanNew.setSheetName (4, "2.Jml tndakan per cr Byr pr hri");
             System.out.println ("04. Sheet " + BookPertindakanNew.getSheetAt (4).getSheetName () + " Created");
 
-
-//            List<String> masterCaraBayar = new ArrayList<>();
-//            List<String> masterTanggal = new ArrayList<>();
-//            List<String> masterTindakan = new ArrayList<>();
-//
-//            for (Row row = Genap.getRow(1); row != null; row = Genap.getRow(row.getRowNum()+1)) {
-//                String caraBayar = row.getCell(8).getStringCellValue();
-//                String tglMsk = row.getCell(9).getStringCellValue().substring(0, 10);
-//                String tndk = row.getCell(15).getStringCellValue();
-//
-//                if (!masterCaraBayar.contains(caraBayar)) {
-//                    masterCaraBayar.add(caraBayar);
-//                }
-//                if (!masterTanggal.contains(tglMsk)) {
-//                    masterTanggal.add(tglMsk);
-//                }
-//                if (!masterTindakan.contains(tndk)) {
-//                    masterTindakan.add(tndk);
-//                }
-//            }
-//
-//            masterTanggal.stream().sorted ();
-//            masterCaraBayar.stream().sorted ();
-//            masterTindakan.stream().sorted ();
-//
-//
-//            TndkanCrByrHr.createRow (0).createCell(0);
-//            TndkanCrByrHr.createRow (1).createCell(0);
-//            TndkanCrByrHr.addMergedRegion (new CellRangeAddress (0,1,0,0));
-//            TndkanCrByrHr.getRow (0).getCell (0).setCellValue("Tanggal");
-//
-//            int rowNumx = 2;
-//            for (String tglMsk : masterTanggal) {
-//                Row row = TndkanCrByrHr.createRow(rowNumx++);
-//                row.createCell(0).setCellValue(tglMsk);
-//            }
-//
-//            int cellTndkanCrByrHr = 1;
-//            for (int i = 0; i < masterCaraBayar.size(); i++) {
-//                for (int j = 0; j < masterTindakan.size(); j++) {
-//                    String caraBayar = masterCaraBayar.get(i);
-//                    String tndk = masterTindakan.get(j);
-//                    int currentCellTndkanCrByrHr = cellTndkanCrByrHr + j + (i * masterTindakan.size());
-//                    TndkanCrByrHr.getRow(0).createCell(currentCellTndkanCrByrHr).setCellValue(caraBayar);
-//                    TndkanCrByrHr.getRow(1).createCell(currentCellTndkanCrByrHr).setCellValue(tndk);
-//                }
-//            }
-//
-//            //crbyr 8   rw 0 cl 1-28
-//            //tgl   9   rw 2-31
-//            //tndk  15  rw 1 cl 1-28
-//
-//            for (int row = 1; row <= Genap.getLastRowNum(); row++) {
-//                String caraBayar = Genap.getRow(row).getCell(8).getStringCellValue();
-//                String tglMsk = Genap.getRow(row).getCell(9).getStringCellValue().substring(0, 10);
-//                String tndk = Genap.getRow(row).getCell(15).getStringCellValue();
-//
-//                if (caraBayar.equals(TndkanCrByrHr.getRow(0).getCell(1).getStringCellValue())
-//                        && tglMsk.equals(TndkanCrByrHr.getRow(2).getCell(1).getStringCellValue())
-//                        && tndk.equals(TndkanCrByrHr.getRow(1).getCell(1).getStringCellValue())) {
-//                    int currentCount = (int) TndkanCrByrHr.getRow(2).getCell(1).getNumericCellValue();
-//                    TndkanCrByrHr.getRow(2).createCell(1).setCellValue(currentCount + 1);
-//                }
-//            }
 
 //        buat sheet 5 Jml tndakan per cr Byr pr hri
             BookPertindakanNew.createSheet ();
@@ -722,36 +486,77 @@ public class RadHalfDone extends StylerRepo{
             System.out.println ("10. Sheet " + BookPertindakanNew.getSheetAt (10).getSheetName () + " Created");
 
 //        buat sheet 11 Jml tndakan per cr Byr pr hri
-            InputStream responTime = new FileInputStream("C:\\sat work\\test\\"+fileNameMonitoringf1+".xlsx");
-            Workbook bookRespontime = new XSSFWorkbook(responTime);
+            InputStream monitoringF1 = new FileInputStream("C:\\sat work\\test\\"+fileNameMonitoringf1+".xlsx");
+            InputStream _pelayananPenunjang = new FileInputStream("C:\\sat work\\test\\"+fileNamePelayananPenunjang+".xlsx");
+            Workbook bookRespontime = new XSSFWorkbook(monitoringF1);
+            Workbook bookPelayananPenunjang = new XSSFWorkbook (_pelayananPenunjang);
             BookPertindakanNew.createSheet ("9. Monitoring Hasil Rad");
-            Sheet ResponTime = BookPertindakanNew.getSheetAt (11);
-            Sheet ResponTimeRaw = bookRespontime.getSheetAt (0);
-//            for (int row =0; row<=ResponTimeRaw.getLastRowNum ();row++){
-//                ResponTime.createRow (row);
-//                for (int cell=0;cell<ResponTimeRaw.getRow (0).getLastCellNum ();cell++){
-////                    ResponTime.getRow (row).createCell (cell).setCellValue (ResponTimeRaw.getRow (row).getCell (cell).getStringCellValue ());
-//                    Cell responTimeCell = ResponTimeRaw.getRow(row).getCell(cell);
-//                    if (responTimeCell.getCellType() == CellType.STRING) {
-//                        ResponTime.getRow(row).createCell(cell).setCellValue(responTimeCell.getStringCellValue());
-//                    } else if (responTimeCell.getCellType() == CellType.NUMERIC) {
-//                        ResponTime.getRow(row).createCell(cell).setCellValue(responTimeCell.getNumericCellValue());
-//                    }
-//                }
-//            }
-            for (int row = 0; row <= ResponTimeRaw.getLastRowNum() && ResponTimeRaw.getRow(row) != null; row++) {
-                ResponTime.createRow(row);
-                for (int cell = 0; cell < ResponTimeRaw.getRow(0).getLastCellNum(); cell++) {
-                    Cell responTimeCell = ResponTimeRaw.getRow(row).getCell(cell);
-                    if (responTimeCell == null) {
-                        ResponTime.getRow(row).createCell(cell).setCellValue("");
-                    } else if (responTimeCell.getCellType() == CellType.STRING) {
-                        ResponTime.getRow(row).createCell(cell).setCellValue(responTimeCell.getStringCellValue());
-                    } else if (responTimeCell.getCellType() == CellType.NUMERIC) {
-                        ResponTime.getRow(row).createCell(cell).setCellValue(responTimeCell.getNumericCellValue());
+            Sheet monitoringHasilRad = BookPertindakanNew.getSheetAt (11);
+            Sheet monitoringHasilRadF1 = bookRespontime.getSheetAt (0);
+            Sheet pelayananPenunjang = bookPelayananPenunjang.getSheetAt (0);
+            System.out.println ("11. " + BookPertindakanNew.getSheetAt (11).getSheetName () + " Start");
+            monitoringHasilRad.createRow (0);
+
+
+            actualGenapRow = 0;
+            for (int row = 0; row <= monitoringHasilRadF1.getLastRowNum() && monitoringHasilRadF1.getRow(row) != null; row++) {
+                if (!monitoringHasilRadF1.getRow(row).getCell(3).getStringCellValue().contains("PAKET")) {
+                    Row newMonitoringRow = monitoringHasilRad.createRow(actualGenapRow);
+                    for (int cell = 0; cell < monitoringHasilRadF1.getRow(0).getLastCellNum(); cell++) {
+                        Cell responTimeCell = monitoringHasilRadF1.getRow(row).getCell(cell);
+                        if (responTimeCell == null) {
+                            newMonitoringRow.createCell(cell+1).setCellValue("");
+                        } else if (responTimeCell.getCellType() == CellType.STRING) {
+                            newMonitoringRow.createCell(cell+1).setCellValue(responTimeCell.getStringCellValue());
+                        } else if (responTimeCell.getCellType() == CellType.NUMERIC) {
+                            newMonitoringRow.createCell(cell+1).setCellValue(responTimeCell.getNumericCellValue());
+                        }
                     }
+                    String Keterangan = newMonitoringRow.getCell(4).getStringCellValue();
+                    if (Keterangan.equals("Konsul Dokter Spesialis") || Keterangan.equals("C-Arm") || Keterangan.equals("Foto gigi/dental CR") || Keterangan.equals("Foto gigi/dental") || Keterangan.equals("Panoramic") || Keterangan.equals("")) {
+                        newMonitoringRow.createCell(10).setCellValue(Keterangan);
+                    }
+                    if (newMonitoringRow.getCell(10).getStringCellValue().equals("")) {
+                        newMonitoringRow.createCell(10).setCellValue("Belum Dibaca");
+                    }
+                    actualGenapRow++; // increment actualGenapRow by 1 after creating a new row
                 }
             }
+
+
+
+            // Create a HashMap to store monitoringValue and its corresponding row indices
+            HashMap<String, List<Integer>> monitoringValues = new HashMap<String, List<Integer>>();
+            for (int monitoringRow = 1; monitoringRow <= monitoringHasilRad.getLastRowNum(); monitoringRow++) {
+                String monitoringValue = monitoringHasilRad.getRow(monitoringRow).getCell(6).getStringCellValue();
+                if (!monitoringValues.containsKey(monitoringValue)) {
+                    monitoringValues.put(monitoringValue, new ArrayList<Integer>());
+                }
+                monitoringValues.get(monitoringValue).add(monitoringRow);
+            }
+
+            // Loop through pelayananPenunjang sheet and update monitoringHasilRad sheet using HashMap
+            for (int row = 1; row <= pelayananPenunjang.getLastRowNum(); row++) {
+                String pelayananPenunjangValue = pelayananPenunjang.getRow(row).getCell(29).getStringCellValue();
+                List<Integer> monitoringRows = monitoringValues.get(pelayananPenunjangValue);
+                if (monitoringRows != null) {
+                    for (Integer monitoringRow : monitoringRows) {
+                        monitoringHasilRad.getRow(monitoringRow).createCell(0).setCellValue(
+                                pelayananPenunjang.getRow(row).getCell(0).getStringCellValue()+
+                                        pelayananPenunjang.getRow(row).getCell(1).getStringCellValue()+
+                                        pelayananPenunjang.getRow(row).getCell(2).getStringCellValue()+
+                                        pelayananPenunjang.getRow(row).getCell(3).getStringCellValue()+
+                                        pelayananPenunjang.getRow(row).getCell(4).getStringCellValue());
+                    }
+                }
+
+            }
+
+
+
+
+//            monitoringHasilRad.shiftColumns (0,monitoringHasilRad.getLastRowNum (), 1);
+            monitoringHasilRad.getRow (0).createCell (0).setCellValue ("NOREG");
             System.out.println ("11. "+ BookPertindakanNew.getSheetAt (11).getSheetName ()+" Completed");
 
 
@@ -781,7 +586,7 @@ public class RadHalfDone extends StylerRepo{
 
 
         try {
-            outputStream = new FileOutputStream(fileNamePertindakanNew +".xlsx");
+            outputStream = new FileOutputStream(fileNamePertindakanNew +" half done.xlsx");
             BookPertindakanNew.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();
