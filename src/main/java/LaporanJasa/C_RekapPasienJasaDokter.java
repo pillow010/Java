@@ -1,4 +1,4 @@
-package main.java.LaporanJasa;
+package LaporanJasa;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -8,6 +8,7 @@ import java.io.*;
 
 public class C_RekapPasienJasaDokter {
     public static void main(String[] args) {
+//        new C_RekapPasienJasaDokter();
     }
 
     private Workbook workbook;
@@ -15,15 +16,13 @@ public class C_RekapPasienJasaDokter {
 
 
     public C_RekapPasienJasaDokter() {
-        Sheet sheet = null;
         File inputFS = new File("C:\\sat work\\test\\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN1.xls");
+        System.out.println ("C_RekapPasienJasaDokter is starting");
         try {
             POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
             workbook = new HSSFWorkbook(poifs);
 
-//            XSSFWorkbook workbook = new XSSFWorkbook(inputFS);
-
-            sheet = workbook.getSheetAt(0);
+            Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
 
             workbook.setSheetName(1, "3. REKAP PASIEN JASA DOKTER");
@@ -82,7 +81,9 @@ public class C_RekapPasienJasaDokter {
                 if (targetColumn2 != -1) {
                     for (int i = 1; i <= lastRow; i++) {
                         Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
-                        if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
+                        if (sheet.getRow (i).getCell (column)==null){
+                            targetCell.setCellValue ("");
+                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
                         {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
                         } else {
@@ -103,7 +104,38 @@ public class C_RekapPasienJasaDokter {
             for (int title=0;title<lastCellA2;title++){
                 sheet2.getRow(0).getCell(title).setCellStyle(centerTextStyle);
             }
+            // Make Styling
+            CellStyle AllBorderCellStyle = workbook.createCellStyle ();
+            AllBorderCellStyle.setBorderBottom (BorderStyle.THIN);
+            AllBorderCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+            AllBorderCellStyle.setBorderLeft (BorderStyle.THIN);
+            AllBorderCellStyle.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+            AllBorderCellStyle.setBorderRight (BorderStyle.THIN);
+            AllBorderCellStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+            AllBorderCellStyle.setBorderTop (BorderStyle.THIN);
+            AllBorderCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+            CellStyle BorderCenterCellStyle = workbook.createCellStyle ();
+            BorderCenterCellStyle.setAlignment (HorizontalAlignment.CENTER);
+            BorderCenterCellStyle.setBorderBottom (BorderStyle.THIN);
+            BorderCenterCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+            BorderCenterCellStyle.setBorderLeft (BorderStyle.THIN);
+            BorderCenterCellStyle.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+            BorderCenterCellStyle.setBorderRight (BorderStyle.THIN);
+            BorderCenterCellStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+            BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
+            BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+
+            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
+            for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
+                sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
+                sheet2.autoSizeColumn (rightCell);
+                for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
+                    sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+                }
+            }
+
             workbook.removeSheetAt(0);
+            System.out.println ("C_RekapPasienJasaDokter Done");
 
         } catch (Exception e) {
             e.printStackTrace();

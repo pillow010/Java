@@ -1,4 +1,4 @@
-package main.java.LaporanJasa;
+package LaporanJasa;
 
 public class LaporanJasaCommandCenter {
     public static void main(String[] args) {

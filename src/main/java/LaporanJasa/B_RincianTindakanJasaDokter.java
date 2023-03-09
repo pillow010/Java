@@ -1,4 +1,4 @@
-package main.java.LaporanJasa;
+package LaporanJasa;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -16,13 +16,13 @@ public class B_RincianTindakanJasaDokter {
 
 
     public B_RincianTindakanJasaDokter() {
-        Sheet sheet = null;
         File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN1.xls");
+        System.out.println ("B_RincianTindakanJasaDokter is starting");
         try {
             POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
             workbook = new HSSFWorkbook(poifs);
 
-            sheet = workbook.getSheetAt(0);
+            Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
 
             workbook.setSheetName(1, "2. RINCIAN TINDAKAN JASA DOKTER");
@@ -106,7 +106,9 @@ public class B_RincianTindakanJasaDokter {
                 if (targetColumn2 != -1) {
                     for (int i = 1; i <= lastRow; i++) {
                         Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
-                        if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
+                        if (sheet.getRow (i).getCell (column)==null){
+                            targetCell.setCellValue ("");
+                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
                         {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
                         } else {
@@ -117,47 +119,62 @@ public class B_RincianTindakanJasaDokter {
                 }
             }
 
-            // Create a cell style for the target column
-            CellStyle targetColumnStyleNetto = workbook.createCellStyle();
-            CellStyle targetColumnColourNetto = workbook.createCellStyle();
+//            // Create a cell style for the target column
+//            CellStyle targetColumnStyleNetto = workbook.createCellStyle();
+//            CellStyle targetColumnColourNetto = workbook.createCellStyle();
 
 
-            // Create a data format for the target column
-            short format = workbook.createDataFormat().getFormat("#,##0.00_);[Red](#,##0.00)");
+//            // Create a data format for the target column
+//            short format = workbook.createDataFormat().getFormat("#,##0.00_);[Red](#,##0.00)");
+//
+//            // Set the data format to the target column style
+//            targetColumnStyleNetto.setDataFormat(format);
+//
+//            // Set the background color of the cells in the target column to yellow
+//            targetColumnColourNetto.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
 
-            // Set the data format to the target column style
-            targetColumnStyleNetto.setDataFormat(format);
+            // Make Styling
+            CellStyle centerTextCellStyle = workbook.createCellStyle ();
+            centerTextCellStyle.setAlignment (HorizontalAlignment.CENTER);
+            CellStyle AllBorderCellStyle = workbook.createCellStyle ();
+            AllBorderCellStyle.setBorderBottom (BorderStyle.THIN);
+            AllBorderCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+            AllBorderCellStyle.setBorderLeft (BorderStyle.THIN);
+            AllBorderCellStyle.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+            AllBorderCellStyle.setBorderRight (BorderStyle.THIN);
+            AllBorderCellStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+            AllBorderCellStyle.setBorderTop (BorderStyle.THIN);
+            AllBorderCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+            CellStyle BorderCenterCellStyle = workbook.createCellStyle ();
+            BorderCenterCellStyle.setAlignment (HorizontalAlignment.CENTER);
+            BorderCenterCellStyle.setBorderBottom (BorderStyle.THIN);
+            BorderCenterCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+            BorderCenterCellStyle.setBorderLeft (BorderStyle.THIN);
+            BorderCenterCellStyle.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+            BorderCenterCellStyle.setBorderRight (BorderStyle.THIN);
+            BorderCenterCellStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+            BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
+            BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
-            // Set the background color of the cells in the target column to yellow
-            targetColumnColourNetto.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
-
-            // Apply the style to the cells in the target column
-            for (int i = 0; i <= sheet2.getLastRowNum(); i++) {
-                sheet2.getRow(i).getCell(22).setCellStyle(targetColumnStyleNetto);
-                sheet2.getRow(i).getCell(22).setCellStyle(targetColumnColourNetto);
-
-//                row = sheet2.getRow(i);
-//                if (row == null) continue;
-//                Cell cell = row.getCell(22);
-//                if (cell == null) continue;
-//                cell.setCellStyle(targetColumnStyleNetto);
+            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
+            for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
+                sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
+                sheet2.autoSizeColumn (rightCell);
+                for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
+                    sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+                }
             }
 
+//            // Apply the style to the cells in the target column
+//            for (int i = 0; i <= sheet2.getLastRowNum(); i++) {
+//                sheet2.getRow(i).getCell(22).setCellStyle(targetColumnStyleNetto);
+//                sheet2.getRow(i).getCell(22).setCellStyle(targetColumnColourNetto);
+//            }
 
-            int columnCountA2 = sheet2.getRow(0).getLastCellNum();
-            for (int columnIndex = 0; columnIndex < columnCountA2; columnIndex++) {
-                sheet2.autoSizeColumn(columnIndex);
-            }
-
-            CellStyle centerTextStyle = workbook.createCellStyle();
-            centerTextStyle.setAlignment(HorizontalAlignment.CENTER);
-            int lastCellA2 = sheet2.getRow(0).getLastCellNum();
-            for (int title=0;title<lastCellA2;title++){
-                sheet2.getRow(0).getCell(title).setCellStyle(centerTextStyle);
-            }
 
             workbook.removeSheetAt(0);
 
+            System.out.println ("B_RincianTindakanJasaDokter Done" );
         } catch (Exception e) {
             e.printStackTrace();
         }
