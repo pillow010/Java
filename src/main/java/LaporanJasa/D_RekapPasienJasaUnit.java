@@ -7,10 +7,14 @@ import org.apache.poi.ss.usermodel.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class D_RekapPasienJasaUnit {
 
     public static void main(String[] args) {
+//        new D_RekapPasienJasaUnit ();
     }
 
     private Workbook workbook;
@@ -18,14 +22,30 @@ public class D_RekapPasienJasaUnit {
 
 
     public D_RekapPasienJasaUnit(){
+        LocalDateTime start = LocalDateTime.now ();
         System.out.println ("D_RekapPasienJasaUnit is starting");
-        File inputFS = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN1.xls");
+        File inputFS = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
         try {
             POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
             workbook = new HSSFWorkbook(poifs);
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
+
+            //Cara Bayar
+            String caraBayar = sheet.getRow (1).getCell (24).getStringCellValue ();
+
+
+            CellStyle totalStyle = workbook.createCellStyle ();
+            totalStyle.setAlignment(HorizontalAlignment.RIGHT);
+            totalStyle.setBorderBottom (BorderStyle.THIN);
+            totalStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+            totalStyle.setBorderLeft (BorderStyle.THIN);
+            totalStyle.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+            totalStyle.setBorderRight (BorderStyle.THIN);
+            totalStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+            totalStyle.setBorderTop (BorderStyle.THIN);
+            totalStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
             workbook.setSheetName(1, "4. REKAP PASIEN JASA UNIT");
             int lastColumn = sheet.getRow(0).getLastCellNum();
@@ -54,7 +74,7 @@ public class D_RekapPasienJasaUnit {
 
 
 
-
+            DecimalFormat formatter = new DecimalFormat("#,##0;-#,##0");
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow(0).getCell(column);
@@ -77,6 +97,20 @@ public class D_RekapPasienJasaUnit {
                     default -> -1;
                 };
 
+//                if (targetColumn2 != -1) {
+//                    for (int i = 1; i <= lastRow; i++) {
+//                        Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
+//                        if (sheet.getRow (i).getCell (column)==null){
+//                            targetCell.setCellValue ("");
+//                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
+//                        {
+//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
+//                        } else {
+//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
+//
+//                        }
+//                    }
+//                }
                 if (targetColumn2 != -1) {
                     for (int i = 1; i <= lastRow; i++) {
                         Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
@@ -85,9 +119,10 @@ public class D_RekapPasienJasaUnit {
                         }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
                         {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
+                        } else if (targetColumn2 == 12) {
+                            targetCell.setCellValue(formatter.format(sheet.getRow(i).getCell(column).getNumericCellValue()));
                         } else {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
-
                         }
                     }
                 }
@@ -105,8 +140,20 @@ public class D_RekapPasienJasaUnit {
             }
 
             // Make Styling
-            CellStyle centerTextCellStyle = workbook.createCellStyle ();
-            centerTextCellStyle.setAlignment (HorizontalAlignment.CENTER);
+            CellStyle targetColumnColourNetto = workbook.createCellStyle();
+            // Set the background color of the cells in the target column to yellow
+            targetColumnColourNetto.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+            targetColumnColourNetto.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            targetColumnColourNetto.setAlignment (HorizontalAlignment.RIGHT);
+            targetColumnColourNetto.setBorderBottom (BorderStyle.THIN);
+            targetColumnColourNetto.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+            targetColumnColourNetto.setBorderLeft (BorderStyle.THIN);
+            targetColumnColourNetto.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+            targetColumnColourNetto.setBorderRight (BorderStyle.THIN);
+            targetColumnColourNetto.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+            targetColumnColourNetto.setBorderTop (BorderStyle.THIN);
+            targetColumnColourNetto.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+
             CellStyle AllBorderCellStyle = workbook.createCellStyle ();
             AllBorderCellStyle.setBorderBottom (BorderStyle.THIN);
             AllBorderCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
@@ -116,6 +163,7 @@ public class D_RekapPasienJasaUnit {
             AllBorderCellStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
             AllBorderCellStyle.setBorderTop (BorderStyle.THIN);
             AllBorderCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+
             CellStyle BorderCenterCellStyle = workbook.createCellStyle ();
             BorderCenterCellStyle.setAlignment (HorizontalAlignment.CENTER);
             BorderCenterCellStyle.setBorderBottom (BorderStyle.THIN);
@@ -127,6 +175,18 @@ public class D_RekapPasienJasaUnit {
             BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
             BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
+//            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
+//            for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
+//                sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
+//                sheet2.autoSizeColumn (rightCell);
+//                for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
+////                    if (sheet2.getRow (downRow).getCell (rightCell)==null){
+////                        sheet2.getRow (downRow).createCell (rightCell).setCellValue ("");
+////                    }
+//                    sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+//                }
+//            }
+
             //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
             for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
                 sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
@@ -135,9 +195,15 @@ public class D_RekapPasienJasaUnit {
                     sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
                 }
             }
+            for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++){
+                sheet2.getRow (downRow).getCell (12).setCellStyle (targetColumnColourNetto);
+            }
 
             workbook.removeSheetAt(0);
-            System.out.println ("D_RekapPasienJasaUnit Done");
+            LocalDateTime end = LocalDateTime.now ();
+            Duration duration = Duration.between(start, end);
+            long seconds = duration.toMillis ();
+            System.out.println ("D_RekapPasienJasaUnit Done in "+seconds);
         } catch (Exception e) {
             e.printStackTrace();
         }

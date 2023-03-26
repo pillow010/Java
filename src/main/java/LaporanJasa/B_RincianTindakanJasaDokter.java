@@ -5,6 +5,9 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.*;
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class B_RincianTindakanJasaDokter {
     public static void main(String[] args) {
@@ -16,14 +19,18 @@ public class B_RincianTindakanJasaDokter {
 
 
     public B_RincianTindakanJasaDokter() {
-        File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN1.xls");
+        File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
         System.out.println ("B_RincianTindakanJasaDokter is starting");
         try {
+            LocalDateTime start = LocalDateTime.now ();
             POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
             workbook = new HSSFWorkbook(poifs);
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
+
+            //Cara Bayar
+            String caraBayar = sheet.getRow (1).getCell (17).getStringCellValue ();
 
             workbook.setSheetName(1, "2. RINCIAN TINDAKAN JASA DOKTER");
             int lastColumn = sheet.getRow(0).getLastCellNum();
@@ -61,8 +68,67 @@ public class B_RincianTindakanJasaDokter {
             row.createCell(22).setCellValue("JML NETTO");
 
 
+//            for (int column = 0; column <= lastColumn - 1; column++) {
+//            // jika cell mengandung "KD_INST" concat jadi noreg
+//                Cell cell = sheet.getRow(0).getCell(column);
+//                if (sheet.getRow(0).getCell(column).getStringCellValue().equals("KD_INST")) {
+//                    for (int i = 1; i <= lastRow; i++) {
+//                        Cell noReg = sheet2.getRow(i).createCell(2);
+//                        noReg.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue() +
+//                                sheet.getRow(i).getCell(column + 1).getStringCellValue() +
+//                                sheet.getRow(i).getCell(column + 2).getStringCellValue() +
+//                                sheet.getRow(i).getCell(column + 3).getStringCellValue() +
+//                                sheet.getRow(i).getCell(column + 4).getStringCellValue());
+//                    }
+//                }
+//
+//                String cellValue = cell.getStringCellValue();
+//                int targetColumn2 = switch (cellValue) {
+//                    case "NAMA_PASIEN" -> 0;
+//                    case "NORM" -> 1;
+//                    case "NO_REG" -> 2;
+//                    case "KET_INST" -> 3;
+//                    case "KET_SUB_INST" -> 4;
+//                    case "KET_DTL_SUB_INST" -> 5;
+//                    case "NAMA_DOKTER" -> 6;
+//                    case "POSISI" -> 7;
+//                    case "TGL_TINDAKAN" -> 8;
+//                    case "NM_TINDAKAN" -> 9;
+//                    case "RUANG_RAWAT" -> 10;
+//                    case "PAKET_JAMINAN" -> 11;
+//                    case "JASA_PELAYANAN_TARIF" -> 12;
+//                    case "JASA_PELAYANAN_JAMIN" -> 13;
+//                    case "JML_PENDAPATAN" -> 14;
+//                    case "JML_PENERIMAAN_TUNAI" -> 15;
+//                    case "JML_PENERIMAAN_PIUTANG" -> 16;
+//                    case "JML_PENERIMAAN_JMN" -> 17;
+//                    case "JML_KOREKSI" -> 18;
+//                    case "JML_PAJAK" -> 19;
+//                    case "JML_PENGURANG_JASA" -> 20;
+//                    case "JML_PENGAMBILAN" -> 21;
+//                    case "JML_NETTO" -> 22;
+//                    default -> -1;
+//                };
+//
+//                if (targetColumn2 != -1) {
+//                    for (int i = 1; i <= lastRow; i++) {
+//                        Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
+//                        if (sheet.getRow (i).getCell (column)==null){
+//                            targetCell.setCellValue ("");
+//                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
+//                        {
+//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
+//                        } else {
+//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
+//
+//                        }
+//                    }
+//                }
+//            }
+
+            DecimalFormat formatter = new DecimalFormat("#,##0;-#,##0");
             for (int column = 0; column <= lastColumn - 1; column++) {
-//          jika cell mengandung "KD_INST" concat jadi noreg
+                // jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow(0).getCell(column);
                 if (sheet.getRow(0).getCell(column).getStringCellValue().equals("KD_INST")) {
                     for (int i = 1; i <= lastRow; i++) {
@@ -111,27 +177,30 @@ public class B_RincianTindakanJasaDokter {
                         }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
                         {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
+                        } else if (targetColumn2 == 22) {
+                            targetCell.setCellValue(formatter.format(sheet.getRow(i).getCell(column).getNumericCellValue()));
                         } else {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
-
                         }
                     }
                 }
             }
 
-//            // Create a cell style for the target column
-//            CellStyle targetColumnStyleNetto = workbook.createCellStyle();
-//            CellStyle targetColumnColourNetto = workbook.createCellStyle();
 
-
-//            // Create a data format for the target column
-//            short format = workbook.createDataFormat().getFormat("#,##0.00_);[Red](#,##0.00)");
-//
-//            // Set the data format to the target column style
-//            targetColumnStyleNetto.setDataFormat(format);
-//
-//            // Set the background color of the cells in the target column to yellow
-//            targetColumnColourNetto.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
+            // Create a cell style for the target column
+            CellStyle targetColumnColourNetto = workbook.createCellStyle();
+            // Set the background color of the cells in the target column to yellow
+            targetColumnColourNetto.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+            targetColumnColourNetto.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            targetColumnColourNetto.setAlignment (HorizontalAlignment.RIGHT);
+            targetColumnColourNetto.setBorderBottom (BorderStyle.THIN);
+            targetColumnColourNetto.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+            targetColumnColourNetto.setBorderLeft (BorderStyle.THIN);
+            targetColumnColourNetto.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+            targetColumnColourNetto.setBorderRight (BorderStyle.THIN);
+            targetColumnColourNetto.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+            targetColumnColourNetto.setBorderTop (BorderStyle.THIN);
+            targetColumnColourNetto.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
             // Make Styling
             CellStyle centerTextCellStyle = workbook.createCellStyle ();
@@ -145,6 +214,7 @@ public class B_RincianTindakanJasaDokter {
             AllBorderCellStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
             AllBorderCellStyle.setBorderTop (BorderStyle.THIN);
             AllBorderCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+
             CellStyle BorderCenterCellStyle = workbook.createCellStyle ();
             BorderCenterCellStyle.setAlignment (HorizontalAlignment.CENTER);
             BorderCenterCellStyle.setBorderBottom (BorderStyle.THIN);
@@ -164,17 +234,16 @@ public class B_RincianTindakanJasaDokter {
                     sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
                 }
             }
-
-//            // Apply the style to the cells in the target column
-//            for (int i = 0; i <= sheet2.getLastRowNum(); i++) {
-//                sheet2.getRow(i).getCell(22).setCellStyle(targetColumnStyleNetto);
-//                sheet2.getRow(i).getCell(22).setCellStyle(targetColumnColourNetto);
-//            }
-
+            for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++){
+                sheet2.getRow (downRow).getCell (22).setCellStyle (targetColumnColourNetto);
+            }
 
             workbook.removeSheetAt(0);
 
-            System.out.println ("B_RincianTindakanJasaDokter Done" );
+            LocalDateTime end = LocalDateTime.now ();
+            Duration duration = Duration.between(start, end);
+            long seconds = duration.toMillis ();
+            System.out.println ("B_RincianTindakanJasaDokter Done in "+seconds );
         } catch (Exception e) {
             e.printStackTrace();
         }
