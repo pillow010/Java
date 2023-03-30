@@ -16,10 +16,35 @@ public class LaporanIgd {
     }
 
     public LaporanIgd() throws IOException, AssertionError {
-        String fileName = "23 02 igd register";
-        InputStream LaporanIGD = new FileInputStream ("c:\\sat work\\test\\"+fileName+".xlsx");
+        String fileNameIgd = "23 02 igd register";
+        String fileNameIrna = "23 02 irna register";
+        InputStream LaporanIGD = new FileInputStream ("c:\\sat work\\test\\"+fileNameIgd+".xlsx");
+        InputStream laporanIrna = new FileInputStream ("c:\\sat work\\test\\"+fileNameIrna+".xlsx");
         Workbook bookLaporanIGD = new XSSFWorkbook (LaporanIGD);
+        Workbook bookLaporanIrna = new XSSFWorkbook (laporanIrna);
         Sheet register = bookLaporanIGD.getSheetAt (0);
+        Sheet registerIrna = bookLaporanIrna.getSheetAt (0);
+
+        //          Make Styling
+        CellStyle AllBorderCellStyle = bookLaporanIGD.createCellStyle ();
+        AllBorderCellStyle.setBorderBottom (BorderStyle.THIN);
+        AllBorderCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+        AllBorderCellStyle.setBorderLeft (BorderStyle.THIN);
+        AllBorderCellStyle.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+        AllBorderCellStyle.setBorderRight (BorderStyle.THIN);
+        AllBorderCellStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+        AllBorderCellStyle.setBorderTop (BorderStyle.THIN);
+        AllBorderCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+        CellStyle BorderCenterCellStyle = bookLaporanIGD.createCellStyle ();
+        BorderCenterCellStyle.setAlignment (HorizontalAlignment.CENTER);
+        BorderCenterCellStyle.setBorderBottom (BorderStyle.THIN);
+        BorderCenterCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
+        BorderCenterCellStyle.setBorderLeft (BorderStyle.THIN);
+        BorderCenterCellStyle.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
+        BorderCenterCellStyle.setBorderRight (BorderStyle.THIN);
+        BorderCenterCellStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
+        BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
+        BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
         System.out.println ("01. Start doing " + bookLaporanIGD.getSheetName (0));
 
@@ -346,6 +371,47 @@ public class LaporanIgd {
         Sheet subInstalasiCaraMasuk = bookLaporanIGD.getSheetAt (7);
         System.out.println ("07. Start doing "+bookLaporanIGD.getSheetName (7));
 
+        Set<String> subInstalasi = new TreeSet<> ();
+        Set<String> caraMasuk = new TreeSet<> ();
+        countMap = new HashMap<>(); // new count map
+        for (int row=1;row<=sorted.getLastRowNum ();row++) {
+            String cellSubInst = sorted.getRow (row).getCell (30).getStringCellValue ();
+            String cellCaraMasuk = sorted.getRow (row).getCell (32).getStringCellValue ();
+
+            caraMasuk.add (cellCaraMasuk);
+            subInstalasi.add (cellSubInst);
+
+            // increment count in countMap
+            if (!countMap.containsKey(cellSubInst)) {
+                countMap.put(cellSubInst, new HashMap<>());
+            }
+            Map<String, Integer> drTugasCountMap = countMap.get(cellSubInst);
+            if (!drTugasCountMap.containsKey(cellCaraMasuk)) {
+                drTugasCountMap.put(cellCaraMasuk, 1);
+            } else {
+                drTugasCountMap.put(cellCaraMasuk, drTugasCountMap.get(cellCaraMasuk) + 1);
+            }
+        }
+
+        subInstalasiCaraMasuk.createRow (0).createCell (0).setCellValue ("Sub Instalasi");
+        rowStart=1;
+        for (String crMsk:caraMasuk) {
+            subInstalasiCaraMasuk.getRow (0).createCell (rowStart++).setCellValue (crMsk);
+        }
+        rowStart=1;
+        for (String subInst:subInstalasi){
+            int colStart=1;
+            subInstalasiCaraMasuk.createRow (rowStart).createCell (0).setCellValue (subInst);
+            for (String crMsk:caraMasuk) {
+                if (countMap.containsKey(subInst) && countMap.get(subInst).containsKey(crMsk)) {
+                    subInstalasiCaraMasuk.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(subInst).get(crMsk));
+                } else {
+                    subInstalasiCaraMasuk.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                }
+            }
+            rowStart++;
+        }
+
         System.out.println ("07. "+bookLaporanIGD.getSheetName (7)+" is done");
 
 
@@ -353,6 +419,47 @@ public class LaporanIgd {
         bookLaporanIGD.createSheet ("8.DIAGNOSA PER JENIS KELAMIN");
         Sheet diagPerKelamin = bookLaporanIGD.getSheetAt (8);
         System.out.println ("08. Start doing "+bookLaporanIGD.getSheetName (8));
+
+        Set<String> diagnosa = new TreeSet<> ();
+        Set<String> jenisKelamin = new TreeSet<> ();
+        countMap = new HashMap<>(); // new count map
+        for (int row=1;row<=sorted.getLastRowNum ();row++) {
+            String celldiagnosa = sorted.getRow (row).getCell (35).getStringCellValue ();
+            String cellJenisKelamin = sorted.getRow (row).getCell (6).getStringCellValue ();
+
+            diagnosa.add (celldiagnosa);
+            jenisKelamin.add (cellJenisKelamin);
+
+            // increment count in countMap
+            if (!countMap.containsKey(celldiagnosa)) {
+                countMap.put(celldiagnosa, new HashMap<>());
+            }
+            Map<String, Integer> drTugasCountMap = countMap.get(celldiagnosa);
+            if (!drTugasCountMap.containsKey(cellJenisKelamin)) {
+                drTugasCountMap.put(cellJenisKelamin, 1);
+            } else {
+                drTugasCountMap.put(cellJenisKelamin, drTugasCountMap.get(cellJenisKelamin) + 1);
+            }
+        }
+
+        diagPerKelamin.createRow (0).createCell (0).setCellValue ("Sub Instalasi");
+        rowStart=1;
+        for (String jnsKlamin:jenisKelamin) {
+            diagPerKelamin.getRow (0).createCell (rowStart++).setCellValue (jnsKlamin);
+        }
+        rowStart=1;
+        for (String subInst:diagnosa){
+            int colStart=1;
+            diagPerKelamin.createRow (rowStart).createCell (0).setCellValue (subInst);
+            for (String jnsKlamin:jenisKelamin) {
+                if (countMap.containsKey(subInst) && countMap.get(subInst).containsKey(jnsKlamin)) {
+                    diagPerKelamin.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(subInst).get(jnsKlamin));
+                } else {
+                    diagPerKelamin.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                }
+            }
+            rowStart++;
+        }
 
         System.out.println ("08. "+bookLaporanIGD.getSheetName (8)+" is done");
 
@@ -362,6 +469,30 @@ public class LaporanIgd {
         Sheet pasienJCovid = bookLaporanIGD.getSheetAt (9);
         System.out.println ("09. Start doing "+bookLaporanIGD.getSheetName (9));
 
+        pasienJCovid.createRow (0);
+        for (int cell = 0; cell < sorted.getRow(0).getLastCellNum(); cell++) {
+            pasienJCovid.getRow (0).createCell (cell).setCellValue (sorted.getRow (0).getCell (cell).getStringCellValue ());
+        }
+        int covidRow = 1;
+        for (int row = 1; row <= sorted.getLastRowNum(); row++) {
+            if (sorted.getRow(row).getCell(23).getStringCellValue().equals("Jaminan COVID-19")) {
+                Row sourceRow = sorted.getRow(row);
+                Row targetRow = pasienJCovid.createRow(covidRow);
+                for (int cell = 0; cell < sorted.getRow(0).getLastCellNum(); cell++) {
+                    Cell sourceCell = sourceRow.getCell(cell);
+                    Cell targetCell = targetRow.createCell(cell);
+                    if (sourceCell.getCellType() == CellType.STRING) {
+                        targetCell.setCellValue(sourceCell.getStringCellValue());
+                    } else if (sourceCell.getCellType() == CellType.NUMERIC) {
+                        targetCell.setCellValue(sourceCell.getNumericCellValue());
+                    } else {
+                        targetCell.setCellValue("");
+                    }
+                }
+                covidRow++;
+            }
+        }
+
         System.out.println ("09. "+bookLaporanIGD.getSheetName (9)+" is done");
 
 
@@ -370,7 +501,75 @@ public class LaporanIgd {
         Sheet pasienMawar = bookLaporanIGD.getSheetAt (10);
         System.out.println ("10. Start doing "+bookLaporanIGD.getSheetName (10));
 
+        pasienMawar.createRow (0).createCell (0).setCellValue ("NOREG");
+        Set<String> sortedNoregIrna = new TreeSet<> ();
+        Row getRowRegisterIrna = registerIrna.getRow (0);
+        Row headerRowMawat = pasienMawar.createRow(0);
+        headerRowMawat.createCell(0).setCellValue("NOREG");
+        for (int i = 0; i < SelectedArray.length; i++) {
+            headerRowMawat.createCell(i+1).setCellValue(getRowRegisterIrna.getCell(SelectedArray[i]).getStringCellValue());
+        }
+
+        sortedRow = 1;
+        for (int row=1;row<=registerIrna.getLastRowNum ();row++){
+            getRowRegister = registerIrna.getRow (row);
+            String noreg = getRowRegister.getCell (0).getStringCellValue ()+
+                    getRowRegister.getCell (1).getStringCellValue ()+
+                    getRowRegister.getCell (2).getStringCellValue ()+
+                    getRowRegister.getCell (3).getStringCellValue ()+
+                    getRowRegister.getCell (4).getStringCellValue ();
+//            if (getRowRegister.getCell (67).getStringCellValue ().equals ("Diagnosa Utama")){
+            if (!sortedNoregIrna.contains (noreg)) {
+                if (getRowRegister.getCell (34).getStringCellValue ().contains ("Mawar") || getRowRegister.getCell (36).getStringCellValue ().contains ("Mawar")) {
+                    pasienMawar.createRow (sortedRow);
+                    pasienMawar.getRow (sortedRow).createCell (0).setCellValue (
+                            getRowRegister.getCell (0).getStringCellValue () +
+                                    getRowRegister.getCell (1).getStringCellValue () +
+                                    getRowRegister.getCell (2).getStringCellValue () +
+                                    getRowRegister.getCell (3).getStringCellValue () +
+                                    getRowRegister.getCell (4).getStringCellValue ()
+                    );
+                    for (int i = 0; i < SelectedArray.length; i++) {
+                        if (getRowRegister.getCell (SelectedArray[i]) == null) {
+                            pasienMawar.getRow (sortedRow).createCell (i + 1).setCellValue ("");
+                        } else if (getRowRegister.getCell (SelectedArray[i]).getCellType () == CellType.STRING) {
+                            if (i == 0 || i == 3) {
+                                pasienMawar.getRow (sortedRow).createCell (i + 1).setCellValue (getRowRegister.getCell (SelectedArray[i]).getStringCellValue ().substring (0, 10));
+                            } else {
+                                pasienMawar.getRow (sortedRow).createCell (i + 1).setCellValue (getRowRegister.getCell (SelectedArray[i]).getStringCellValue ());
+                            }
+                        } else if (getRowRegister.getCell (SelectedArray[i]).getCellType () == CellType.NUMERIC) {
+                            pasienMawar.getRow (sortedRow).createCell (i + 1).setCellValue (getRowRegister.getCell (SelectedArray[i]).getNumericCellValue ());
+                        }
+
+                    }
+                    sortedNoregIrna.add (noreg);
+                    sortedRow++;
+                }
+            }
+        }
+
+        // Define the sheets you want to apply the styles to
+        Sheet[] sheets = {sorted, klaminPerTanggal, akhirPerTanggal, crBayarPerTangal, pasienDokterTugas,
+                pasienDokterPerTanggal, subInstalasiCaraMasuk, diagPerKelamin, pasienJCovid, pasienMawar};
+
+        // Loop through the sheets
+        for (Sheet sheet : sheets) {
+            // Loop through the cells in the first row
+            for (int rightCell = 0; rightCell < sheet.getRow(0).getLastCellNum(); rightCell++) {
+                sheet.getRow(0).getCell(rightCell).setCellStyle(BorderCenterCellStyle);
+                sheet.autoSizeColumn(rightCell);
+                // Loop through the cells in the remaining rows
+                for (int downRow = 1; downRow <= sheet.getLastRowNum(); downRow++) {
+                    sheet.getRow(downRow).getCell(rightCell).setCellStyle(AllBorderCellStyle);
+                }
+            }
+        }
+
+
         System.out.println ("10. "+bookLaporanIGD.getSheetName (10)+" is done");
+        bookLaporanIGD.removeSheetAt (0);
+
 
 
 
