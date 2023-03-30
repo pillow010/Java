@@ -624,7 +624,7 @@ public class RadHalfDone extends StylerRepo{
             }
 
 
-// stoped because duplicate sample id on report and wird accid handling
+        // stoped because duplicate sample id on report and wird acc_id handling
 
 
             //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.

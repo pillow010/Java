@@ -10,9 +10,9 @@ public class LaporanJasaCommandCenter {
         new D_RekapPasienJasaUnit();
         new E_RincianJasaNoname();
 
-//        C:\sat work\test\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN1.xls
-//        C:\sat work\test\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN1.xls
-//        C:\sat work\test\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN1.xls
-//        C:\sat work\test\d) LAPORAN PENERIMAAN JASA PELAYANAN TANPA PEMILIK1.xls
+//        C:\sat work\test\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls
+//        C:\sat work\test\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xls
+//        C:\sat work\test\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls
+//        C:\sat work\test\d) LAPORAN PENERIMAAN JASA PELAYANAN TANPA PEMILIK.xls
     }
 }

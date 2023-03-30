@@ -25,27 +25,25 @@ public class A_RekapJasaDokterDanUnit {
 
 
     public A_RekapJasaDokterDanUnit() {
+
+
         //XLSX VER
-//        File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");
-//        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xlsx");
-//        LocalDateTime start = LocalDateTime.now ();
-//        System.out.println ("A_RekapJasaDokterDanUnit is starting");
-//        try {
-//            FileInputStream inputStream1 = new FileInputStream(jasaDokter);
-//            FileInputStream inputStream2 = new FileInputStream(jasaUnit);
-//            workbook = new XSSFWorkbook(inputStream1);
-//            Workbook workbook2 = new XSSFWorkbook(inputStream2);
-//
+        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xlsx");  //XLSX
+//        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
+//        File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");      //XLSX
         File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
-        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
         LocalDateTime start = LocalDateTime.now ();
         System.out.println ("A_RekapJasaDokterDanUnit is starting");
         try {
-
+            FileInputStream inputStream2 = new FileInputStream(jasaUnit);     //XLSX
+//            POIFSFileSystem poifs2 = new POIFSFileSystem(jasaUnit);
+//            FileInputStream inputStream1 = new FileInputStream(jasaDokter); //XLSX
             POIFSFileSystem poifs = new POIFSFileSystem(jasaDokter);
-            POIFSFileSystem poifs2 = new POIFSFileSystem(jasaUnit);
+            Workbook workbook2 = new XSSFWorkbook (inputStream2);                       //XLSX
+//            Workbook workbook2 = new HSSFWorkbook(poifs2);
+//            workbook = new XSSFWorkbook(inputStream1);                      //XLSX
             workbook = new HSSFWorkbook(poifs);
-            Workbook workbook2 = new HSSFWorkbook(poifs2);
+
 
             // Make Styling
             CellStyle AllBorderCellStyle = workbook.createCellStyle ();
@@ -88,10 +86,17 @@ public class A_RekapJasaDokterDanUnit {
             Sheet sheetWorkbookUnit = workbook2.getSheetAt(0);//jasnit
 
             //Cara Bayar
-            String caraBayarDokter = sheetWorkbookDokter.getRow (1).getCell (17).getStringCellValue ();
-            String caraBayarUnit = sheetWorkbookUnit.getRow (1).getCell (24).getStringCellValue ();
+            String caraBayarDokter = sheetWorkbookDokter.getRow(1).getCell(17).getStringCellValue();
+            String caraBayarUnit = sheetWorkbookUnit.getRow(1).getCell(24).getStringCellValue();
 
-            //create Sheey
+            if (!caraBayarDokter.contains("PBI")) {
+                caraBayarDokter = "JKN";
+            }
+            if (!caraBayarUnit.contains("PBI")) {
+                caraBayarUnit = "JKN";
+            }
+
+            //create Sheet
             Sheet sheetJasaDokter = workbook.createSheet();
             workbook.setSheetName(1, "JASA DOKTER "+caraBayarDokter);
             Sheet sheetJasaUnit = workbook.createSheet();

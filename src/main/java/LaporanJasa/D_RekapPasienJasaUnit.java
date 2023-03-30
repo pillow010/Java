@@ -3,8 +3,10 @@ package LaporanJasa;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -24,16 +26,19 @@ public class D_RekapPasienJasaUnit {
     public D_RekapPasienJasaUnit(){
         LocalDateTime start = LocalDateTime.now ();
         System.out.println ("D_RekapPasienJasaUnit is starting");
-        File inputFS = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
+//        File inputFS = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
+        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xlsx");  //XLSX
         try {
-            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
-            workbook = new HSSFWorkbook(poifs);
+//            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
+            FileInputStream inputStream2 = new FileInputStream(jasaUnit);     //XLSX
+//            workbook = new HSSFWorkbook(poifs);
+            workbook = new XSSFWorkbook (inputStream2);                       //XLSX
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
 
             //Cara Bayar
-            String caraBayar = sheet.getRow (1).getCell (24).getStringCellValue ();
+//            String caraBayar = sheet.getRow (1).getCell (24).getStringCellValue ();
 
 
             CellStyle totalStyle = workbook.createCellStyle ();
@@ -97,20 +102,6 @@ public class D_RekapPasienJasaUnit {
                     default -> -1;
                 };
 
-//                if (targetColumn2 != -1) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
-//                        if (sheet.getRow (i).getCell (column)==null){
-//                            targetCell.setCellValue ("");
-//                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
-//                        {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-//                        } else {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
-//
-//                        }
-//                    }
-//                }
                 if (targetColumn2 != -1) {
                     for (int i = 1; i <= lastRow; i++) {
                         Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
@@ -175,17 +166,6 @@ public class D_RekapPasienJasaUnit {
             BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
             BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
-//            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-//            for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
-//                sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-//                sheet2.autoSizeColumn (rightCell);
-//                for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
-////                    if (sheet2.getRow (downRow).getCell (rightCell)==null){
-////                        sheet2.getRow (downRow).createCell (rightCell).setCellValue ("");
-////                    }
-//                    sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-//                }
-//            }
 
             //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
             for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {

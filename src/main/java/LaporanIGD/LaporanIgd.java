@@ -13,7 +13,6 @@ public class LaporanIgd {
 
     public static void main(String[] args) throws IOException, AssertionError {
         new LaporanIgd ();
-
     }
 
     public LaporanIgd() throws IOException, AssertionError {
@@ -29,12 +28,8 @@ public class LaporanIgd {
         String Month = register.getRow (2).getCell (5)
                 .getStringCellValue ().substring (3, 5);
         int registerLastCell = register.getRow (0).getLastCellNum ();
-        final int DIAGNOSIS_CELL = 67;
-        final int DIAGNOSIS_CODE_CELL = registerLastCell + 2;
 
         register.getRow (0).createCell (registerLastCell).setCellValue ("NOREG");
-        register.getRow (0).createCell (registerLastCell+1).setCellValue ("Kondisi Keluar");
-        register.getRow (0).createCell (DIAGNOSIS_CODE_CELL).setCellValue ("DIAGNOSIS_CODE_CELL");
         for (int row = 1; row <= register.getLastRowNum (); row++) {
             StringBuilder sb = new StringBuilder ();
             for (int col = 0; col < 5; col++) {
@@ -43,79 +38,50 @@ public class LaporanIgd {
             String concatenated = sb.toString ();
             register.getRow (row).createCell (registerLastCell).setCellValue (concatenated);
 
-            boolean kondisiAkhir = register.getRow (row).getCell (42) == null;
-            boolean caraKeluar = register.getRow (row).getCell (43) == null;
-            if (kondisiAkhir && caraKeluar) {
-                register.getRow (row).createCell (registerLastCell + 1).setCellValue ("");
-            } else if (kondisiAkhir) {
-                register.getRow (row).createCell (registerLastCell + 1).setCellValue (
-                        register.getRow (row).getCell (43).getStringCellValue ()
-                );
-            } else {
-                register.getRow (row).createCell (registerLastCell + 1).setCellValue (
-                        register.getRow (row).getCell (42).getStringCellValue ()
-                );
-            }
-
-
-            String diagnosis = Objects.requireNonNullElse (
-                    register.getRow (row).getCell (DIAGNOSIS_CELL).getStringCellValue (), "");
-            register.getRow (row).createCell (DIAGNOSIS_CODE_CELL)
-                    .setCellValue (diagnosis.equals ("Diagnosa Utama") ? "AA" : diagnosis);
-
-
             for (int cell =0;cell<register.getRow (0).getLastCellNum ();cell++) {
                 if (register.getRow (row).getCell (cell) == null) {
                     register.getRow (row).createCell (cell).setCellValue ("");
                 }
             }
         }
-//            // Sort sheet based on registerLastCell+2
-//            DataFormatter formatter = new DataFormatter();
-//            List<Row> rows = StreamSupport.stream (register.spliterator (), false)
-//                    .sorted (Comparator.comparingInt (row -> {
-//                        String value = formatter.formatCellValue (row.getCell (DIAGNOSIS_CODE_CELL));
-//                        return value.charAt (0);
-//                    })).toList ();
-//            rows.stream ().forEach (System.out::println);
 
-
+        //~~~~~~
         bookLaporanIGD.createSheet ("Sorted");
         Sheet sorted = bookLaporanIGD.getSheetAt (1);
 
-        sorted.createRow (0).createCell (0).setCellValue ("NOREG");
-        sorted.getRow (0).createCell (1).setCellValue ("TANGGAL");
-        sorted.getRow (0).createCell (2).setCellValue ("RM");
-        sorted.getRow (0).createCell (3).setCellValue ("NAMA");
-        sorted.getRow (0).createCell (4).setCellValue ("KELAMIN");
-        sorted.getRow (0).createCell (5).setCellValue ("JENIS CARA BAYAR");
-        sorted.getRow (0).createCell (6).setCellValue ("SUB INSTALASI");
-        sorted.getRow (0).createCell (7).setCellValue ("CARA MASUK");
-        sorted.getRow (0).createCell (8).setCellValue ("DIAGNOSA");
-        sorted.getRow (0).createCell (9).setCellValue ("KONDISI AKHIR");
-        sorted.getRow (0).createCell (10).setCellValue ("DOKTER TUGAS");
-        sorted.getRow (0).createCell (11).setCellValue ("DIAGNOSA");
-        sorted.getRow (0).createCell (12).setCellValue ("KET JENIS DIAGNOSA");
 
+        sorted.createRow (0).createCell (0).setCellValue ("NOREG");
+        Integer[] SelectedArray = {5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,29,30,31,32,33,34,35,36,
+                37,38,39,40,41,42,43,44,55,60,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83
+        };
         Set<String> sortedNoreg = new TreeSet<> ();
+        Row getRowRegister = register.getRow (0);
+        Row headerRow = sorted.createRow(0);
+        headerRow.createCell(0).setCellValue("NOREG");
+        for (int i = 0; i < SelectedArray.length; i++) {
+            headerRow.createCell(i+1).setCellValue(getRowRegister.getCell(SelectedArray[i]).getStringCellValue());
+        }
+
         int sortedRow = 1;
         for (int row=1;row<=register.getLastRowNum ();row++){
-            Row getRowRegister = register.getRow (row);
+            getRowRegister = register.getRow (row);
             if (getRowRegister.getCell (67).getStringCellValue ().equals ("Diagnosa Utama")){
                 sorted.createRow (sortedRow);
                 sorted.getRow (sortedRow).createCell (0).setCellValue (getRowRegister.getCell (registerLastCell).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (1).setCellValue (getRowRegister.getCell (5).getStringCellValue ().substring (0, 10));
-                sorted.getRow (sortedRow).createCell (2).setCellValue (getRowRegister.getCell (6).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (3).setCellValue (getRowRegister.getCell (7).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (4).setCellValue (getRowRegister.getCell (10).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (5).setCellValue (getRowRegister.getCell (30).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (6).setCellValue (getRowRegister.getCell (36).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (7).setCellValue (getRowRegister.getCell (38).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (8).setCellValue (getRowRegister.getCell (41).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (9).setCellValue (getRowRegister.getCell (registerLastCell+1).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (10).setCellValue (getRowRegister.getCell (78).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (11).setCellValue (getRowRegister.getCell (41).getStringCellValue ());
-                sorted.getRow (sortedRow).createCell (12).setCellValue (getRowRegister.getCell (67).getStringCellValue ());
+                for (int i = 0; i < SelectedArray.length; i++) {
+                    if (getRowRegister.getCell(SelectedArray[i]) == null) {
+                        sorted.getRow(sortedRow).createCell(i+1).setCellValue("");
+                    } else if (getRowRegister.getCell(SelectedArray[i]).getCellType() == CellType.STRING) {
+                        if (i == 0 || i==3) {
+                            sorted.getRow(sortedRow).createCell(i+1).setCellValue(getRowRegister.getCell(SelectedArray[i]).getStringCellValue().substring(0, 10));
+                        } else {
+                            sorted.getRow(sortedRow).createCell(i+1).setCellValue(getRowRegister.getCell(SelectedArray[i]).getStringCellValue());
+                        }
+                    } else if (getRowRegister.getCell(SelectedArray[i]).getCellType() == CellType.NUMERIC) {
+                        sorted.getRow(sortedRow).createCell(i+1).setCellValue(getRowRegister.getCell(SelectedArray[i]).getNumericCellValue());
+                    }
+
+                }
                 sortedNoreg.add (getRowRegister.getCell (registerLastCell).getStringCellValue ());
                 sortedRow++;
             }
@@ -123,147 +89,289 @@ public class LaporanIgd {
 
         int lastSortedRow= sorted.getLastRowNum ()+1;
         for (int row=1;row<=register.getLastRowNum ();row++) {
-            Row getRowRegister = register.getRow (row);
+            getRowRegister = register.getRow (row);
             if (!sortedNoreg.contains (getRowRegister.getCell (registerLastCell).getStringCellValue ())){
                 sorted.createRow (lastSortedRow);
                 sorted.getRow (lastSortedRow).createCell (0).setCellValue (getRowRegister.getCell (registerLastCell).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (1).setCellValue (getRowRegister.getCell (5).getStringCellValue ().substring (0, 10));
-                sorted.getRow (lastSortedRow).createCell (2).setCellValue (getRowRegister.getCell (6).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (3).setCellValue (getRowRegister.getCell (7).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (4).setCellValue (getRowRegister.getCell (10).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (5).setCellValue (getRowRegister.getCell (30).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (6).setCellValue (getRowRegister.getCell (36).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (7).setCellValue (getRowRegister.getCell (38).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (8).setCellValue (getRowRegister.getCell (41).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (9).setCellValue (getRowRegister.getCell (registerLastCell+1).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (10).setCellValue (getRowRegister.getCell (78).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (11).setCellValue (getRowRegister.getCell (41).getStringCellValue ());
-                sorted.getRow (lastSortedRow).createCell (12).setCellValue (getRowRegister.getCell (67).getStringCellValue ());
+                for (int i = 0; i < SelectedArray.length; i++) {
+                    if (getRowRegister.getCell(SelectedArray[i]) == null) {
+                        sorted.getRow(lastSortedRow).createCell(i+1).setCellValue("");
+                    } else if (getRowRegister.getCell(SelectedArray[i]).getCellType() == CellType.STRING) {
+                        if (i == 0 || i==3) {
+                            sorted.getRow(lastSortedRow).createCell(i+1).setCellValue(getRowRegister.getCell(SelectedArray[i]).getStringCellValue().substring(0, 10));
+                        } else {
+                            sorted.getRow(lastSortedRow).createCell(i+1).setCellValue(getRowRegister.getCell(SelectedArray[i]).getStringCellValue());
+                        }
+                    } else if (getRowRegister.getCell(SelectedArray[i]).getCellType() == CellType.NUMERIC) {
+                        sorted.getRow(lastSortedRow).createCell(i+1).setCellValue(getRowRegister.getCell(SelectedArray[i]).getNumericCellValue());
+                    }
+                }
                 sortedNoreg.add (getRowRegister.getCell (registerLastCell).getStringCellValue ());
                 lastSortedRow++;
             }
         }
-//        // Add sorted rows back to the sheet
-//        for (Row sourceRow : rows) {
-//            Row targetRow = sorted.createRow(sourceRow.getRowNum());
-//
-//            // Copy cell values from source row to target row
-//            for (Cell sourceCell : sourceRow) {
-//                Cell targetCell = targetRow.createCell(sourceCell.getColumnIndex());
-//                if (sourceCell.getCellType ()==CellType.STRING){
-//                    targetCell.setCellValue (sourceCell.getStringCellValue ());
-//                } else {
-//                    targetCell.setCellValue (sourceCell.getNumericCellValue ());
-//                }
-//
-//            }
-//        }
-
-
-
-
         System.out.println ("01. "+bookLaporanIGD.getSheetName (0)+" is done");
 
 
-        bookLaporanIGD.createSheet ("without Duplicate");
-        Sheet noDuplicate = bookLaporanIGD.getSheetAt (2);
-        System.out.println ("02. Start doing" + bookLaporanIGD.getSheetName (2));
+        bookLaporanIGD.createSheet ("2.KELAMIN PER TANGGAL");
+        Sheet klaminPerTanggal = bookLaporanIGD.getSheetAt (2);
+        System.out.println ("02. Start doing "+bookLaporanIGD.getSheetName (2));
 
+        Set<String> tanggalRegist = new TreeSet<> ();
+        Set<String> kelamin = new TreeSet<> ();
+        Map<String, Map<String, Integer>> countMap = new HashMap<>(); // new count map
+        for (int row=1;row<=sorted.getLastRowNum ();row++) {
+            String cellTanggalReg = sorted.getRow (row).getCell (1).getStringCellValue ();
+            String cellKelamin = sorted.getRow (row).getCell (6).getStringCellValue ();
 
-        noDuplicate.createRow (0).createCell (0).setCellValue ("NOREG");
-        noDuplicate.getRow (0).createCell (1).setCellValue ("TANGGAL");
-        noDuplicate.getRow (0).createCell (2).setCellValue ("RM");
-        noDuplicate.getRow (0).createCell (3).setCellValue ("NAMA");
-        noDuplicate.getRow (0).createCell (4).setCellValue ("KELAMIN");
-        noDuplicate.getRow (0).createCell (5).setCellValue ("JENIS CARA BAYAR");
-        noDuplicate.getRow (0).createCell (6).setCellValue ("SUB INSTALASI");
-        noDuplicate.getRow (0).createCell (7).setCellValue ("CARA MASUK");
-        noDuplicate.getRow (0).createCell (8).setCellValue ("DIAGNOSA");
-        noDuplicate.getRow (0).createCell (9).setCellValue ("KONDISI AKHIR");
-        noDuplicate.getRow (0).createCell (10).setCellValue ("DOKTER TUGAS");
+            tanggalRegist.add (cellTanggalReg);
+            kelamin.add (cellKelamin);
 
-
-        Set<String> noreg = new TreeSet<> ();
-        for (int row = 1; row <= register.getLastRowNum (); row++) {
-                noreg.add (register.getRow (row).getCell (registerLastCell).getStringCellValue ());
-        }
-
-        int i = 0;
-        for (String value : noreg) {
-            noDuplicate.createRow (++i).createCell (0).setCellValue (value);
-        }
-
-//        for (int row =1;row<=noDuplicate.getLastRowNum ();row++) {
-//            String target = noDuplicate.getRow (row).getCell (0).getStringCellValue ();
-//            for (int rowSource = 1; rowSource <= register.getLastRowNum (); rowSource++) {
-//                String source = register.getRow (rowSource).getCell (0).getStringCellValue ();
-//                if (target.equals (source)){
-//                    String	tanggal	= register.getRow (rowSource).getCell (5).getStringCellValue ().substring (0, 10);
-//                    String	rm = register.getRow (rowSource).getCell (6).getStringCellValue ();
-//                    String	nama = register.getRow (rowSource).getCell (7).getStringCellValue ();
-//                    String	kelamin	= register.getRow (rowSource).getCell (10).getStringCellValue ();
-//                    String	jenisCaraBayar	= register.getRow (rowSource).getCell (30).getStringCellValue ();
-//                    String	subInstalasi	= register.getRow (rowSource).getCell (36).getStringCellValue ();
-//                    String	caraMasuk	= register.getRow (rowSource).getCell (38).getStringCellValue ();
-//                    String	diagnosa	= register.getRow (rowSource).getCell (41).getStringCellValue ();
-//                    String	kondisiAkhir	= register.getRow (rowSource).getCell (registerLastCell+1).getStringCellValue ();
-//                    String	dokterTugas	= register.getRow (rowSource).getCell (78).getStringCellValue ();
-//                    noDuplicate.getRow (row).createCell (1).setCellValue (tanggal);
-//                    noDuplicate.getRow (row).createCell (2).setCellValue (rm);
-//                    noDuplicate.getRow (row).createCell (3).setCellValue (nama);
-//                    noDuplicate.getRow (row).createCell (4).setCellValue (kelamin);
-//                    noDuplicate.getRow (row).createCell (5).setCellValue (jenisCaraBayar);
-//                    noDuplicate.getRow (row).createCell (6).setCellValue (subInstalasi);
-//                    noDuplicate.getRow (row).createCell (7).setCellValue (caraMasuk);
-//                    noDuplicate.getRow (row).createCell (8).setCellValue (diagnosa);
-//                    noDuplicate.getRow (row).createCell (9).setCellValue (kondisiAkhir);
-//                    noDuplicate.getRow (row).createCell (10).setCellValue (dokterTugas);
-//                }
-//            }
-//        }
-        Map<String, String[]> registerData = new HashMap<> ();
-        for (int row = 1; row <= register.getLastRowNum(); row++) {
-            String source = register.getRow(row).getCell(registerLastCell).getStringCellValue();
-            String[] data = new String[10];
-            data[0] = register.getRow(row).getCell(5).getStringCellValue().substring(0, 10);
-            data[1] = register.getRow(row).getCell(6).getStringCellValue();
-            data[2] = register.getRow(row).getCell(7).getStringCellValue();
-            data[3] = register.getRow(row).getCell(10).getStringCellValue();
-            data[4] = register.getRow(row).getCell(30).getStringCellValue();
-            data[5] = register.getRow(row).getCell(36).getStringCellValue();
-            data[6] = register.getRow(row).getCell(38).getStringCellValue();
-            data[7] = register.getRow(row).getCell(41).getStringCellValue();
-            data[8] = register.getRow(row).getCell(registerLastCell + 1).getStringCellValue();
-            data[9] = register.getRow(row).getCell(78).getStringCellValue();
-            registerData.put(source, data);
-        }
-
-        List<String[]> noDuplicateData = new ArrayList<> ();
-        for (int row = 1; row <= noDuplicate.getLastRowNum(); row++) {
-            String target = noDuplicate.getRow(row).getCell(0).getStringCellValue();
-            if (registerData.containsKey(target)) {
-                String[] data = registerData.get(target);
-                noDuplicateData.add(new String[]{data[0], data[1], data[2], data[3], data[4], data[5], data[6]
-                        , data[7], data[8], data[9]});
+            // increment count in countMap
+            if (!countMap.containsKey(cellKelamin)) {
+                countMap.put(cellKelamin, new HashMap<>());
+            }
+            Map<String, Integer> kelaminCountMap = countMap.get(cellKelamin);
+            if (!kelaminCountMap.containsKey(cellTanggalReg)) {
+                kelaminCountMap.put(cellTanggalReg, 1);
+            } else {
+                kelaminCountMap.put(cellTanggalReg, kelaminCountMap.get(cellTanggalReg) + 1);
             }
         }
 
-        for (int ii = 0; ii < noDuplicateData.size(); ii++) {
-            Row row = noDuplicate.getRow(ii+1);
-            String[] data = noDuplicateData.get(ii);
-            row.createCell(1).setCellValue(data[0]);
-            row.createCell(2).setCellValue(data[1]);
-            row.createCell(3).setCellValue(data[2]);
-            row.createCell(4).setCellValue(data[3]);
-            row.createCell(5).setCellValue(data[4]);
-            row.createCell(6).setCellValue(data[5]);
-            row.createCell(7).setCellValue(data[6]);
-            row.createCell(8).setCellValue(data[7]);
-            row.createCell(9).setCellValue(data[8]);
-            row.createCell(10).setCellValue(data[9]);
+        klaminPerTanggal.createRow (0).createCell (0).setCellValue ("Kelamin");
+        int rowStart=1;
+        for (String tgl:tanggalRegist) {
+            klaminPerTanggal.getRow (0).createCell (rowStart++).setCellValue (tgl);
+        }
+        rowStart=1;
+        for (String klmn:kelamin){
+            int colStart=1;
+            klaminPerTanggal.createRow (rowStart).createCell (0).setCellValue (klmn);
+            for (String tgl:tanggalRegist) {
+                if (countMap.containsKey(klmn) && countMap.get(klmn).containsKey(tgl)) {
+                    klaminPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(klmn).get(tgl));
+                } else {
+                    klaminPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                }
+            }
+            rowStart++;
+        }
+        System.out.println ("02. "+bookLaporanIGD.getSheetName (2)+" is done");
+
+
+
+        bookLaporanIGD.createSheet ("3.KONDISI AKHIR PER TANGGAL");
+        Sheet akhirPerTanggal = bookLaporanIGD.getSheetAt (3);
+        System.out.println ("03. Start doing "+bookLaporanIGD.getSheetName (3));
+        Set<String> kondisiAkhirTree = new TreeSet<> ();
+        tanggalRegist = new TreeSet<> ();
+        countMap = new HashMap<>(); // new count map
+        String kondisiKeluar;
+        for (int row=1;row<=sorted.getLastRowNum ();row++) {
+            boolean kondisiAkhir = sorted.getRow (row).getCell (36) == null;
+            boolean caraKeluar = sorted.getRow (row).getCell (37) == null;
+            if (kondisiAkhir && caraKeluar) {
+                kondisiKeluar = "";
+            } else if (kondisiAkhir) {
+                kondisiKeluar= register.getRow (row).getCell (43).getStringCellValue ();
+            } else {
+                kondisiKeluar= register.getRow (row).getCell (42).getStringCellValue ();
+            }
+            String cellKondisiAkhir = kondisiKeluar;
+            String cellTanggalReg = sorted.getRow (row).getCell (1).getStringCellValue ();
+
+            tanggalRegist.add (cellTanggalReg);
+            kondisiAkhirTree.add (cellKondisiAkhir);
+
+            // increment count in countMap
+            if (!countMap.containsKey(cellKondisiAkhir)) {
+                countMap.put(cellKondisiAkhir, new HashMap<>());
+            }
+            Map<String, Integer> kelaminCountMap = countMap.get(cellKondisiAkhir);
+            if (!kelaminCountMap.containsKey(cellTanggalReg)) {
+                kelaminCountMap.put(cellTanggalReg, 1);
+            } else {
+                kelaminCountMap.put(cellTanggalReg, kelaminCountMap.get(cellTanggalReg) + 1);
+            }
         }
 
-        System.out.println ("02. "+bookLaporanIGD.getSheetName (2)+" is done");
+        akhirPerTanggal.createRow (0).createCell (0).setCellValue ("Kondisi Keluar");
+        rowStart=1;
+        for (String tgl:tanggalRegist) {
+            akhirPerTanggal.getRow (0).createCell (rowStart++).setCellValue (tgl);
+        }
+        rowStart=1;
+        for (String kondKlr:kondisiAkhirTree){
+            int colStart=1;
+            akhirPerTanggal.createRow (rowStart).createCell (0).setCellValue (kondKlr);
+            for (String tgl:tanggalRegist) {
+                if (countMap.containsKey(kondKlr) && countMap.get(kondKlr).containsKey(tgl)) {
+                    akhirPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(kondKlr).get(tgl));
+                } else {
+                    akhirPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                }
+            }
+            rowStart++;
+        }
+        System.out.println ("03. "+bookLaporanIGD.getSheetName (3)+" is done");
+
+
+
+        bookLaporanIGD.createSheet ("4.CARA BAYAR PER TANGGAL");
+        Sheet crBayarPerTangal = bookLaporanIGD.getSheetAt (4);
+        System.out.println ("04. Start doing "+bookLaporanIGD.getSheetName (4));
+        Set<String> caraBayarTree = new TreeSet<> ();
+        tanggalRegist = new TreeSet<> ();
+        countMap = new HashMap<>(); // new count map
+        for (int row=1;row<=sorted.getLastRowNum ();row++) {
+            String cellCaraBayar = sorted.getRow (row).getCell (24).getStringCellValue ();
+            String cellTanggalReg = sorted.getRow (row).getCell (1).getStringCellValue ();
+            tanggalRegist.add (cellTanggalReg);
+            caraBayarTree.add (cellCaraBayar);
+
+            // increment count in countMap
+            if (!countMap.containsKey(cellCaraBayar)) {
+                countMap.put(cellCaraBayar, new HashMap<>());
+            }
+            Map<String, Integer> caraBayarCountMap = countMap.get(cellCaraBayar);
+            if (!caraBayarCountMap.containsKey(cellTanggalReg)) {
+                caraBayarCountMap.put(cellTanggalReg, 1);
+            } else {
+                caraBayarCountMap.put(cellTanggalReg, caraBayarCountMap.get(cellTanggalReg) + 1);
+            }
+        }
+
+        crBayarPerTangal.createRow (0).createCell (0).setCellValue ("Kondisi Keluar");
+        rowStart=1;
+        for (String tgl:tanggalRegist) {
+            crBayarPerTangal.getRow (0).createCell (rowStart++).setCellValue (tgl);
+        }
+        rowStart=1;
+        for (String caraBayar:caraBayarTree){
+            int colStart=1;
+            crBayarPerTangal.createRow (rowStart).createCell (0).setCellValue (caraBayar);
+            for (String tgl:tanggalRegist) {
+                if (countMap.containsKey(caraBayar) && countMap.get(caraBayar).containsKey(tgl)) {
+                    crBayarPerTangal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(caraBayar).get(tgl));
+                } else {
+                    crBayarPerTangal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                }
+            }
+            rowStart++;
+        }
+        System.out.println ("04. "+bookLaporanIGD.getSheetName (4)+" is done");
+
+
+
+        bookLaporanIGD.createSheet ("5.PASIEN DOKTER TUGAS");
+        Sheet pasienDokterTugas = bookLaporanIGD.getSheetAt (5);
+        System.out.println ("05. Start doing "+bookLaporanIGD.getSheetName (5));
+
+        Map<String, Integer> psnDktrTugas = new TreeMap<> ();
+        for (int row = 1; row <= sorted.getLastRowNum (); row++) {
+            String psnInstAsal = sorted.getRow (row).getCell (54).getStringCellValue ();
+            psnDktrTugas.put (psnInstAsal, psnDktrTugas.getOrDefault (psnInstAsal, 0) + 1);
+        }
+
+        pasienDokterTugas.createRow (0).createCell (0).setCellValue ("Dokter Tugas");
+        pasienDokterTugas.getRow (0).createCell (1).setCellValue ("Jumlah");
+
+        int dokterTugasRow = 0;
+        int dokterTugasSum = 0;
+        for (Map.Entry<String, Integer> entry : psnDktrTugas.entrySet ()) {
+            dokterTugasRow++;
+            pasienDokterTugas.createRow (dokterTugasRow).createCell (0).setCellValue (entry.getKey ());
+            pasienDokterTugas.getRow (dokterTugasRow).createCell (1).setCellValue (entry.getValue ());
+            dokterTugasSum += entry.getValue ();
+        }
+        int PsnInstAsalLastRow = pasienDokterTugas.getLastRowNum () + 1;
+        pasienDokterTugas.createRow (PsnInstAsalLastRow).createCell (0).setCellValue ("Grand Total");
+        pasienDokterTugas.getRow (PsnInstAsalLastRow).createCell (1).setCellValue (dokterTugasSum);
+
+        System.out.println ("05. "+bookLaporanIGD.getSheetName (5)+" is done");
+
+
+
+        bookLaporanIGD.createSheet ("6.PASIEN DOKTER PER TANGGAL");
+        Sheet pasienDokterPerTanggal = bookLaporanIGD.getSheetAt (6);
+        System.out.println ("06. Start doing "+bookLaporanIGD.getSheetName (6));
+
+        Set<String> psnDokterTugas = new TreeSet<> ();
+        tanggalRegist = new TreeSet<> ();
+        countMap = new HashMap<>(); // new count map
+        for (int row=1;row<=sorted.getLastRowNum ();row++) {
+            String cellDokterTugas = sorted.getRow (row).getCell (54).getStringCellValue ();
+            String cellTanggalReg = sorted.getRow (row).getCell (1).getStringCellValue ();
+
+            tanggalRegist.add (cellTanggalReg);
+            psnDokterTugas.add (cellDokterTugas);
+
+            // increment count in countMap
+            if (!countMap.containsKey(cellDokterTugas)) {
+                countMap.put(cellDokterTugas, new HashMap<>());
+            }
+            Map<String, Integer> drTugasCountMap = countMap.get(cellDokterTugas);
+            if (!drTugasCountMap.containsKey(cellTanggalReg)) {
+                drTugasCountMap.put(cellTanggalReg, 1);
+            } else {
+                drTugasCountMap.put(cellTanggalReg, drTugasCountMap.get(cellTanggalReg) + 1);
+            }
+        }
+
+        pasienDokterPerTanggal.createRow (0).createCell (0).setCellValue ("Kondisi Keluar");
+        rowStart=1;
+        for (String tgl:tanggalRegist) {
+            pasienDokterPerTanggal.getRow (0).createCell (rowStart++).setCellValue (tgl);
+        }
+        rowStart=1;
+        for (String drTugas:psnDokterTugas){
+            int colStart=1;
+            pasienDokterPerTanggal.createRow (rowStart).createCell (0).setCellValue (drTugas);
+            for (String tgl:tanggalRegist) {
+                if (countMap.containsKey(drTugas) && countMap.get(drTugas).containsKey(tgl)) {
+                    pasienDokterPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(drTugas).get(tgl));
+                } else {
+                    pasienDokterPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                }
+            }
+            rowStart++;
+        }
+
+        System.out.println ("06. "+bookLaporanIGD.getSheetName (6)+" is done");
+
+
+
+        bookLaporanIGD.createSheet ("7.SUB INSTALASI PER CARA MASUK");
+        Sheet subInstalasiCaraMasuk = bookLaporanIGD.getSheetAt (7);
+        System.out.println ("07. Start doing "+bookLaporanIGD.getSheetName (7));
+
+        System.out.println ("07. "+bookLaporanIGD.getSheetName (7)+" is done");
+
+
+
+        bookLaporanIGD.createSheet ("8.DIAGNOSA PER JENIS KELAMIN");
+        Sheet diagPerKelamin = bookLaporanIGD.getSheetAt (8);
+        System.out.println ("08. Start doing "+bookLaporanIGD.getSheetName (8));
+
+        System.out.println ("08. "+bookLaporanIGD.getSheetName (8)+" is done");
+
+
+
+        bookLaporanIGD.createSheet ("9.PASIEN J-COVID");
+        Sheet pasienJCovid = bookLaporanIGD.getSheetAt (9);
+        System.out.println ("09. Start doing "+bookLaporanIGD.getSheetName (9));
+
+        System.out.println ("09. "+bookLaporanIGD.getSheetName (9)+" is done");
+
+
+
+        bookLaporanIGD.createSheet ("10.PASIEN MAWAR");
+        Sheet pasienMawar = bookLaporanIGD.getSheetAt (10);
+        System.out.println ("10. Start doing "+bookLaporanIGD.getSheetName (10));
+
+        System.out.println ("10. "+bookLaporanIGD.getSheetName (10)+" is done");
+
 
 
         FileOutputStream IGDHalfDone = new FileOutputStream (Year + " " + Month + " IGD Half Done.xlsx");
