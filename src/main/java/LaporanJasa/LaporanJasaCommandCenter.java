@@ -1,9 +1,10 @@
 package LaporanJasa;
 
 import java.io.File;
+import java.io.IOException;
 
 public class LaporanJasaCommandCenter {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new A_RekapJasaDokterDanUnit ();
         new B_RincianTindakanJasaDokter();
         new C_RekapPasienJasaDokter();

@@ -195,17 +195,13 @@ public class D_RekapPasienJasaUnit {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (workbook != null) {
-                    workbook.close();
+            if (outputStream != null) {
+                try {
+                    outputStream.close(); // Close output stream
+                } catch (IOException ex) {
+                    throw new RuntimeException (ex);
                 }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
-
     }
 }

@@ -30,19 +30,19 @@ public class A_RekapJasaDokterDanUnit {
         //XLSX VER
         File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xlsx");  //XLSX
 //        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
-//        File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");      //XLSX
-        File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
+        File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");      //XLSX
+//        File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
         LocalDateTime start = LocalDateTime.now ();
         System.out.println ("A_RekapJasaDokterDanUnit is starting");
         try {
             FileInputStream inputStream2 = new FileInputStream(jasaUnit);     //XLSX
 //            POIFSFileSystem poifs2 = new POIFSFileSystem(jasaUnit);
-//            FileInputStream inputStream1 = new FileInputStream(jasaDokter); //XLSX
-            POIFSFileSystem poifs = new POIFSFileSystem(jasaDokter);
+            FileInputStream inputStream1 = new FileInputStream(jasaDokter); //XLSX
+//            POIFSFileSystem poifs = new POIFSFileSystem(jasaDokter);
             Workbook workbook2 = new XSSFWorkbook (inputStream2);                       //XLSX
 //            Workbook workbook2 = new HSSFWorkbook(poifs2);
-//            workbook = new XSSFWorkbook(inputStream1);                      //XLSX
-            workbook = new HSSFWorkbook(poifs);
+            workbook = new XSSFWorkbook(inputStream1);                      //XLSX
+//            workbook = new HSSFWorkbook(poifs);
 
 
             // Make Styling
@@ -89,10 +89,10 @@ public class A_RekapJasaDokterDanUnit {
             String caraBayarDokter = sheetWorkbookDokter.getRow(1).getCell(17).getStringCellValue();
             String caraBayarUnit = sheetWorkbookUnit.getRow(1).getCell(24).getStringCellValue();
 
-            if (!caraBayarDokter.contains("PBI")) {
+            if (caraBayarDokter.contains("PBI")) {
                 caraBayarDokter = "JKN";
             }
-            if (!caraBayarUnit.contains("PBI")) {
+            if (caraBayarUnit.contains("PBI")) {
                 caraBayarUnit = "JKN";
             }
 
@@ -111,12 +111,29 @@ public class A_RekapJasaDokterDanUnit {
                             Collectors.summingDouble(row -> row.getCell(46).getNumericCellValue())
                     ));
 
-            Map<String, Double> pivotDataUnit = StreamSupport.stream (sheetWorkbookUnit.spliterator (),false)
-                    .skip (1)
-                    .collect(Collectors.groupingBy (
-                            row->row.getCell(5).getStringCellValue()
-                            ,Collectors.summingDouble (row->row.getCell (19).getNumericCellValue ())
+            Map<String, Double> pivotDataUnit = StreamSupport.stream(sheetWorkbookUnit.spliterator(), false)
+                    .skip(1)
+                    .collect(Collectors.groupingBy(
+                            row -> row.getCell(5).getStringCellValue(),
+                            Collectors.summingDouble(row -> {
+                                Cell cell = row.getCell(19);
+                                if (cell.getCellType() == CellType.NUMERIC) {
+                                    return cell.getNumericCellValue();
+                                } else if (cell.getCellType() == CellType.STRING) {
+                                    try {
+                                        return Double.parseDouble(cell.getStringCellValue());
+                                    } catch (NumberFormatException e) {
+                                        // Handle the case when the cell value is not a valid number
+                                        // You can add appropriate error handling or logging here
+                                        return 0.0; // Set a default value for invalid cell values
+                                    }
+                                } else {
+                                    // Handle other cell types if needed
+                                    return 0.0; // Set a default value for unsupported cell types
+                                }
+                            })
                     ));
+
 
             // Sort by doctor name and write to sheetJasaDokter
             List<Map.Entry<String, Double>> entriesDoctor = new ArrayList<>(pivotDataDoctor.entrySet());

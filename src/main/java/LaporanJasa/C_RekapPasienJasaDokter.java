@@ -3,6 +3,7 @@ package LaporanJasa;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -10,7 +11,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class C_RekapPasienJasaDokter {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 //        new C_RekapPasienJasaDokter();
     }
 
@@ -18,13 +19,29 @@ public class C_RekapPasienJasaDokter {
     private FileOutputStream outputStream;
 
 
+//    public C_RekapPasienJasaDokter() {
+//        LocalDateTime start = LocalDateTime.now ();
+//        File inputFS = new File("C:\\sat work\\test\\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xlsx");  //XLSX
+////        File inputFS = new File("C:\\sat work\\test\\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xls");
+//        System.out.println ("C_RekapPasienJasaDokter is starting");
+//        try {
+//            FileInputStream poifs = new FileInputStream(inputFS);     //XLSX
+////            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
+////            workbook = new HSSFWorkbook(poifs);
+//            Workbook workbook = new XSSFWorkbook (poifs);                       //XLSX
+//
+//    Sheet sheet = workbook.getSheetAt(0);
+//    Sheet sheet2 = workbook.createSheet();
+
     public C_RekapPasienJasaDokter() {
-        LocalDateTime start = LocalDateTime.now ();
-        File inputFS = new File("C:\\sat work\\test\\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xls");
-        System.out.println ("C_RekapPasienJasaDokter is starting");
+        LocalDateTime start = LocalDateTime.now();
+        File inputFS = new File("C:\\sat work\\test\\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xlsx"); //XLSX
+        System.out.println("C_RekapPasienJasaDokter is starting");
+        Workbook workbook = null;
+        FileOutputStream outputStream = null;
         try {
-            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
-            workbook = new HSSFWorkbook(poifs);
+            FileInputStream poifs = new FileInputStream(inputFS); //XLSX
+            workbook = new XSSFWorkbook(poifs); //XLSX
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
@@ -34,7 +51,7 @@ public class C_RekapPasienJasaDokter {
 
 
             CellStyle totalStyle = workbook.createCellStyle ();
-            totalStyle.setAlignment(HorizontalAlignment.RIGHT);
+            totalStyle.setAlignment (HorizontalAlignment.RIGHT);
             totalStyle.setBorderBottom (BorderStyle.THIN);
             totalStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
             totalStyle.setBorderLeft (BorderStyle.THIN);
@@ -44,40 +61,40 @@ public class C_RekapPasienJasaDokter {
             totalStyle.setBorderTop (BorderStyle.THIN);
             totalStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
-            workbook.setSheetName(1, "3. REKAP PASIEN JASA DOKTER");
-            int lastColumn = sheet.getRow(0).getLastCellNum();
-            int lastRow = sheet.getLastRowNum();
-            for (int row =1;row<=lastRow;row++){
-                sheet2.createRow(row);
+            workbook.setSheetName (1, "3. REKAP PASIEN JASA DOKTER");
+            int lastColumn = sheet.getRow (0).getLastCellNum ();
+            int lastRow = sheet.getLastRowNum ();
+            for (int row = 1; row <= lastRow; row++) {
+                sheet2.createRow (row);
             }
 
-            Row row = sheet2.getRow(0);
+            Row row = sheet2.getRow (0);
             if (row == null) {
-                row = sheet2.createRow(0);
+                row = sheet2.createRow (0);
             }
-            row.createCell(0).setCellValue("NAMA PASIEN");
-            row.createCell(1).setCellValue("NORM");
-            row.createCell(2).setCellValue("NO REG");
-            row.createCell(3).setCellValue("TGL REG");
-            row.createCell(4).setCellValue("KET INST");
-            row.createCell(5).setCellValue("KET SUB INST");
-            row.createCell(6).setCellValue("KET DTL SUB INST");
-            row.createCell(7).setCellValue("NAMA DOKTER RSF");
-            row.createCell(8).setCellValue("NAMA BANK");
-            row.createCell(9).setCellValue("NO REKENING");
-            row.createCell(10).setCellValue("JML PENERIMAAN");
-            row.createCell(11).setCellValue("JML KOREKSI");
-            row.createCell(12).setCellValue("JML PAJAK");
-            row.createCell(13).setCellValue("JML PENGAMBILAN");
-            row.createCell(14).setCellValue("JML NETTO");
+            row.createCell (0).setCellValue ("NAMA PASIEN");
+            row.createCell (1).setCellValue ("NORM");
+            row.createCell (2).setCellValue ("NO REG");
+            row.createCell (3).setCellValue ("TGL REG");
+            row.createCell (4).setCellValue ("KET INST");
+            row.createCell (5).setCellValue ("KET SUB INST");
+            row.createCell (6).setCellValue ("KET DTL SUB INST");
+            row.createCell (7).setCellValue ("NAMA DOKTER RSF");
+            row.createCell (8).setCellValue ("NAMA BANK");
+            row.createCell (9).setCellValue ("NO REKENING");
+            row.createCell (10).setCellValue ("JML PENERIMAAN");
+            row.createCell (11).setCellValue ("JML KOREKSI");
+            row.createCell (12).setCellValue ("JML PAJAK");
+            row.createCell (13).setCellValue ("JML PENGAMBILAN");
+            row.createCell (14).setCellValue ("JML NETTO");
 
 
-            DecimalFormat formatter = new DecimalFormat("#,##0;-#,##0");
+            DecimalFormat formatter = new DecimalFormat ("#,##0;-#,##0");
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
-                Cell cell = sheet.getRow(0).getCell(column);
+                Cell cell = sheet.getRow (0).getCell (column);
 
-                String cellValue = cell.getStringCellValue();
+                String cellValue = cell.getStringCellValue ();
                 int targetColumn2 = switch (cellValue) {
                     case "NAMA_PASIEN" -> 0;
                     case "NORM" -> 1;
@@ -113,36 +130,35 @@ public class C_RekapPasienJasaDokter {
 //                }
                 if (targetColumn2 != -1) {
                     for (int i = 1; i <= lastRow; i++) {
-                        Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
-                        if (sheet.getRow (i).getCell (column)==null){
+                        Cell targetCell = sheet2.getRow (i).createCell (targetColumn2);
+                        if (sheet.getRow (i).getCell (column) == null) {
                             targetCell.setCellValue ("");
-                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
-                        {
-                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
+                        } else if (sheet.getRow (i).getCell (column).getCellType () == CellType.STRING) {
+                            targetCell.setCellValue (sheet.getRow (i).getCell (column).getStringCellValue ());
                         } else if (targetColumn2 == 14) {
-                            targetCell.setCellValue(formatter.format(sheet.getRow(i).getCell(column).getNumericCellValue()));
+                            targetCell.setCellValue (formatter.format (sheet.getRow (i).getCell (column).getNumericCellValue ()));
                         } else {
-                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
+                            targetCell.setCellValue (sheet.getRow (i).getCell (column).getNumericCellValue ());
                         }
                     }
                 }
 
             }
-            int columnCountA2 = sheet2.getRow(0).getLastCellNum();
+            int columnCountA2 = sheet2.getRow (0).getLastCellNum ();
             for (int columnIndex = 0; columnIndex < columnCountA2; columnIndex++) {
-                sheet2.autoSizeColumn(columnIndex);
+                sheet2.autoSizeColumn (columnIndex);
             }
-            CellStyle centerTextStyle = workbook.createCellStyle();
-            centerTextStyle.setAlignment(HorizontalAlignment.CENTER);
-            int lastCellA2 = sheet2.getRow(0).getLastCellNum();
-            for (int title=0;title<lastCellA2;title++){
-                sheet2.getRow(0).getCell(title).setCellStyle(centerTextStyle);
+            CellStyle centerTextStyle = workbook.createCellStyle ();
+            centerTextStyle.setAlignment (HorizontalAlignment.CENTER);
+            int lastCellA2 = sheet2.getRow (0).getLastCellNum ();
+            for (int title = 0; title < lastCellA2; title++) {
+                sheet2.getRow (0).getCell (title).setCellStyle (centerTextStyle);
             }
             // Make Styling
-            CellStyle targetColumnColourNetto = workbook.createCellStyle();
+            CellStyle targetColumnColourNetto = workbook.createCellStyle ();
             // Set the background color of the cells in the target column to yellow
-            targetColumnColourNetto.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-            targetColumnColourNetto.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            targetColumnColourNetto.setFillForegroundColor (IndexedColors.YELLOW.getIndex ());
+            targetColumnColourNetto.setFillPattern (FillPatternType.SOLID_FOREGROUND);
             targetColumnColourNetto.setAlignment (HorizontalAlignment.RIGHT);
             targetColumnColourNetto.setBorderBottom (BorderStyle.THIN);
             targetColumnColourNetto.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
@@ -191,36 +207,54 @@ public class C_RekapPasienJasaDokter {
                     sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
                 }
             }
-            for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++){
+            for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
                 sheet2.getRow (downRow).getCell (14).setCellStyle (targetColumnColourNetto);
             }
 
-            workbook.removeSheetAt(0);
+            workbook.removeSheetAt (0);
             LocalDateTime end = LocalDateTime.now ();
-            Duration duration = Duration.between(start, end);
+            Duration duration = Duration.between (start, end);
             long seconds = duration.toMillis ();
-            System.out.println ("C_RekapPasienJasaDokter Done in "+seconds);
+            System.out.println ("C_RekapPasienJasaDokter Done in " + seconds);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
 
 
+//        try {
+//            outputStream = new FileOutputStream("3. REKAP PASIEN JASA DOKTER.xlsx");
+//            workbook.write(outputStream);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (workbook != null) {
+//                    workbook.close();
+//                }
+//                if (outputStream != null) {
+//                    outputStream.close();
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//}
+
         try {
+            // Write to output file
             outputStream = new FileOutputStream("3. REKAP PASIEN JASA DOKTER.xlsx");
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (workbook != null) {
-                    workbook.close();
+            if (outputStream != null) {
+                try {
+                    outputStream.close(); // Close output stream
+                } catch (IOException ex) {
+                    throw new RuntimeException (ex);
                 }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

@@ -32,12 +32,15 @@ public class E_RincianJasaNoname {
 //            workbook = new XSSFWorkbook (inputStream);
 
         //XLS VER
-        File inputFS = new File("C:\\sat work\\test\\d) LAPORAN PENERIMAAN JASA PELAYANAN TANPA PEMILIK.xls");
+//        File inputFS = new File("C:\\sat work\\test\\d) LAPORAN PENERIMAAN JASA PELAYANAN TANPA PEMILIK.xls");
+        File jasaTanpaPemilik = new File("C:\\\\sat work\\\\test\\\\d) LAPORAN PENERIMAAN JASA PELAYANAN TANPA PEMILIK.xlsx");      //XLSX
         System.out.println ("E_RincianJasaNoname is starting");
         try {
             LocalDateTime start = LocalDateTime.now ();
-            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
-            workbook = new HSSFWorkbook(poifs);
+            FileInputStream inputStream1 = new FileInputStream(jasaTanpaPemilik); //XLSX
+//            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
+            workbook = new XSSFWorkbook(inputStream1);                      //XLSX
+//            workbook = new HSSFWorkbook(poifs);
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();

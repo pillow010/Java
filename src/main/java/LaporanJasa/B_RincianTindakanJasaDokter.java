@@ -3,6 +3,7 @@ package LaporanJasa;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.text.DecimalFormat;
@@ -19,12 +20,15 @@ public class B_RincianTindakanJasaDokter {
 
 
     public B_RincianTindakanJasaDokter() {
-        File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
+        File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");  //XLSX
+//        File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
         System.out.println ("B_RincianTindakanJasaDokter is starting");
         try {
             LocalDateTime start = LocalDateTime.now ();
-            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
-            workbook = new HSSFWorkbook(poifs);
+            FileInputStream poifs = new FileInputStream(inputFS);     //XLSX
+//            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
+            workbook = new XSSFWorkbook (poifs);                      //XLSX
+//            workbook = new HSSFWorkbook(poifs);
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
