@@ -1,7 +1,5 @@
 package LaporanJasa;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -142,10 +140,11 @@ public class A_RekapJasaDokterDanUnit {
             entriesDoctor.sort(Map.Entry.comparingByKey());
             entriesUnit.sort (Map.Entry.comparingByKey ());
             int rowNum = 6;
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
             symbols.setGroupingSeparator('.');
             symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########;-#,##0.#########", symbols);
+            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
             for (Map.Entry<String, Double> entry : entriesDoctor) {
                 Row row = sheetJasaDokter.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 6);

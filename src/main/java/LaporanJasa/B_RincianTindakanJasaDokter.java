@@ -1,7 +1,5 @@
 package LaporanJasa;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -34,9 +32,6 @@ public class B_RincianTindakanJasaDokter {
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
-
-            //Cara Bayar
-            String caraBayar = sheet.getRow (1).getCell (17).getStringCellValue ();
 
             workbook.setSheetName(1, "2. RINCIAN TINDAKAN JASA DOKTER");
             int lastColumn = sheet.getRow(0).getLastCellNum();
@@ -73,69 +68,11 @@ public class B_RincianTindakanJasaDokter {
             row.createCell(21).setCellValue("JML PENGAMBILAN");
             row.createCell(22).setCellValue("JML NETTO");
 
-
-//            for (int column = 0; column <= lastColumn - 1; column++) {
-//            // jika cell mengandung "KD_INST" concat jadi noreg
-//                Cell cell = sheet.getRow(0).getCell(column);
-//                if (sheet.getRow(0).getCell(column).getStringCellValue().equals("KD_INST")) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell noReg = sheet2.getRow(i).createCell(2);
-//                        noReg.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue() +
-//                                sheet.getRow(i).getCell(column + 1).getStringCellValue() +
-//                                sheet.getRow(i).getCell(column + 2).getStringCellValue() +
-//                                sheet.getRow(i).getCell(column + 3).getStringCellValue() +
-//                                sheet.getRow(i).getCell(column + 4).getStringCellValue());
-//                    }
-//                }
-//
-//                String cellValue = cell.getStringCellValue();
-//                int targetColumn2 = switch (cellValue) {
-//                    case "NAMA_PASIEN" -> 0;
-//                    case "NORM" -> 1;
-//                    case "NO_REG" -> 2;
-//                    case "KET_INST" -> 3;
-//                    case "KET_SUB_INST" -> 4;
-//                    case "KET_DTL_SUB_INST" -> 5;
-//                    case "NAMA_DOKTER" -> 6;
-//                    case "POSISI" -> 7;
-//                    case "TGL_TINDAKAN" -> 8;
-//                    case "NM_TINDAKAN" -> 9;
-//                    case "RUANG_RAWAT" -> 10;
-//                    case "PAKET_JAMINAN" -> 11;
-//                    case "JASA_PELAYANAN_TARIF" -> 12;
-//                    case "JASA_PELAYANAN_JAMIN" -> 13;
-//                    case "JML_PENDAPATAN" -> 14;
-//                    case "JML_PENERIMAAN_TUNAI" -> 15;
-//                    case "JML_PENERIMAAN_PIUTANG" -> 16;
-//                    case "JML_PENERIMAAN_JMN" -> 17;
-//                    case "JML_KOREKSI" -> 18;
-//                    case "JML_PAJAK" -> 19;
-//                    case "JML_PENGURANG_JASA" -> 20;
-//                    case "JML_PENGAMBILAN" -> 21;
-//                    case "JML_NETTO" -> 22;
-//                    default -> -1;
-//                };
-//
-//                if (targetColumn2 != -1) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
-//                        if (sheet.getRow (i).getCell (column)==null){
-//                            targetCell.setCellValue ("");
-//                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
-//                        {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-//                        } else {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
-//
-//                        }
-//                    }
-//                }
-//            }
-
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
             symbols.setGroupingSeparator('.');
             symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########;-#,##0.#########", symbols);
+            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
             for (int column = 0; column <= lastColumn - 1; column++) {
                 // jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow(0).getCell(column);

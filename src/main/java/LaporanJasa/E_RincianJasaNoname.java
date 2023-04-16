@@ -1,7 +1,5 @@
 package LaporanJasa;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -47,9 +45,6 @@ public class E_RincianJasaNoname {
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
 
-            //Cara Bayar
-            String caraBayar = sheet.getRow (1).getCell (13).getStringCellValue ();
-
             CellStyle totalStyle = workbook.createCellStyle ();
             totalStyle.setAlignment(HorizontalAlignment.RIGHT);
             totalStyle.setBorderBottom (BorderStyle.THIN);
@@ -94,11 +89,11 @@ public class E_RincianJasaNoname {
             row.createCell(19).setCellValue("KET DTL SUB INST");
 
 
-
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
             symbols.setGroupingSeparator('.');
             symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########;-#,##0.#########", symbols);
+            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow(0).getCell(column);
@@ -142,20 +137,6 @@ public class E_RincianJasaNoname {
                         default -> -1;
                 };
 
-//                if (targetColumn2 != -1) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
-//                        if (sheet.getRow (i).getCell (column)==null){
-//                            targetCell.setCellValue ("");
-//                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
-//                        {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-//                        } else {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
-//
-//                        }
-//                    }
-//                }
                 if (targetColumn2 != -1) {
                     for (int i = 1; i <= lastRow; i++) {
                         Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);

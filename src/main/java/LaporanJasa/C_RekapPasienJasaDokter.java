@@ -1,7 +1,5 @@
 package LaporanJasa;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -16,24 +14,6 @@ public class C_RekapPasienJasaDokter {
     public static void main(String[] args) throws IOException {
 //        new C_RekapPasienJasaDokter();
     }
-
-    private Workbook workbook;
-    private FileOutputStream outputStream;
-
-
-//    public C_RekapPasienJasaDokter() {
-//        LocalDateTime start = LocalDateTime.now ();
-//        File inputFS = new File("C:\\sat work\\test\\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xlsx");  //XLSX
-////        File inputFS = new File("C:\\sat work\\test\\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xls");
-//        System.out.println ("C_RekapPasienJasaDokter is starting");
-//        try {
-//            FileInputStream poifs = new FileInputStream(inputFS);     //XLSX
-////            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
-////            workbook = new HSSFWorkbook(poifs);
-//            Workbook workbook = new XSSFWorkbook (poifs);                       //XLSX
-//
-//    Sheet sheet = workbook.getSheetAt(0);
-//    Sheet sheet2 = workbook.createSheet();
 
     public C_RekapPasienJasaDokter() {
         LocalDateTime start = LocalDateTime.now();
@@ -91,10 +71,11 @@ public class C_RekapPasienJasaDokter {
             row.createCell (14).setCellValue ("JML NETTO");
 
 
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
             symbols.setGroupingSeparator('.');
             symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########;-#,##0.#########", symbols);
+            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow (0).getCell (column);
@@ -119,20 +100,6 @@ public class C_RekapPasienJasaDokter {
                     default -> -1;
                 };
 
-//                if (targetColumn2 != -1) {
-//                    for (int i = 1; i <= lastRow; i++) {
-//                        Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
-//                        if (sheet.getRow (i).getCell (column)==null){
-//                            targetCell.setCellValue ("");
-//                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
-//                        {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-//                        } else {
-//                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
-//
-//                        }
-//                    }
-//                }
                 if (targetColumn2 != -1) {
                     for (int i = 1; i <= lastRow; i++) {
                         Cell targetCell = sheet2.getRow (i).createCell (targetColumn2);
@@ -254,12 +221,15 @@ public class C_RekapPasienJasaDokter {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close(); // Close output stream
-                } catch (IOException ex) {
-                    throw new RuntimeException (ex);
+            try {
+                if (workbook != null) {
+                    workbook.close();
                 }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

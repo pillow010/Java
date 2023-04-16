@@ -1,7 +1,5 @@
 package LaporanJasa;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -77,11 +75,11 @@ public class D_RekapPasienJasaUnit {
             row.createCell(11).setCellValue("JML PENGAMBILAN");
             row.createCell(12).setCellValue("JML NETTO");
 
-
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
             symbols.setGroupingSeparator('.');
             symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########;-#,##0.#########", symbols);
+            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
 
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
@@ -191,19 +189,38 @@ public class D_RekapPasienJasaUnit {
         }
 
 
+//        try {
+//            outputStream = new FileOutputStream("4. REKAP PASIEN JASA UNIT.xlsx");
+//            workbook.write(outputStream);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (outputStream != null) {
+//                try {
+//                    outputStream.close(); // Close output stream
+//                } catch (IOException ex) {
+//                    throw new RuntimeException (ex);
+//                }
+//            }
+//        }
+
         try {
             outputStream = new FileOutputStream("4. REKAP PASIEN JASA UNIT.xlsx");
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.close(); // Close output stream
-                } catch (IOException ex) {
-                    throw new RuntimeException (ex);
+            try {
+                if (workbook != null) {
+                    workbook.close();
                 }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+
     }
 }
