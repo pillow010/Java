@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.util.*;
 import java.time.LocalDateTime;
@@ -141,11 +142,14 @@ public class A_RekapJasaDokterDanUnit {
             entriesDoctor.sort(Map.Entry.comparingByKey());
             entriesUnit.sort (Map.Entry.comparingByKey ());
             int rowNum = 6;
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+            symbols.setGroupingSeparator('.');
+            symbols.setDecimalSeparator(',');
+            DecimalFormat formatter = new DecimalFormat("#,##0.#########;-#,##0.#########", symbols);
             for (Map.Entry<String, Double> entry : entriesDoctor) {
                 Row row = sheetJasaDokter.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 6);
                 row.createCell(1).setCellValue(entry.getKey());
-                DecimalFormat formatter = new DecimalFormat ("#,##0;-#,##0");
                 String formattedValue = formatter.format(entry.getValue());
                 row.createCell(2).setCellValue(formattedValue + ",-");
             }
@@ -155,7 +159,6 @@ public class A_RekapJasaDokterDanUnit {
                 Row rowA3 = sheetJasaUnit.createRow(rowNum++);
                 rowA3.createCell(0).setCellValue(rowNum - 6);
                 rowA3.createCell(1).setCellValue(entry.getKey());
-                DecimalFormat formatter = new DecimalFormat("#,##0;-#,##0");
                 String formattedValue = formatter.format(entry.getValue());
                 rowA3.createCell(2).setCellValue(formattedValue + ",-");
             }

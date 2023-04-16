@@ -10,8 +10,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 public class D_RekapPasienJasaUnit {
 
@@ -37,8 +39,6 @@ public class D_RekapPasienJasaUnit {
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
 
-            //Cara Bayar
-//            String caraBayar = sheet.getRow (1).getCell (24).getStringCellValue ();
 
 
             CellStyle totalStyle = workbook.createCellStyle ();
@@ -78,8 +78,11 @@ public class D_RekapPasienJasaUnit {
             row.createCell(12).setCellValue("JML NETTO");
 
 
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+            symbols.setGroupingSeparator('.');
+            symbols.setDecimalSeparator(',');
+            DecimalFormat formatter = new DecimalFormat("#,##0.#########;-#,##0.#########", symbols);
 
-            DecimalFormat formatter = new DecimalFormat("#,##0;-#,##0");
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow(0).getCell(column);
@@ -107,10 +110,9 @@ public class D_RekapPasienJasaUnit {
                         Cell targetCell = sheet2.getRow(i).createCell(targetColumn2);
                         if (sheet.getRow (i).getCell (column)==null){
                             targetCell.setCellValue ("");
-                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING)
-                        {
-                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
-                        } else if (targetColumn2 == 12) {
+                        }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING) {
+                            targetCell.setCellValue (sheet.getRow (i).getCell (column).getStringCellValue ());
+                        }else if (cellValue.equals("JML_NETTO")) {
                             targetCell.setCellValue(formatter.format(sheet.getRow(i).getCell(column).getNumericCellValue()));
                         } else {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());

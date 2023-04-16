@@ -7,8 +7,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 public class C_RekapPasienJasaDokter {
     public static void main(String[] args) throws IOException {
@@ -89,7 +91,10 @@ public class C_RekapPasienJasaDokter {
             row.createCell (14).setCellValue ("JML NETTO");
 
 
-            DecimalFormat formatter = new DecimalFormat ("#,##0;-#,##0");
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+            symbols.setGroupingSeparator('.');
+            symbols.setDecimalSeparator(',');
+            DecimalFormat formatter = new DecimalFormat("#,##0.#########;-#,##0.#########", symbols);
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow (0).getCell (column);
