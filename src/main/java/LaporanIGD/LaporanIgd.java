@@ -141,7 +141,7 @@ public class LaporanIgd {
         Sheet klaminPerTanggal = bookLaporanIGD.getSheetAt (2);
         System.out.println ("02. Start doing "+bookLaporanIGD.getSheetName (2));
 
-//      use treseet because it sort automatically
+//      use treseet because it sorts automatically
         Set<String> tanggalRegist = new TreeSet<> ();
         Set<String> kelamin = new TreeSet<> ();
         Map<String, Map<String, Integer>> countMap = new HashMap<>(); // new count map
@@ -571,8 +571,8 @@ public class LaporanIgd {
         System.out.println ("10. "+bookLaporanIGD.getSheetName (10)+" is done");
         bookLaporanIGD.removeSheetAt (0);
 
-        FileOutputStream IGDHalfDone = new FileOutputStream (Year + " " + Month + " IGD Half Done.xlsx");
-        bookLaporanIGD.write (IGDHalfDone);
+        FileOutputStream IGDDone = new FileOutputStream (Year + " " + Month + " IGD Done.xlsx");
+        bookLaporanIGD.write (IGDDone);
 
 
     }
