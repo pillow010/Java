@@ -91,6 +91,7 @@ public class RadHalfDone extends StylerRepo{
             subInstMap.put ("IRNA22", "ALAMANDA 3");
             subInstMap.put ("IRNA23", "KEMBANG LILY");
             subInstMap.put ("IRNA24", "LILY 2");
+            subInstMap.put ("IRNA25","BOUGENVILLE 2");
             subInstMap.put ("MCU01", "MCU");
             subInstMap.put ("IRJ01", "Umum");
             subInstMap.put ("IRJ02", "Kebidanan dan Kandungan");
@@ -123,6 +124,7 @@ public class RadHalfDone extends StylerRepo{
             subInstMap.put ("IRJ29", "Ispa");
             subInstMap.put ("IRJ30", "NEUROLOGI ANAK");
             subInstMap.put ("IRJ31", "BEDAH ONKOLOGI");
+            subInstMap.put ("IRJ32", "CAPD");
 
 
             pertindakan_New_Raw.getRow (0).createCell (28).setCellValue ("SUB INST");
@@ -257,9 +259,9 @@ public class RadHalfDone extends StylerRepo{
             System.out.println ("03. " + BookPertindakanNew.getSheetAt (3).getSheetName () + " Start");
 
 //          buat judul dan kasih kotak
-            Pertindakan.createRow (5).createCell (0).setCellValue ("NO");
-            Pertindakan.getRow (5).createCell (1).setCellValue ("Nama Tindakan");
-            Pertindakan.getRow (5).createCell (2).setCellValue ("Jumlah");
+            Pertindakan.createRow (0).createCell (0).setCellValue ("NO");
+            Pertindakan.getRow (0).createCell (1).setCellValue ("Nama Tindakan");
+            Pertindakan.getRow (0).createCell (2).setCellValue ("Jumlah");
 
 
             // Perform pivot simulation, and check if it not contains paket
@@ -283,27 +285,15 @@ public class RadHalfDone extends StylerRepo{
             }
 
 //          tulis hasil pivot ke pertindakan, mulai dari row 6
-            int startRow = 6;
+            int startRow = 1;
             int rowNum = startRow;
             for (Map.Entry<String, Integer> entry : pivotJumlahTindakan.entrySet ()) {
                 Row row = Pertindakan.createRow (rowNum++);
-                row.createCell (0).setCellValue (rowNum - 6);
+                row.createCell (0).setCellValue (rowNum-1);
                 row.createCell (1).setCellValue (entry.getKey ());
                 row.createCell (2).setCellValue (entry.getValue ());
             }
 
-//          buat header center kemudian border semuanya
-            for (int rightCell = 0; rightCell < Pertindakan.getRow (rowNum - 1).getLastCellNum (); rightCell++) {
-                Pertindakan.getRow (startRow - 1).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                for (int downRow = startRow; downRow <= pertindakanNewRawLastRowNum (Pertindakan); downRow++) {
-                    Pertindakan.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-                }
-            }
-//          cek per row. sesuaikan width nya
-            int columnCountA2 = Pertindakan.getRow (startRow - 1).getLastCellNum ();
-            for (int columnIndex = 0; columnIndex < columnCountA2; columnIndex++) {
-                Pertindakan.autoSizeColumn (columnIndex);
-            }
             System.out.println ("03. " + BookPertindakanNew.getSheetAt (3).getSheetName () + " Complete");
 
 
@@ -461,18 +451,6 @@ public class RadHalfDone extends StylerRepo{
             TndCrByr.createRow (TndCrByrLastRow).createCell (0).setCellValue ("Grand Total");
             TndCrByr.getRow (TndCrByrLastRow).createCell (1).setCellValue (TndCrByrSum);
 
-//          buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-            for (int rightCell = 0; rightCell < TndCrByr.getRow (0).getLastCellNum (); rightCell++) {
-                TndCrByr.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                for (int downRow = 1; downRow <= TndCrByr.getLastRowNum (); downRow++) {
-                    TndCrByr.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-                }
-            }
-//          cek per row. sesuaikan width nya
-            int columnCountTndCrByr = TndCrByr.getRow (0).getLastCellNum ();
-            for (int columnIndex = 0; columnIndex < columnCountTndCrByr; columnIndex++) {
-                TndCrByr.autoSizeColumn (columnIndex);
-            }
             System.out.println ("06. " + BookPertindakanNew.getSheetAt (6).getSheetName () + " Completed");
 
 
@@ -505,17 +483,17 @@ public class RadHalfDone extends StylerRepo{
             PsnCrByr.getRow (PsnCrByrLastRow).createCell (1).setCellValue (PsnCrByrSum);
 
 //          buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-            for (int rightCell = 0; rightCell < PsnCrByr.getRow (0).getLastCellNum (); rightCell++) {
-                PsnCrByr.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                for (int downRow = 1; downRow <= PsnCrByr.getLastRowNum (); downRow++) {
-                    PsnCrByr.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-                }
-            }
-//          cek per row. sesuaikan width nya
-            int columnCountPsnCrByr = PsnCrByr.getRow (0).getLastCellNum ();
-            for (int columnIndex = 0; columnIndex < columnCountPsnCrByr; columnIndex++) {
-                PsnCrByr.autoSizeColumn (columnIndex);
-            }
+//            for (int rightCell = 0; rightCell < PsnCrByr.getRow (0).getLastCellNum (); rightCell++) {
+//                PsnCrByr.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
+//                for (int downRow = 1; downRow <= PsnCrByr.getLastRowNum (); downRow++) {
+//                    PsnCrByr.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+//                }
+//            }
+////          cek per row. sesuaikan width nya
+//            int columnCountPsnCrByr = PsnCrByr.getRow (0).getLastCellNum ();
+//            for (int columnIndex = 0; columnIndex < columnCountPsnCrByr; columnIndex++) {
+//                PsnCrByr.autoSizeColumn (columnIndex);
+//            }
             System.out.println ("07. " + BookPertindakanNew.getSheetAt (7).getSheetName () + " Completed");
 
 //        buat sheet 8 Jml tndakan per inst asal
@@ -547,13 +525,13 @@ public class RadHalfDone extends StylerRepo{
             }
 
 //          buat header center, adjust width kemudian border ps. use'<' because return 2 but there is 0, and 1. no number 2.
-            for (int rightCell = 0; rightCell < TndInstAsal.getRow (0).getLastCellNum (); rightCell++) {
-                TndInstAsal.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                TndInstAsal.autoSizeColumn (rightCell);
-                for (int downRow = 1; downRow <= TndInstAsal.getLastRowNum (); downRow++) {
-                    TndInstAsal.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-                }
-            }
+//            for (int rightCell = 0; rightCell < TndInstAsal.getRow (0).getLastCellNum (); rightCell++) {
+//                TndInstAsal.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
+//                TndInstAsal.autoSizeColumn (rightCell);
+//                for (int downRow = 1; downRow <= TndInstAsal.getLastRowNum (); downRow++) {
+//                    TndInstAsal.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+//                }
+//            }
 
             System.out.println ("08. " + BookPertindakanNew.getSheetAt (8).getSheetName () + " Completed");
 
@@ -585,13 +563,13 @@ public class RadHalfDone extends StylerRepo{
             PsnInstAsal.getRow (PsnInstAsalLastRow).createCell (1).setCellValue (PsnInstAsalSum);
 
 //          buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-            for (int rightCell = 0; rightCell < PsnInstAsal.getRow (0).getLastCellNum (); rightCell++) {
-                PsnInstAsal.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                PsnInstAsal.autoSizeColumn (rightCell);
-                for (int downRow = 1; downRow <= PsnInstAsal.getLastRowNum (); downRow++) {
-                    PsnInstAsal.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-                }
-            }
+//            for (int rightCell = 0; rightCell < PsnInstAsal.getRow (0).getLastCellNum (); rightCell++) {
+//                PsnInstAsal.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
+//                PsnInstAsal.autoSizeColumn (rightCell);
+//                for (int downRow = 1; downRow <= PsnInstAsal.getLastRowNum (); downRow++) {
+//                    PsnInstAsal.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+//                }
+//            }
 
             System.out.println ("09. " + BookPertindakanNew.getSheetAt (9).getSheetName () + " Completed");
 
@@ -655,11 +633,7 @@ public class RadHalfDone extends StylerRepo{
                 rowStart++;
             }
 
-
-
-
-
-            System.out.println ("10. Sheet " + BookPertindakanNew.getSheetAt (10).getSheetName () + " Completed");
+            System.out.println ("10. " + BookPertindakanNew.getSheetAt (10).getSheetName () + " Completed");
 
 //        buat sheet 11 Jml tndakan per cr Byr pr hri
             InputStream monitoringF1 = new FileInputStream ("C:\\sat work\\test\\" + fileNameMonitoringf1 + ".xlsx");
@@ -708,11 +682,11 @@ public class RadHalfDone extends StylerRepo{
 
 
             // Create a HashMap to store monitoringValue/SID and row its belong
-            HashMap<String, List<Integer>> sampleIDHashMap = new HashMap<String, List<Integer>> ();
+            HashMap<String, List<Integer>> sampleIDHashMap = new HashMap<> ();
             for (int monitoringRow = 1; monitoringRow <= monitoringHasilRad.getLastRowNum (); monitoringRow++) {
                 String sampleID = monitoringHasilRad.getRow (monitoringRow).getCell (6).getStringCellValue ();
                 if (!sampleIDHashMap.containsKey (sampleID)) {
-                    sampleIDHashMap.put (sampleID, new ArrayList<Integer> ());
+                    sampleIDHashMap.put (sampleID, new ArrayList<> ());
                 }
                 sampleIDHashMap.get (sampleID).add (monitoringRow);
             }
@@ -734,7 +708,7 @@ public class RadHalfDone extends StylerRepo{
                 }
             }
 
-            HashMap<String, List<Integer>> noRegHashMap = new HashMap<String, List<Integer>> ();
+            HashMap<String, List<Integer>> noRegHashMap = new HashMap<> ();
             for (int monitoringRow = 1; monitoringRow <= monitoringHasilRad.getLastRowNum (); monitoringRow++) {
                 String noreg = monitoringHasilRad.getRow (monitoringRow).getCell (0).getStringCellValue ();
                 if (!noRegHashMap.containsKey (noreg)) {
@@ -772,7 +746,6 @@ public class RadHalfDone extends StylerRepo{
 
             HashMap<String, List<Integer>> noregHashMap = new HashMap<> ();
             for (int monitoringRow =1;monitoringRow<=monitoringHasilRad.getLastRowNum ();monitoringRow++){
-//                String accId = String.valueOf (monitoringHasilRad.getRow (monitoringRow).getCell (7).getNumericCellValue ()).substring (0,5);
                 String noreg = monitoringHasilRad.getRow (monitoringRow).getCell (0).getStringCellValue ();
                 if (!noregHashMap.containsKey (noreg)){
                     noregHashMap.put (noreg,new ArrayList<> ());
@@ -806,82 +779,254 @@ public class RadHalfDone extends StylerRepo{
                 }
             }
 
+            // First, create a Map to store the values from the responTime sheet
+            Map<String, String[]> responTimeMap = new HashMap<>();
+            int responTimeLastRowNum = responTime.getLastRowNum();
+            for (int row = 1; row <= responTimeLastRowNum; row++) {
+                String[] values = new String[26];
+                for (int col = 0; col < 26; col++) {
+                    Cell cell = responTime.getRow (row).getCell (col);
+                    if (cell==null) {
+                        values[col] = "-";
+                    } else if (cell.getCellType () == CellType.NUMERIC) {
+                        values[col] = String.valueOf (cell.getNumericCellValue ());
+                    } else if (cell.getCellType () == CellType.STRING) {
+                        values[col] = cell.getStringCellValue ();
+                    }
+                }
+                String noreg = values[0] + values[1] + values[2] + values[3] + values[4];
+                responTimeMap.put(noreg, values);
+            }
 
-            //not working
-            for (int row=1;row<=responTime.getLastRowNum ();row++){
-                String noreg = responTime.getRow (row).getCell (0).getStringCellValue ()+
-                        responTime.getRow (row).getCell (1).getStringCellValue ()+
-                        responTime.getRow (row).getCell (2).getStringCellValue ()+
-                        responTime.getRow (row).getCell (3).getStringCellValue ()+
-                        responTime.getRow (row).getCell (4).getStringCellValue ();
-                List<Integer> monitoringRows = noregHashMap.get (noreg);
-                Cell responTimeRS = monitoringHasilRadF2.getRow (row).getCell (12);
-                Cell responTimeRad = monitoringHasilRadF2.getRow (row).getCell (13);
-                Cell totalRS = monitoringHasilRadF2.getRow (row).getCell (14);
-                Cell totalRad = monitoringHasilRadF2.getRow (row).getCell (15);
-                Cell rataRataRS = monitoringHasilRadF2.getRow (row).getCell (16);
-                Cell rataRataRad = monitoringHasilRadF2.getRow (row).getCell (17);
-                Cell CITO = monitoringHasilRadF2.getRow (row).getCell (25);
-                if (monitoringRows!=null) {
-                    for (Integer monitoringRow : monitoringRows) {
-                        if (responTimeRS != null && responTimeRad != null && totalRS != null &&
-                                totalRad != null && rataRataRS != null && rataRataRad != null && CITO != null) {
-                            String responTimeRSValue = responTimeRS.getStringCellValue () != null ? responTimeRS.getStringCellValue () : "-";
-                            String responTimeRadValue = responTimeRad.getStringCellValue () != null ? responTimeRad.getStringCellValue () : "-";
-                            String totalRSValue = totalRS.getStringCellValue () != null ? totalRS.getStringCellValue () : "-";
-                            String totalRadValue = totalRad.getStringCellValue () != null ? totalRad.getStringCellValue () : "-";
-                            String rataRataRSValue = rataRataRS.getStringCellValue () != null ? rataRataRS.getStringCellValue () : "-";
-                            String rataRataRadValue = rataRataRad.getStringCellValue () != null ? rataRataRad.getStringCellValue () : "-";
-                            String CITOValue = CITO.getStringCellValue () != null ? CITO.getStringCellValue () : "-";
+            // Loop through the monitoringHasilRad sheet and use the Map to retrieve values from the responTime sheet
+            int monitoringHasilRadLastRowNum = monitoringHasilRad.getLastRowNum();
+            for (int row = 1; row <= monitoringHasilRadLastRowNum; row++) {
+                Row getMonitoringHasilRadRow = monitoringHasilRad.getRow(row);
+                String noreg = getMonitoringHasilRadRow.getCell(0).getStringCellValue();
+                String[] respontimeValues = responTimeMap.get(noreg);
+                if (respontimeValues != null && !respontimeValues[18].contains("PAKET") && respontimeValues[11] != null) {
+                    getMonitoringHasilRadRow.createCell(15).setCellValue(respontimeValues[12]);
+                    getMonitoringHasilRadRow.createCell(16).setCellValue(respontimeValues[13]);
+                    getMonitoringHasilRadRow.createCell(17).setCellValue(respontimeValues[14]);
+                    getMonitoringHasilRadRow.createCell(18).setCellValue(respontimeValues[15]);
+                    getMonitoringHasilRadRow.createCell(19).setCellValue(respontimeValues[16]);
+                    getMonitoringHasilRadRow.createCell(20).setCellValue(respontimeValues[17]);
+                    if (respontimeValues[25].equals ("1")) {
+                        getMonitoringHasilRadRow.createCell (21).setCellValue ("CITO");
+                    }else {
+                        getMonitoringHasilRadRow.createCell (21).setCellValue ("Tidak CITO");
+                    }
+                } else {
+                    getMonitoringHasilRadRow.createCell(15).setCellValue("-");
+                    getMonitoringHasilRadRow.createCell(16).setCellValue("-");
+                    getMonitoringHasilRadRow.createCell(17).setCellValue("-");
+                    getMonitoringHasilRadRow.createCell(18).setCellValue("-");
+                    getMonitoringHasilRadRow.createCell(19).setCellValue("-");
+                    getMonitoringHasilRadRow.createCell(20).setCellValue("-");
+                    getMonitoringHasilRadRow.createCell(21).setCellValue("-");
+                }
+            }
 
-                            monitoringHasilRad.getRow (monitoringRow).createCell (15).setCellValue (responTimeRSValue);
-                            monitoringHasilRad.getRow (monitoringRow).createCell (16).setCellValue (responTimeRadValue);
-                            monitoringHasilRad.getRow (monitoringRow).createCell (17).setCellValue (totalRSValue);
-                            monitoringHasilRad.getRow (monitoringRow).createCell (18).setCellValue (totalRadValue);
-                            monitoringHasilRad.getRow (monitoringRow).createCell (19).setCellValue (rataRataRSValue);
-                            monitoringHasilRad.getRow (monitoringRow).createCell (20).setCellValue (rataRataRadValue);
-                            monitoringHasilRad.getRow (monitoringRow).createCell (21).setCellValue (CITOValue);
+            System.out.println ("11. "+ BookPertindakanNew.getSheetAt (11).getSheetName ()+" Completed");
+
+
+//        buat sheet 12 ResponTime
+            BookPertindakanNew.createSheet ();
+            Sheet sheetResponTime = BookPertindakanNew.getSheetAt (12);
+            BookPertindakanNew.setSheetName (12, "10.Respon Time");
+            System.out.println ("12. " + BookPertindakanNew.getSheetAt (12).getSheetName () + " Start");
+
+            //count inst asal
+            Map<String, Integer> keteranganCount = new TreeMap<> ();
+            for (int row = 1; row <= monitoringHasilRad.getLastRowNum (); row++) {
+                String keterangan = monitoringHasilRad.getRow (row).getCell (   10).getStringCellValue ();
+                keteranganCount.put (keterangan, keteranganCount.getOrDefault (keterangan, 0) + 1);
+            }
+
+            sheetResponTime.createRow (0).createCell (0).setCellValue ("Keterangan");
+            sheetResponTime.getRow (0).createCell (1).setCellValue ("Jumlah");
+
+            int keteranganResponTime = 0;
+            int keteranganRespontimeSum = 0;
+            for (Map.Entry<String, Integer> entry : keteranganCount.entrySet ()) {
+                keteranganResponTime++;
+                sheetResponTime.createRow (keteranganResponTime).createCell (0).setCellValue (entry.getKey ());
+                sheetResponTime.getRow (keteranganResponTime).createCell (1).setCellValue (entry.getValue ());
+                keteranganRespontimeSum += entry.getValue ();
+
+                int TndInstAsalLastRow = sheetResponTime.getLastRowNum () + 1;
+                sheetResponTime.createRow (TndInstAsalLastRow).createCell (0).setCellValue ("Grand Total");
+                sheetResponTime.getRow (TndInstAsalLastRow).createCell (1).setCellValue (keteranganRespontimeSum);
+            }
+
+            System.out.println ("12. "+ BookPertindakanNew.getSheetAt (12).getSheetName ()+" Completed");
+
+            // buat sheet 12 ResponTime
+            BookPertindakanNew.createSheet ();
+            Sheet kebidanan = BookPertindakanNew.getSheetAt (13);
+            BookPertindakanNew.setSheetName (13, "10. Kebidanan Kandungan");
+            kebidanan.createRow (0).createCell (0).setCellValue ("NOREG");
+            kebidanan.getRow (0).createCell (1).setCellValue ("NO");
+            kebidanan.getRow (0).createCell (2).setCellValue ("TGL MASUK");
+            kebidanan.getRow (0).createCell (3).setCellValue ("TGL TINDAKAN");
+            kebidanan.getRow (0).createCell (4).setCellValue ("RM");
+            kebidanan.getRow (0).createCell (5).setCellValue ("NAMA PASIEN");
+            kebidanan.getRow (0).createCell (6).setCellValue ("NAMA PELAKSANA");
+            kebidanan.getRow (0).createCell (7).setCellValue ("NAMA TINDAKAN");
+            kebidanan.getRow (0).createCell (8).setCellValue ("INSTALASI ASAL");
+            kebidanan.getRow (0).createCell (9).setCellValue ("KETERANGAN");
+
+            BookPertindakanNew.createSheet ();
+            Sheet ponek = BookPertindakanNew.getSheetAt (14);
+            BookPertindakanNew.setSheetName (14, "11. Ponek");
+            ponek.createRow (0).createCell (0).setCellValue ("NOREG");
+            ponek.getRow (0).createCell (1).setCellValue ("NO");
+            ponek.getRow (0).createCell (2).setCellValue ("TGL MASUK");
+            ponek.getRow (0).createCell (3).setCellValue ("TGL TINDAKAN");
+            ponek.getRow (0).createCell (4).setCellValue ("RM");
+            ponek.getRow (0).createCell (5).setCellValue ("NAMA PASIEN");
+            ponek.getRow (0).createCell (6).setCellValue ("NAMA PELAKSANA");
+            ponek.getRow (0).createCell (7).setCellValue ("NAMA TINDAKAN");
+            ponek.getRow (0).createCell (8).setCellValue ("INSTALASI ASAL");
+            ponek.getRow (0).createCell (9).setCellValue ("KETERANGAN");
+
+            BookPertindakanNew.createSheet ();
+            Sheet isolasi = BookPertindakanNew.getSheetAt (15);
+            BookPertindakanNew.setSheetName (15, "12. Isolasi");
+            isolasi.createRow (0).createCell (0).setCellValue ("NOREG");
+            isolasi.getRow (0).createCell (1).setCellValue ("NO");
+            isolasi.getRow (0).createCell (2).setCellValue ("TGL MASUK");
+            isolasi.getRow (0).createCell (3).setCellValue ("TGL TINDAKAN");
+            isolasi.getRow (0).createCell (4).setCellValue ("RM");
+            isolasi.getRow (0).createCell (5).setCellValue ("NAMA PASIEN");
+            isolasi.getRow (0).createCell (6).setCellValue ("NAMA PELAKSANA");
+            isolasi.getRow (0).createCell (7).setCellValue ("NAMA TINDAKAN");
+            isolasi.getRow (0).createCell (8).setCellValue ("INSTALASI ASAL");
+            isolasi.getRow (0).createCell (9).setCellValue ("KETERANGAN");
+
+            int rowPonek=1;
+            int rowIsolasi=1;
+            int rowKebidananKandungan = 1;
+            for (Row row : Genap) {
+                // Cache frequently used cells
+                Cell noregCell = row.getCell (29);
+                Cell regdateCell = row.getCell (9);
+                Cell rmCell = row.getCell (6);
+                Cell nameCell = row.getCell (5);
+                Cell namaTindakanCell = row.getCell (15);
+                Cell nickInstAsalCell = row.getCell (24);
+                if (row.getCell (28).getStringCellValue ().equals ("Kebidanan dan Kandungan")) {
+                    boolean matchFound = false;  // initialize flag variable
+                    for (Row pelayananRow : pelayananPenunjang) {
+                        String noregPelayananPenunjang = pelayananRow.getCell (0).getStringCellValue () +
+                                pelayananRow.getCell (1).getStringCellValue () +
+                                pelayananRow.getCell (2).getStringCellValue () +
+                                pelayananRow.getCell (3).getStringCellValue () +
+                                pelayananRow.getCell (4).getStringCellValue ();
+                        if (Objects.equals (noregCell.getStringCellValue (), noregPelayananPenunjang)) {
+                            if (!matchFound) {  // check flag before printing row number
+                                matchFound = true;  // set flag to true
+                                Row kebidananRow = kebidanan.createRow (rowKebidananKandungan);
+                                kebidananRow.createCell (0).setCellValue (noregCell.getStringCellValue ());
+                                kebidananRow.createCell (1).setCellValue (rowKebidananKandungan);
+                                kebidananRow.createCell (2).setCellValue (regdateCell.getStringCellValue ());
+                                kebidananRow.createCell (3).setCellValue (regdateCell.getStringCellValue ());
+                                kebidananRow.createCell (4).setCellValue (rmCell.getStringCellValue ());
+                                kebidananRow.createCell (5).setCellValue (nameCell.getStringCellValue ());
+                                kebidananRow.createCell (6).setCellValue (pelayananRow.getCell (27).getStringCellValue ());
+                                kebidananRow.createCell (7).setCellValue (namaTindakanCell.getStringCellValue ());
+                                kebidananRow.createCell (8).setCellValue (nickInstAsalCell.getStringCellValue ());
+                                for (Row monitoringRow : monitoringHasilRad) {
+                                    if (Objects.equals (noregCell.getStringCellValue (), monitoringRow.getCell (0).getStringCellValue ())) {
+                                        kebidananRow.createCell (9).setCellValue (monitoringRow.getCell (10).getStringCellValue ());
+                                        break;
+                                    }
+                                }
+                                rowKebidananKandungan++;
+                            }
+                        }
+                    }
+                } else if (row.getCell (28).getStringCellValue ().equals ("Ponek")) {
+                    boolean matchFound = false;  // initialize flag variable
+                    for (Row pelayananRow : pelayananPenunjang) {
+                        String noregPelayananPenunjang = pelayananRow.getCell (0).getStringCellValue () +
+                                pelayananRow.getCell (1).getStringCellValue () +
+                                pelayananRow.getCell (2).getStringCellValue () +
+                                pelayananRow.getCell (3).getStringCellValue () +
+                                pelayananRow.getCell (4).getStringCellValue ();
+                        if (Objects.equals (noregCell.getStringCellValue (), noregPelayananPenunjang)) {
+                            if (!matchFound) {  // check flag before printing row number
+                                matchFound = true;  // set flag to true
+                                Row ponekRow = ponek.createRow (rowPonek);
+                                ponekRow.createCell (0).setCellValue (noregCell.getStringCellValue ());
+                                ponekRow.createCell (1).setCellValue (rowPonek);
+                                ponekRow.createCell (2).setCellValue (regdateCell.getStringCellValue ());
+                                ponekRow.createCell (3).setCellValue (regdateCell.getStringCellValue ());
+                                ponekRow.createCell (4).setCellValue (rmCell.getStringCellValue ());
+                                ponekRow.createCell (5).setCellValue (nameCell.getStringCellValue ());
+                                ponekRow.createCell (6).setCellValue (pelayananRow.getCell (27).getStringCellValue ());
+                                ponekRow.createCell (7).setCellValue (namaTindakanCell.getStringCellValue ());
+                                ponekRow.createCell (8).setCellValue (nickInstAsalCell.getStringCellValue ());
+                                for (Row monitoringRow : monitoringHasilRad) {
+                                    if (Objects.equals (noregCell.getStringCellValue (), monitoringRow.getCell (0).getStringCellValue ())) {
+                                        ponekRow.createCell (9).setCellValue (monitoringRow.getCell (10).getStringCellValue ());
+                                        break;
+                                    }
+                                }
+                                rowPonek++;
+                            }
+                        }
+                    }
+
+                } else if (row.getCell (28).getStringCellValue ().equals ("ISOLASI")) {
+                    boolean matchFound = false;  // initialize flag variable
+                    for (Row pelayananRow : pelayananPenunjang) {
+                        String noregPelayananPenunjang = pelayananRow.getCell (0).getStringCellValue () +
+                                pelayananRow.getCell (1).getStringCellValue () +
+                                pelayananRow.getCell (2).getStringCellValue () +
+                                pelayananRow.getCell (3).getStringCellValue () +
+                                pelayananRow.getCell (4).getStringCellValue ();
+                        if (Objects.equals (noregCell.getStringCellValue (), noregPelayananPenunjang)) {
+                            if (!matchFound) {  // check flag before printing row number
+                                matchFound = true;  // set flag to true
+                                Row isolasiRow = isolasi.createRow (rowIsolasi);
+                                isolasiRow.createCell (0).setCellValue (noregCell.getStringCellValue ());
+                                isolasiRow.createCell (1).setCellValue (rowIsolasi);
+                                isolasiRow.createCell (2).setCellValue (regdateCell.getStringCellValue ());
+                                isolasiRow.createCell (3).setCellValue (regdateCell.getStringCellValue ());
+                                isolasiRow.createCell (4).setCellValue (rmCell.getStringCellValue ());
+                                isolasiRow.createCell (5).setCellValue (nameCell.getStringCellValue ());
+                                isolasiRow.createCell (6).setCellValue (pelayananRow.getCell (27).getStringCellValue ());
+                                isolasiRow.createCell (7).setCellValue (namaTindakanCell.getStringCellValue ());
+                                isolasiRow.createCell (8).setCellValue (nickInstAsalCell.getStringCellValue ());
+                                for (Row monitoringRow : monitoringHasilRad) {
+                                    if (Objects.equals (noregCell.getStringCellValue (), monitoringRow.getCell (0).getStringCellValue ())) {
+                                        isolasiRow.createCell (9).setCellValue (monitoringRow.getCell (10).getStringCellValue ());
+                                        break;
+                                    }
+                                }
+                                rowIsolasi++;
+                            }
                         }
                     }
                 }
             }
 
-        // stoped because duplicate sample id on report and wird acc_id handling
-
-
-            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-//            for (int rightCell = 0; rightCell < monitoringHasilRad.getRow (0).getLastCellNum (); rightCell++) {
-//                monitoringHasilRad.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-//                monitoringHasilRad.autoSizeColumn (rightCell);
-//                for (int downRow = 1; downRow <= monitoringHasilRad.getLastRowNum (); downRow++) {
-//                    System.out.println (rightCell);
-//                    monitoringHasilRad.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-//                }
-//            }
-
-
-
-
-            monitoringHasilRad.getRow (0).createCell (0).setCellValue ("NOREG");
-            System.out.println ("11. "+ BookPertindakanNew.getSheetAt (11).getSheetName ()+" Completed");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            // Sheet numbers 3 to 15
+            for (int sheetNum = 3; sheetNum <= 15; sheetNum++) {
+                Sheet currentSheet = BookPertindakanNew.getSheetAt(sheetNum);
+                System.out.println (sheetNum + " " + currentSheet.getSheetName ());
+                for (int rightCell = 0; rightCell < currentSheet.getRow(0).getLastCellNum(); rightCell++) {
+                    currentSheet.getRow(0).getCell(rightCell).setCellStyle(BorderCenterCellStyle);
+                    currentSheet.autoSizeColumn(rightCell);
+                    for (int downRow = 1; downRow <= currentSheet.getLastRowNum(); downRow++) {
+                        if (currentSheet.getRow (downRow).getCell (rightCell)==null){
+                            currentSheet.getRow (downRow).createCell (rightCell).setCellValue ("");
+                        }
+                        currentSheet.getRow(downRow).getCell(rightCell).setCellStyle(AllBorderCellStyle);
+                    }
+                }
+            }
 
 
 
