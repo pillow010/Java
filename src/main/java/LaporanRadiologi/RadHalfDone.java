@@ -261,36 +261,6 @@ public class RadHalfDone extends StylerRepo{
             Pertindakan.getRow (0).createCell (1).setCellValue ("Nama Tindakan");
             Pertindakan.getRow (0).createCell (2).setCellValue ("Jumlah");
 
-
-//            // Perform pivot simulation, and check if it not contains paket
-//            Map<String, Integer> pivotJumlahTindakan = new HashMap<> ();
-//            for (int i = 1; i <= pertindakanNewRawLastRowNum (pertindakan_New_Raw); i++) {
-//                Row row = pertindakan_New_Raw.getRow (i);
-//                String Tindakan = row.getCell (15).getStringCellValue ();
-//                if (!Tindakan.contains ("PAKET")) {
-//                    Integer count = pivotJumlahTindakan.getOrDefault (Tindakan, 0);
-//                    count++;
-//                    pivotJumlahTindakan.put (Tindakan, count);
-//                }
-//            }
-//
-////          Sort any value it contains
-//            List<Map.Entry<String, Integer>> entriesDoctor = new ArrayList<> (pivotJumlahTindakan.entrySet ());
-//            entriesDoctor.sort (Map.Entry.comparingByKey ());
-//            pivotJumlahTindakan = new LinkedHashMap<> ();
-//            for (Map.Entry<String, Integer> entry : entriesDoctor) {
-//                pivotJumlahTindakan.put (entry.getKey (), entry.getValue ());
-//            }
-//
-////          tulis hasil pivot ke pertindakan, mulai dari row 6
-//            int rowNum = 1;
-//            for (Map.Entry<String, Integer> entry : pivotJumlahTindakan.entrySet ()) {
-//                Row row = Pertindakan.createRow (rowNum++);
-//                row.createCell (0).setCellValue (rowNum-1);
-//                row.createCell (1).setCellValue (entry.getKey ());
-//                row.createCell (2).setCellValue (entry.getValue ());
-//            }
-
             // Perform pivot simulation, and check if it not contains paket
             Map<String, Integer> pivotJumlahTindakan = new HashMap<>();
             for (int i = 1; i <= pertindakanNewRawLastRowNum(pertindakan_New_Raw); i++) {
@@ -497,8 +467,6 @@ public class RadHalfDone extends StylerRepo{
             Sheet PsnCrByr = BookPertindakanNew.getSheetAt (7);
             BookPertindakanNew.setSheetName (7, "5.Pasien per cara bayar");
             System.out.println ("07. " + BookPertindakanNew.getSheetAt (7).getSheetName () + " Start");
-
-
             Map<String, Integer> PsncrByrCount = new TreeMap<> ();
             for (int row = 1; row <= Ganjil.getLastRowNum (); row++) {
                 String caraByr = Ganjil.getRow (row).getCell (1).getStringCellValue ();
@@ -622,7 +590,7 @@ public class RadHalfDone extends StylerRepo{
                 }
             }
 
-            pendapatan.createRow(0).createCell(0).setCellValue("Kelamin");
+            pendapatan.createRow(0).createCell(0).setCellValue("Tanggal");
             rowStart = 1;
             for (String klmn : caraByr) { // swapped loop
                 pendapatan.getRow(0).createCell(rowStart++).setCellValue(klmn); // swapped loop
