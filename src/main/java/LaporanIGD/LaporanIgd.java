@@ -13,8 +13,8 @@ public class LaporanIgd {
 
     public static void main(String[] args) throws IOException, AssertionError {
 //      specify file name, location, and workbook name.
-        String fileNameIgd = "23 03 igd register";
-        String fileNameIrna = "23 03 irna register";
+        String fileNameIgd = "23 04 igd register";
+        String fileNameIrna = "23 04 irna register";
         InputStream LaporanIGD = new FileInputStream ("c:\\sat work\\test\\"+fileNameIgd+".xlsx");
         InputStream laporanIrna = new FileInputStream ("c:\\sat work\\test\\"+fileNameIrna+".xlsx");
         Workbook bookLaporanIGD = new XSSFWorkbook (LaporanIGD);
@@ -571,7 +571,7 @@ public class LaporanIgd {
         System.out.println ("10. "+bookLaporanIGD.getSheetName (10)+" is done");
         bookLaporanIGD.removeSheetAt (0);
 
-        FileOutputStream IGDDone = new FileOutputStream (Year + " " + Month + " IGD Done.xlsx");
+        FileOutputStream IGDDone = new FileOutputStream ("Done IGD "+Year + " " + Month + ".xlsx");
         bookLaporanIGD.write (IGDDone);
 
 

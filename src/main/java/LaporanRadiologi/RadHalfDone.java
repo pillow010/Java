@@ -19,7 +19,7 @@ public class RadHalfDone extends StylerRepo{
     private FileOutputStream outputStream;
     String localDate = LocalDate.now().minusMonths (1).format (DateTimeFormatter.ofPattern ("yy MM"));
     String fileNamePelayananPenunjang = localDate + " rad pelayanan penunjang";
-    String fileNamePertindakanNew = localDate + " rad pertindakan new";
+    String fileNamePertindakanNew = localDate + " rad tindakan new";
     String fileNameMonitoringf1 = localDate + " rad monitoring f1";
     String fileNameMonitoringf2 = localDate + " rad monitoring f2";
     String fileNameResponTime = localDate + " rad respontime";

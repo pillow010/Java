@@ -19,9 +19,9 @@ public class LabDone {
         boolean doneFinal = true;
 
         String localDate = LocalDate.now ().minusMonths (1).format (DateTimeFormatter.ofPattern ("yy MM"));
-        String fileNamePertindakanNew = "23 03" + " lab tindakan new";
+        String fileNamePertindakanNew = localDate + " lab tindakan new";
 //        String fileNameHasilRinci = localDate + " lab hasil rinci";
-        String fileNameRegister = "23 03" + " lab register";
+        String fileNameRegister = localDate + " lab register";
 
 
         try {
