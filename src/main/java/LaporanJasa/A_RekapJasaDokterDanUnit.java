@@ -2,46 +2,60 @@ package LaporanJasa;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.util.*;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static LaporanJasa.LaporanJasaCommandCenter.*;
+
 public class A_RekapJasaDokterDanUnit {
 
     public static void main(String[] args) {
 //        new A_RekapJasaDokterDanUnit();
     }
+
+
     private Workbook workbook;
 
     private FileOutputStream outputStream;
 
-
     public A_RekapJasaDokterDanUnit() {
+        File xlsxFileJasaDokter = new File(fileSource + "c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");
+        File xlsFileJasaDokter  = new File(fileSource + "c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
+        File xlsxFileJasaUnit   = new File(fileSource+"a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xlsx");
+        File xlsFileJasaUnit    = new File(fileSource+"a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
+        File jasaDokter;
+        File jasaUnit;
 
+        if (xlsxFileJasaDokter.exists()) {
+            jasaDokter = xlsxFileJasaDokter;
+        } else if (xlsFileJasaDokter.exists()) {
+            jasaDokter = xlsFileJasaDokter;
+        } else {
+            System.out.println("File not found: " + fileSource + "c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN");
+            return;
+        }
 
-        //XLSX VER
-        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xlsx");  //XLSX
-//        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
-        File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");      //XLSX
-//        File jasaDokter = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
-        LocalDateTime start = LocalDateTime.now ();
-        System.out.println ("A_RekapJasaDokterDanUnit is starting");
+        if (xlsxFileJasaUnit.exists()) {
+            jasaUnit = xlsxFileJasaUnit;
+        } else if (xlsFileJasaUnit.exists()) {
+            jasaUnit = xlsFileJasaUnit;
+        } else {
+            System.out.println("File not found: " + fileSource + "a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN");
+            return;
+        }
+
+        System.out.println("A_RekapJasaDokterDanUnit is starting");
         try {
-            FileInputStream inputStream2 = new FileInputStream(jasaUnit);     //XLSX
-//            POIFSFileSystem poifs2 = new POIFSFileSystem(jasaUnit);
-            FileInputStream inputStream1 = new FileInputStream(jasaDokter); //XLSX
-//            POIFSFileSystem poifs = new POIFSFileSystem(jasaDokter);
-            Workbook workbook2 = new XSSFWorkbook (inputStream2);                       //XLSX
-//            Workbook workbook2 = new HSSFWorkbook(poifs2);
-            workbook = new XSSFWorkbook(inputStream1);                      //XLSX
-//            workbook = new HSSFWorkbook(poifs);
+            LocalDateTime start = LocalDateTime.now();
+            FileInputStream inputStream  = new FileInputStream(jasaDokter);
+            FileInputStream inputStream1 = new FileInputStream (jasaUnit);
+            workbook    = WorkbookFactory.create(inputStream);
+            Workbook workbook2 = WorkbookFactory.create (inputStream1);
 
 
             // Make Styling
@@ -66,7 +80,10 @@ public class A_RekapJasaDokterDanUnit {
             BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
             BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
+            DataFormat dataFormat = workbook.createDataFormat();
+
             CellStyle totalStyle = workbook.createCellStyle ();
+            totalStyle.setDataFormat (dataFormat.getFormat("_-* #,##0.00_-;-* #,##0.00_-;_-* \"-\"??_-;_-@_-"));
             totalStyle.setAlignment(HorizontalAlignment.RIGHT);
             totalStyle.setBorderBottom (BorderStyle.THIN);
             totalStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
@@ -90,10 +107,10 @@ public class A_RekapJasaDokterDanUnit {
 
             if (caraBayarDokter.contains("PBI")) {
                 caraBayarDokter = "JKN";
-            }
+            } else caraBayarDokter="";
             if (caraBayarUnit.contains("PBI")) {
                 caraBayarUnit = "JKN";
-            }
+            } else caraBayarUnit = "";
 
             //create Sheet
             Sheet sheetJasaDokter = workbook.createSheet();
@@ -140,27 +157,44 @@ public class A_RekapJasaDokterDanUnit {
             entriesDoctor.sort(Map.Entry.comparingByKey());
             entriesUnit.sort (Map.Entry.comparingByKey ());
             int rowNum = 6;
-            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-            symbols.setGroupingSeparator('.');
-            symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
             for (Map.Entry<String, Double> entry : entriesDoctor) {
                 Row row = sheetJasaDokter.createRow(rowNum++);
                 row.createCell(0).setCellValue(rowNum - 6);
                 row.createCell(1).setCellValue(entry.getKey());
-                String formattedValue = formatter.format(entry.getValue());
-                row.createCell(2).setCellValue(formattedValue + ",-");
+
+                Cell cell = row.createCell(2);
+                cell.setCellValue(entry.getValue());
             }
+
+
+            // Calculate the grand total for jasa dokter
+            double totalJasaDokter = entriesDoctor.stream()
+                    .mapToDouble(Map.Entry::getValue)
+                    .sum();
+
+            // Write the grand total to the sheets
+            Row grandTotalRowDokter = sheetJasaDokter.createRow(rowNum);
+            grandTotalRowDokter.createCell(0).setCellValue("");
+            grandTotalRowDokter.createCell(1).setCellValue("Grand Total");
+            grandTotalRowDokter.createCell (2).setCellValue (totalJasaDokter);
 
             rowNum = 6;
             for (Map.Entry<String, Double> entry : entriesUnit){
                 Row rowA3 = sheetJasaUnit.createRow(rowNum++);
                 rowA3.createCell(0).setCellValue(rowNum - 6);
                 rowA3.createCell(1).setCellValue(entry.getKey());
-                String formattedValue = formatter.format(entry.getValue());
-                rowA3.createCell(2).setCellValue(formattedValue + ",-");
+                rowA3.createCell (2).setCellValue (entry.getValue ());
             }
+
+            // Calculate the grand total for jasa unit
+            double totalJasaUnit = entriesUnit.stream()
+                    .mapToDouble(Map.Entry::getValue)
+                    .sum();
+
+            Row grandTotalRowUnit = sheetJasaUnit.createRow(rowNum);
+            grandTotalRowUnit.createCell(0).setCellValue("");
+            grandTotalRowUnit.createCell(1).setCellValue("Grand Total");
+            grandTotalRowUnit.createCell (2).setCellValue (totalJasaUnit);
 
             sheetJasaDokter.createRow (0).createCell (0).setCellValue (caraBayarDokter);
             sheetJasaDokter.createRow (5).createCell(0).setCellValue("NO");
@@ -173,45 +207,61 @@ public class A_RekapJasaDokterDanUnit {
             sheetJasaUnit.getRow(5).createCell(2).setCellValue("TOTAL");
 
 
+
             //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
             for (int rightCell = 0; rightCell < sheetJasaDokter.getRow (5).getLastCellNum (); rightCell++) {
                 sheetJasaDokter.getRow (5).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                sheetJasaDokter.autoSizeColumn (rightCell);
                 for (int downRow = 6; downRow <= sheetJasaDokter.getLastRowNum (); downRow++) {
                     if (!(rightCell == 2)) {
                         sheetJasaDokter.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-                    } else {
+                    }
+                    else {
                         sheetJasaDokter.getRow (downRow).getCell (2).setCellStyle (totalStyle);
                     }
                 }
+                sheetJasaDokter.autoSizeColumn (rightCell);
             }
 
-            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-            for (int rightCell = 0; rightCell < sheetJasaUnit.getRow (5).getLastCellNum (); rightCell++) {
-                sheetJasaUnit.getRow (5).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                sheetJasaUnit.autoSizeColumn (rightCell);
-                for (int downRow = 6; downRow <= sheetJasaUnit.getLastRowNum (); downRow++) {
+            // Get the last column index
+            int lastColumnIndex = sheetJasaUnit.getRow(5).getLastCellNum();
+
+            // Apply header style and border to the header row
+            for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                sheetJasaUnit.getRow(5).getCell(rightCell).setCellStyle(BorderCenterCellStyle);
+            }
+
+            // Apply cell styles and borders to the data rows
+            for (int downRow = 6; downRow <= sheetJasaUnit.getLastRowNum(); downRow++) {
+                Row dataRow = sheetJasaUnit.getRow(downRow);
+                for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                    Cell cell = dataRow.getCell(rightCell);
                     if (!(rightCell == 2)) {
-                        sheetJasaUnit.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+                        cell.setCellStyle(AllBorderCellStyle);
                     } else {
-                        sheetJasaUnit.getRow (downRow).getCell (2).setCellStyle (totalStyle);
+                        cell.setCellStyle(totalStyle);
                     }
                 }
             }
 
+            // Resize columns after applying styles
+            for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                sheetJasaUnit.autoSizeColumn(rightCell);
+            }
+
+
             workbook.removeSheetAt(0);
 
-            LocalDateTime end = LocalDateTime.now ();
+            LocalDateTime end = LocalDateTime.now();
             Duration duration = Duration.between(start, end);
-            long seconds = duration.toMillis ();
-            System.out.println ("A_RekapJasaDokterDanUnit Done in " + seconds);
+            double seconds = duration.toMillis() / 1000.0;
+            System.out.printf("A_RekapJasaDokterDanUnit Done in %.4f seconds%n", seconds);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         try {
-            outputStream = new FileOutputStream("1. REKAP JASA DOKTER DAN UNIT.xlsx");
+            outputStream = new FileOutputStream(fileOutput+"1. REKAP JASA DOKTER DAN UNIT.xlsx");
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();

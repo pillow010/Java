@@ -1,17 +1,16 @@
 package LaporanJasa;
 
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Locale;
+
+import static LaporanJasa.LaporanJasaCommandCenter.fileOutput;
+import static LaporanJasa.LaporanJasaCommandCenter.fileSource;
 
 public class D_RekapPasienJasaUnit {
 
@@ -24,20 +23,28 @@ public class D_RekapPasienJasaUnit {
 
 
     public D_RekapPasienJasaUnit(){
-        LocalDateTime start = LocalDateTime.now ();
-        System.out.println ("D_RekapPasienJasaUnit is starting");
-//        File inputFS = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
-        File jasaUnit = new File("C:\\sat work\\test\\a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xlsx");  //XLSX
+        File xlsxFile = new File(fileSource + "a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xlsx");
+        File xlsFile = new File(fileSource + "a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN.xls");
+        File jasaUnit;
+        if (xlsxFile.exists()) {
+            jasaUnit = xlsxFile;
+        } else if (xlsFile.exists()) {
+            jasaUnit = xlsFile;
+        } else {
+            System.out.println("File not found: " + fileSource + "a) LAPORAN REKAP PENERIMAAN JASA UNIT PER PASIEN");
+            return;
+        }
+
+        System.out.println("D_RekapPasienJasaUnit is starting");
         try {
-//            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
-            FileInputStream inputStream2 = new FileInputStream(jasaUnit);     //XLSX
-//            workbook = new HSSFWorkbook(poifs);
-            workbook = new XSSFWorkbook (inputStream2);                       //XLSX
+            LocalDateTime start = LocalDateTime.now();
+            FileInputStream inputStream = new FileInputStream(jasaUnit);
+            workbook = WorkbookFactory.create(inputStream);
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
 
-
+            DataFormat dataFormat = workbook.createDataFormat();
 
             CellStyle totalStyle = workbook.createCellStyle ();
             totalStyle.setAlignment(HorizontalAlignment.RIGHT);
@@ -49,6 +56,9 @@ public class D_RekapPasienJasaUnit {
             totalStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
             totalStyle.setBorderTop (BorderStyle.THIN);
             totalStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+            totalStyle.setDataFormat (dataFormat.getFormat("_-* #,##0.00_-;-* #,##0.00_-;_-* \"-\"??_-;_-@_-"));
+            totalStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+            totalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
             workbook.setSheetName(1, "4. REKAP PASIEN JASA UNIT");
             int lastColumn = sheet.getRow(0).getLastCellNum();
@@ -74,12 +84,6 @@ public class D_RekapPasienJasaUnit {
             row.createCell(10).setCellValue("JML PAJAK");
             row.createCell(11).setCellValue("JML PENGAMBILAN");
             row.createCell(12).setCellValue("JML NETTO");
-
-            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-            symbols.setGroupingSeparator('.');
-            symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
 
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
@@ -111,7 +115,8 @@ public class D_RekapPasienJasaUnit {
                         }else if (sheet.getRow(i).getCell(column).getCellType() == CellType.STRING) {
                             targetCell.setCellValue (sheet.getRow (i).getCell (column).getStringCellValue ());
                         }else if (cellValue.equals("JML_NETTO")) {
-                            targetCell.setCellValue(formatter.format(sheet.getRow(i).getCell(column).getNumericCellValue()));
+//                            targetCell.setCellValue(formatter.format(sheet.getRow(i).getCell(column).getNumericCellValue()));
+                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
                         } else {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
                         }
@@ -131,20 +136,6 @@ public class D_RekapPasienJasaUnit {
             }
 
             // Make Styling
-            CellStyle targetColumnColourNetto = workbook.createCellStyle();
-            // Set the background color of the cells in the target column to yellow
-            targetColumnColourNetto.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-            targetColumnColourNetto.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            targetColumnColourNetto.setAlignment (HorizontalAlignment.RIGHT);
-            targetColumnColourNetto.setBorderBottom (BorderStyle.THIN);
-            targetColumnColourNetto.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
-            targetColumnColourNetto.setBorderLeft (BorderStyle.THIN);
-            targetColumnColourNetto.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
-            targetColumnColourNetto.setBorderRight (BorderStyle.THIN);
-            targetColumnColourNetto.setRightBorderColor (IndexedColors.BLACK.getIndex ());
-            targetColumnColourNetto.setBorderTop (BorderStyle.THIN);
-            targetColumnColourNetto.setTopBorderColor (IndexedColors.BLACK.getIndex ());
-
             CellStyle AllBorderCellStyle = workbook.createCellStyle ();
             AllBorderCellStyle.setBorderBottom (BorderStyle.THIN);
             AllBorderCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
@@ -166,46 +157,39 @@ public class D_RekapPasienJasaUnit {
             BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
             BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
+            // Get the last column index
+            int lastColumnIndex = sheet2.getRow(5).getLastCellNum();
 
-            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-            for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
-                sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                sheet2.autoSizeColumn (rightCell);
-                for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
-                    sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+            // Apply header style and border to the header row and auto-size columns
+            for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                sheet2.getRow(0).getCell(rightCell).setCellStyle(BorderCenterCellStyle);
+                sheet2.autoSizeColumn(rightCell);
+            }
+
+            // Apply cell styles and borders to the data rows
+            for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                for (int downRow = 1; downRow <= sheet2.getLastRowNum(); downRow++) {
+                    sheet2.getRow(downRow).getCell(rightCell).setCellStyle(AllBorderCellStyle);
                 }
             }
-            for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++){
-                sheet2.getRow (downRow).getCell (12).setCellStyle (targetColumnColourNetto);
+
+            // Apply the target column style to column 22 for all data rows
+            for (int downRow = 1; downRow <= sheet2.getLastRowNum(); downRow++) {
+                sheet2.getRow(downRow).getCell(12).setCellStyle(totalStyle);
             }
 
             workbook.removeSheetAt(0);
-            LocalDateTime end = LocalDateTime.now ();
+            LocalDateTime end = LocalDateTime.now();
             Duration duration = Duration.between(start, end);
-            long seconds = duration.toMillis ();
-            System.out.println ("D_RekapPasienJasaUnit Done in "+seconds);
+            double seconds = duration.toMillis() / 1000.0;
+            System.out.printf("D_RekapPasienJasaUnit Done in %.4f seconds%n", seconds);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-//        try {
-//            outputStream = new FileOutputStream("4. REKAP PASIEN JASA UNIT.xlsx");
-//            workbook.write(outputStream);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (outputStream != null) {
-//                try {
-//                    outputStream.close(); // Close output stream
-//                } catch (IOException ex) {
-//                    throw new RuntimeException (ex);
-//                }
-//            }
-//        }
-
         try {
-            outputStream = new FileOutputStream("4. REKAP PASIEN JASA UNIT.xlsx");
+            outputStream = new FileOutputStream(fileOutput+"4. REKAP PASIEN JASA UNIT.xlsx");
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();

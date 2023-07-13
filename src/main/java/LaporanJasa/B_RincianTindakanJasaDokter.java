@@ -1,14 +1,12 @@
 package LaporanJasa;
 
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Locale;
+
+import static LaporanJasa.LaporanJasaCommandCenter.*;
 
 public class B_RincianTindakanJasaDokter {
     public static void main(String[] args) {
@@ -20,15 +18,24 @@ public class B_RincianTindakanJasaDokter {
 
 
     public B_RincianTindakanJasaDokter() {
-        File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");  //XLSX
-//        File inputFS = new File("C:\\sat work\\test\\c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
-        System.out.println ("B_RincianTindakanJasaDokter is starting");
+        File xlsxFile   = new File(fileSource + "c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xlsx");
+        File xlsFile    = new File(fileSource + "c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN.xls");
+        File jasaDokter;
+        if (xlsxFile.exists()) {
+            jasaDokter = xlsxFile;
+        } else if (xlsFile.exists()) {
+            jasaDokter = xlsFile;
+        } else {
+            System.out.println("File not found: " + fileSource + "c) LAPORAN PENERIMAAN JASA PELAYANAN PER TINDAKAN");
+            return;
+        }
+
+        System.out.println("B_RincianTindakanJasaDokter is starting");
         try {
-            LocalDateTime start = LocalDateTime.now ();
-            FileInputStream poifs = new FileInputStream(inputFS);     //XLSX
-//            POIFSFileSystem poifs = new POIFSFileSystem(inputFS);
-            workbook = new XSSFWorkbook (poifs);                      //XLSX
-//            workbook = new HSSFWorkbook(poifs);
+            LocalDateTime start = LocalDateTime.now();
+            FileInputStream inputStream = new FileInputStream(jasaDokter);
+            workbook = WorkbookFactory.create(inputStream);
+
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
@@ -68,11 +75,6 @@ public class B_RincianTindakanJasaDokter {
             row.createCell(21).setCellValue("JML PENGAMBILAN");
             row.createCell(22).setCellValue("JML NETTO");
 
-            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-            symbols.setGroupingSeparator('.');
-            symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
             for (int column = 0; column <= lastColumn - 1; column++) {
                 // jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow(0).getCell(column);
@@ -124,7 +126,8 @@ public class B_RincianTindakanJasaDokter {
                         {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getStringCellValue());
                         } else if (targetColumn2 == 22) {
-                            targetCell.setCellValue(formatter.format(sheet.getRow(i).getCell(column).getNumericCellValue()));
+//                            targetCell.setCellValue(formatter.format(sheet.getRow(i).getCell(column).getNumericCellValue()));
+                            targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
                         } else {
                             targetCell.setCellValue(sheet.getRow(i).getCell(column).getNumericCellValue());
                         }
@@ -132,6 +135,7 @@ public class B_RincianTindakanJasaDokter {
                 }
             }
 
+            DataFormat dataFormat = workbook.createDataFormat();
 
             // Create a cell style for the target column
             CellStyle targetColumnColourNetto = workbook.createCellStyle();
@@ -147,6 +151,7 @@ public class B_RincianTindakanJasaDokter {
             targetColumnColourNetto.setRightBorderColor (IndexedColors.BLACK.getIndex ());
             targetColumnColourNetto.setBorderTop (BorderStyle.THIN);
             targetColumnColourNetto.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+            targetColumnColourNetto.setDataFormat (dataFormat.getFormat("_-* #,##0.00_-;-* #,##0.00_-;_-* \"-\"??_-;_-@_-"));
 
             // Make Styling
             CellStyle centerTextCellStyle = workbook.createCellStyle ();
@@ -172,31 +177,41 @@ public class B_RincianTindakanJasaDokter {
             BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
             BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
-            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-            for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
-                sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                sheet2.autoSizeColumn (rightCell);
-                for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
-                    sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+            // Get the last column index
+            int lastColumnIndex = sheet2.getRow(5).getLastCellNum();
+
+            // Apply header style and border to the header row and auto-size columns
+            for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                sheet2.getRow(0).getCell(rightCell).setCellStyle(BorderCenterCellStyle);
+                sheet2.autoSizeColumn(rightCell);
+            }
+
+            // Apply cell styles and borders to the data rows
+            for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                for (int downRow = 1; downRow <= sheet2.getLastRowNum(); downRow++) {
+                    sheet2.getRow(downRow).getCell(rightCell).setCellStyle(AllBorderCellStyle);
                 }
             }
-            for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++){
-                sheet2.getRow (downRow).getCell (22).setCellStyle (targetColumnColourNetto);
+
+            // Apply the target column style to column 22 for all data rows
+            for (int downRow = 1; downRow <= sheet2.getLastRowNum(); downRow++) {
+                sheet2.getRow(downRow).getCell(22).setCellStyle(targetColumnColourNetto);
             }
+
 
             workbook.removeSheetAt(0);
 
-            LocalDateTime end = LocalDateTime.now ();
+            LocalDateTime end = LocalDateTime.now();
             Duration duration = Duration.between(start, end);
-            long seconds = duration.toMillis ();
-            System.out.println ("B_RincianTindakanJasaDokter Done in "+seconds );
+            double seconds = duration.toMillis() / 1000.0;
+            System.out.printf("B_RincianTindakanJasaDokter Done in %.4f seconds%n", seconds);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         try {
-            outputStream = new FileOutputStream("2. RINCIAN TINDAKAN JASA DOKTER.xlsx");
+            outputStream = new FileOutputStream(fileOutput+"2. RINCIAN TINDAKAN JASA DOKTER.xlsx");
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();

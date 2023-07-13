@@ -1,36 +1,47 @@
 package LaporanJasa;
 
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.*;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Locale;
+
+import static LaporanJasa.LaporanJasaCommandCenter.fileOutput;
+import static LaporanJasa.LaporanJasaCommandCenter.fileSource;
+
 
 public class C_RekapPasienJasaDokter {
     public static void main(String[] args) throws IOException {
 //        new C_RekapPasienJasaDokter();
     }
 
+
+    Workbook workbook = null;
+    FileOutputStream outputStream = null;
+
     public C_RekapPasienJasaDokter() {
-        LocalDateTime start = LocalDateTime.now();
-        File inputFS = new File("C:\\sat work\\test\\b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xlsx"); //XLSX
+        File xlsxFile   = new File(fileSource + "b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xlsx");
+        File xlsFile    = new File(fileSource + "b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN.xls");
+        File jasaDokter;
+        if (xlsxFile.exists()) {
+            jasaDokter = xlsxFile;
+        } else if (xlsFile.exists()) {
+            jasaDokter = xlsFile;
+        } else {
+            System.out.println("File not found: " + fileSource + "b) LAPORAN REKAP PENERIMAAN JASA PELAYANAN PER PASIEN");
+            return;
+        }
+
         System.out.println("C_RekapPasienJasaDokter is starting");
-        Workbook workbook = null;
-        FileOutputStream outputStream = null;
         try {
-            FileInputStream poifs = new FileInputStream(inputFS); //XLSX
-            workbook = new XSSFWorkbook(poifs); //XLSX
+            LocalDateTime start = LocalDateTime.now();
+            FileInputStream inputStream = new FileInputStream(jasaDokter);
+            workbook = WorkbookFactory.create(inputStream);
+
 
             Sheet sheet = workbook.getSheetAt(0);
             Sheet sheet2 = workbook.createSheet();
 
-            //Cara Bayar
-//            String caraBayarDokter = sheet2.getRow (1).getCell (17).getStringCellValue ();
-
+            DataFormat dataFormat = workbook.createDataFormat();
 
             CellStyle totalStyle = workbook.createCellStyle ();
             totalStyle.setAlignment (HorizontalAlignment.RIGHT);
@@ -42,6 +53,9 @@ public class C_RekapPasienJasaDokter {
             totalStyle.setRightBorderColor (IndexedColors.BLACK.getIndex ());
             totalStyle.setBorderTop (BorderStyle.THIN);
             totalStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
+            totalStyle.setDataFormat (dataFormat.getFormat("_-* #,##0.00_-;-* #,##0.00_-;_-* \"-\"??_-;_-@_-"));
+            totalStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+            totalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
             workbook.setSheetName (1, "3. REKAP PASIEN JASA DOKTER");
             int lastColumn = sheet.getRow (0).getLastCellNum ();
@@ -70,12 +84,6 @@ public class C_RekapPasienJasaDokter {
             row.createCell (13).setCellValue ("JML PENGAMBILAN");
             row.createCell (14).setCellValue ("JML NETTO");
 
-
-            Locale locale = new Locale.Builder().setLanguage("id").setRegion("ID").build();
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
-            symbols.setGroupingSeparator('.');
-            symbols.setDecimalSeparator(',');
-            DecimalFormat formatter = new DecimalFormat("#,##0.#########", symbols);
             for (int column = 0; column <= lastColumn - 1; column++) {
 //          jika cell mengandung "KD_INST" concat jadi noreg
                 Cell cell = sheet.getRow (0).getCell (column);
@@ -108,7 +116,8 @@ public class C_RekapPasienJasaDokter {
                         } else if (sheet.getRow (i).getCell (column).getCellType () == CellType.STRING) {
                             targetCell.setCellValue (sheet.getRow (i).getCell (column).getStringCellValue ());
                         } else if (targetColumn2 == 14) {
-                            targetCell.setCellValue (formatter.format (sheet.getRow (i).getCell (column).getNumericCellValue ()));
+//                            targetCell.setCellValue (formatter.format (sheet.getRow (i).getCell (column).getNumericCellValue ()));
+                            targetCell.setCellValue (sheet.getRow (i).getCell (column).getNumericCellValue ());
                         } else {
                             targetCell.setCellValue (sheet.getRow (i).getCell (column).getNumericCellValue ());
                         }
@@ -127,20 +136,6 @@ public class C_RekapPasienJasaDokter {
                 sheet2.getRow (0).getCell (title).setCellStyle (centerTextStyle);
             }
             // Make Styling
-            CellStyle targetColumnColourNetto = workbook.createCellStyle ();
-            // Set the background color of the cells in the target column to yellow
-            targetColumnColourNetto.setFillForegroundColor (IndexedColors.YELLOW.getIndex ());
-            targetColumnColourNetto.setFillPattern (FillPatternType.SOLID_FOREGROUND);
-            targetColumnColourNetto.setAlignment (HorizontalAlignment.RIGHT);
-            targetColumnColourNetto.setBorderBottom (BorderStyle.THIN);
-            targetColumnColourNetto.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
-            targetColumnColourNetto.setBorderLeft (BorderStyle.THIN);
-            targetColumnColourNetto.setLeftBorderColor (IndexedColors.BLACK.getIndex ());
-            targetColumnColourNetto.setBorderRight (BorderStyle.THIN);
-            targetColumnColourNetto.setRightBorderColor (IndexedColors.BLACK.getIndex ());
-            targetColumnColourNetto.setBorderTop (BorderStyle.THIN);
-            targetColumnColourNetto.setTopBorderColor (IndexedColors.BLACK.getIndex ());
-
             CellStyle AllBorderCellStyle = workbook.createCellStyle ();
             AllBorderCellStyle.setBorderBottom (BorderStyle.THIN);
             AllBorderCellStyle.setBottomBorderColor (IndexedColors.BLACK.getIndex ());
@@ -162,61 +157,40 @@ public class C_RekapPasienJasaDokter {
             BorderCenterCellStyle.setBorderTop (BorderStyle.THIN);
             BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
-//            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-//            for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
-//                sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-//                sheet2.autoSizeColumn (rightCell);
-//                for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
-//                    sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
-//                }
-//            }
+            // Get the last column index
+            int lastColumnIndex = sheet2.getRow(5).getLastCellNum();
 
-            //buat header center kemudian border semuanya ps. use'<' because return 2 but there is 0, and 1. no number 2.
-            for (int rightCell = 0; rightCell < sheet2.getRow (5).getLastCellNum (); rightCell++) {
-                sheet2.getRow (0).getCell (rightCell).setCellStyle (BorderCenterCellStyle);
-                sheet2.autoSizeColumn (rightCell);
-                for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
-                    sheet2.getRow (downRow).getCell (rightCell).setCellStyle (AllBorderCellStyle);
+            // Apply header style and border to the header row and auto-size columns
+            for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                sheet2.getRow(0).getCell(rightCell).setCellStyle(BorderCenterCellStyle);
+                sheet2.autoSizeColumn(rightCell);
+            }
+
+            // Apply cell styles and borders to the data rows
+            for (int rightCell = 0; rightCell < lastColumnIndex; rightCell++) {
+                for (int downRow = 1; downRow <= sheet2.getLastRowNum(); downRow++) {
+                    sheet2.getRow(downRow).getCell(rightCell).setCellStyle(AllBorderCellStyle);
                 }
             }
-            for (int downRow = 1; downRow <= sheet2.getLastRowNum (); downRow++) {
-                sheet2.getRow (downRow).getCell (14).setCellStyle (targetColumnColourNetto);
+
+            // Apply the target column style to column 22 for all data rows
+            for (int downRow = 1; downRow <= sheet2.getLastRowNum(); downRow++) {
+                sheet2.getRow(downRow).getCell(14).setCellStyle(totalStyle);
             }
 
             workbook.removeSheetAt (0);
-            LocalDateTime end = LocalDateTime.now ();
-            Duration duration = Duration.between (start, end);
-            long seconds = duration.toMillis ();
-            System.out.println ("C_RekapPasienJasaDokter Done in " + seconds);
+            LocalDateTime end = LocalDateTime.now();
+            Duration duration = Duration.between(start, end);
+            double seconds = duration.toMillis() / 1000.0;
+            System.out.printf("C_RekapPasienJasaDokter Done in %.4f seconds%n", seconds);
 
         } catch (Exception e) {
             e.printStackTrace ();
         }
 
-
-//        try {
-//            outputStream = new FileOutputStream("3. REKAP PASIEN JASA DOKTER.xlsx");
-//            workbook.write(outputStream);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (workbook != null) {
-//                    workbook.close();
-//                }
-//                if (outputStream != null) {
-//                    outputStream.close();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//}
-
         try {
             // Write to output file
-            outputStream = new FileOutputStream("3. REKAP PASIEN JASA DOKTER.xlsx");
+            outputStream = new FileOutputStream(fileOutput+"3. REKAP PASIEN JASA DOKTER.xlsx");
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();

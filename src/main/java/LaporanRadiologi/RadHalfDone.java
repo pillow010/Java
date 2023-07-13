@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -18,16 +19,21 @@ public class RadHalfDone extends StylerRepo{
     private Workbook BookPertindakanNew;
     private FileOutputStream outputStream;
     String localDate = LocalDate.now().minusMonths (1).format (DateTimeFormatter.ofPattern ("yy MM"));
+    LocalDateTime now = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
+    String formattedDateTime = now.format(formatter);
+    String fileInput                  = "C:\\sat work\\test\\1. input\\";
+    String fileOutput                 = "C:\\sat work\\test\\2. output\\";
     String fileNamePelayananPenunjang = localDate + " rad pelayanan penunjang";
-    String fileNamePertindakanNew = localDate + " rad tindakan new";
-    String fileNameMonitoringf1 = localDate + " rad monitoring f1";
-    String fileNameMonitoringf2 = localDate + " rad monitoring f2";
-    String fileNameResponTime = localDate + " rad respontime";
+    String fileNamePertindakanNew     = localDate + " rad tindakan new";
+    String fileNameMonitoringf1       = localDate + " rad monitoring f1";
+    String fileNameMonitoringf2       = localDate + " rad monitoring f2";
+    String fileNameResponTime         = localDate + " rad respon time";
 
 
     public RadHalfDone(){
         try {
-            InputStream pertindakanNew = new FileInputStream ("C:\\sat work\\test\\" + fileNamePertindakanNew + ".xlsx");
+            InputStream pertindakanNew = new FileInputStream (fileInput + fileNamePertindakanNew + ".xlsx");
             BookPertindakanNew = new XSSFWorkbook (pertindakanNew);
 
 //          Make Styling
@@ -612,10 +618,10 @@ public class RadHalfDone extends StylerRepo{
             System.out.println ("10. " + BookPertindakanNew.getSheetAt (10).getSheetName () + " Completed");
 
 //        buat sheet 11 Jml tndakan per cr Byr pr hri
-            InputStream monitoringF1 = new FileInputStream ("C:\\sat work\\test\\" + fileNameMonitoringf1 + ".xlsx");
-            InputStream monitoringF2 = new FileInputStream ("C:\\sat work\\test\\" + fileNameMonitoringf2 + ".xlsx");
-            InputStream _pelayananPenunjang = new FileInputStream ("C:\\sat work\\test\\" + fileNamePelayananPenunjang + ".xlsx");
-            InputStream _responTime = new FileInputStream ("C:\\sat work\\test\\" + fileNameResponTime + ".xlsx");
+            InputStream monitoringF1 = new FileInputStream (fileInput + fileNameMonitoringf1 + ".xlsx");
+            InputStream monitoringF2 = new FileInputStream (fileInput + fileNameMonitoringf2 + ".xlsx");
+            InputStream _pelayananPenunjang = new FileInputStream (fileInput + fileNamePelayananPenunjang + ".xlsx");
+            InputStream _responTime = new FileInputStream (fileInput + fileNameResponTime + ".xlsx");
             Workbook bookMonitoringHasilRadF1 = new XSSFWorkbook (monitoringF1);
             Workbook bookMonitoringHasilRadF2 = new XSSFWorkbook (monitoringF2);
             Workbook bookPelayananPenunjang = new XSSFWorkbook (_pelayananPenunjang);
@@ -757,22 +763,74 @@ public class RadHalfDone extends StylerRepo{
 
             // First, create a Map to store the values from the responTime sheet
             Map<String, String[]> responTimeMap = new HashMap<>();
-            int responTimeLastRowNum = responTime.getLastRowNum();
+            int responTimeLastRowNum = responTime.getLastRowNum(); //where is last row?
             for (int row = 1; row <= responTimeLastRowNum; row++) {
-                String[] values = new String[26];
-                for (int col = 0; col < 26; col++) {
-                    Cell cell = responTime.getRow (row).getCell (col);
-                    if (cell==null) {
-                        values[col] = "-";
-                    } else if (cell.getCellType () == CellType.NUMERIC) {
-                        values[col] = String.valueOf (cell.getNumericCellValue ());
-                    } else if (cell.getCellType () == CellType.STRING) {
-                        values[col] = cell.getStringCellValue ();
+                //make sure no "PAKET" get mapped
+                if (!responTime.getRow (row).getCell (18).getStringCellValue ().contains ("PAKET")) {
+                    //make array to contain it, and stuff everything to it
+                    String[] values = new String[26];
+                    for (int col = 0; col < 26; col++) {
+                        Cell cell = responTime.getRow (row).getCell (col);
+                        if (cell == null) {
+                            values[col] = "-";
+                        } else if (cell.getCellType () == CellType.NUMERIC) {
+                            values[col] = String.valueOf (cell.getNumericCellValue ());
+                        } else if (cell.getCellType () == CellType.STRING) {
+                            values[col] = cell.getStringCellValue ();
+                        }
                     }
+                    String noreg = values[0] + values[1] + values[2] + values[3] + values[4];
+                    responTimeMap.put (noreg, values);
                 }
-                String noreg = values[0] + values[1] + values[2] + values[3] + values[4];
-                responTimeMap.put(noreg, values);
             }
+
+//            // Create a map to store the values from the responTime sheet
+//            Map<String, String[]> responTimeMap = new HashMap<>();
+//
+//            // Get the last row number of the responTime sheet
+//            int responTimeLastRowNum = responTime.getLastRowNum();
+//
+//            // Store all rows in an array for faster access
+//            Row[] rows = new Row[responTimeLastRowNum + 1];
+//            Iterator<Row> rowIterator = responTime.iterator();
+//            int rowIndex = 0;
+//
+//            // Iterate over the rows of the responTime sheet and store them in the rows array
+//            while (rowIterator.hasNext()) {
+//                Row row = rowIterator.next();
+//                rows[rowIndex++] = row;
+//            }
+//
+//            // Iterate over each row (starting from row 1, skipping header row)
+//            for (int row = 1; row <= responTimeLastRowNum; row++) {
+//                Row currentRow = rows[row];
+//                Cell valueCell = currentRow.getCell(18);
+//
+//                // Check if the value in column 18 does not contain "PAKET"
+//                if (!valueCell.getStringCellValue().contains("PAKET")) {
+//                    String[] values = new String[26];
+//
+//                    // Iterate over each column
+//                    for (int col = 0; col < 26; col++) {
+//                        Cell cell = currentRow.getCell(col);
+//
+//                        // Get the cell value and store it in the values array
+//                        String cellValue = (cell != null) ? getCellValueAsString(cell) : "-";
+//                        values[col] = cellValue;
+//                    }
+//
+//                    // Generate the noreg by concatenating the first 5 values
+//                    StringBuilder sb = new StringBuilder();
+//                    for (int i = 0; i < 5; i++) {
+//                        sb.append(values[i]);
+//                    }
+//                    String noreg = sb.toString();
+//
+//                    // Add the noreg and values array to the responTimeMap
+//                    responTimeMap.put(noreg, values);
+//                }
+//            }
+
 
             // Loop through the monitoringHasilRad sheet and use the Map to retrieve values from the responTime sheet
             int monitoringHasilRadLastRowNum = monitoringHasilRad.getLastRowNum();
@@ -1021,7 +1079,7 @@ public class RadHalfDone extends StylerRepo{
 
         try {
             if (doneFinal){
-                outputStream = new FileOutputStream ("Done Rad "+localDate+".xlsx");
+                outputStream = new FileOutputStream (fileOutput+"Done Rad "+localDate+".xlsx");
             } else {
                 outputStream = new FileOutputStream (fileNamePertindakanNew + " half done.xlsx");
             }
@@ -1044,6 +1102,15 @@ public class RadHalfDone extends StylerRepo{
 
     private static int pertindakanNewRawLastRowNum(Sheet pertindakan_New_Raw) {
         return pertindakan_New_Raw.getLastRowNum ();
+    }
+
+    // Helper method to retrieve cell value as a String
+    private String getCellValueAsString(Cell cell) {
+        return switch (cell.getCellType ()) {
+            case NUMERIC -> String.valueOf (cell.getNumericCellValue ());
+            case STRING -> cell.getStringCellValue ();
+            default -> "-";
+        };
     }
 
 }

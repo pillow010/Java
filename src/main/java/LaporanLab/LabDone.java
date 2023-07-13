@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -19,15 +20,19 @@ public class LabDone {
         boolean doneFinal = true;
 
         String localDate = LocalDate.now ().minusMonths (1).format (DateTimeFormatter.ofPattern ("yy MM"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
+        String formattedDateTime = LocalDateTime.now ().format(formatter);
+        String fileInput              = "C:\\sat work\\test\\1. input\\";
+        String fileOutput             = "C:\\sat work\\test\\2. output\\";
         String fileNamePertindakanNew = localDate + " lab tindakan new";
-//        String fileNameHasilRinci = localDate + " lab hasil rinci";
-        String fileNameRegister = localDate + " lab register";
+//        String fileNameHasilRinci     = localDate + " lab hasil rinci";
+        String fileNameRegister       = localDate + " lab register";
 
 
         try {
-            InputStream pertindakanNew = new FileInputStream ("C:\\sat work\\test\\" + fileNamePertindakanNew + ".xlsx");
+            InputStream pertindakanNew = new FileInputStream (fileInput + fileNamePertindakanNew + ".xlsx");
             BookPertindakanNew = new XSSFWorkbook (pertindakanNew);
-            InputStream register = new FileInputStream ("C:\\sat work\\test\\" + fileNameRegister + ".xlsx");
+            InputStream register = new FileInputStream (fileInput + fileNameRegister + ".xlsx");
             Workbook bookRegister = new XSSFWorkbook (register);
 
 //          taruh pertindakan new ke sheet 0
@@ -524,7 +529,6 @@ public class LabDone {
             }
             subInstHari.getRow(rowStart).createCell(lastCol).setCellValue(noDuplicate.getLastRowNum()); // add total number of rows
 
-
             System.out.println ("05. " + BookPertindakanNew.getSheetAt (7).getSheetName () + " Completed");
 
 
@@ -617,7 +621,85 @@ public class LabDone {
 
             System.out.println ("06. " + BookPertindakanNew.getSheetAt (8).getSheetName () + " Completed");
 
+//          buat sheet 8 Pendapatan
+            BookPertindakanNew.cloneSheet (8);
+            Sheet pendapatan = BookPertindakanNew.getSheetAt (9);
+            BookPertindakanNew.setSheetName (9, "8. Pendapatan");
+            System.out.println ("08. " + BookPertindakanNew.getSheetAt (9).getSheetName () + " Start");
 
+            lastCell = pendapatan.getRow (0).getLastCellNum ();
+//            System.out.println (lastCell);
+
+
+//          create place to store value
+            tanggal = new TreeSet<>();
+            Set <String> nickcrByrXTotalTarif = new TreeSet<>();
+            countMap = new HashMap<>(); // new count map
+
+//          mapping value
+            for (int row = 1; row <= pertindakan_New_Raw.getLastRowNum(); row++) {
+                String cellTanggal = pertindakan_New_Raw.getRow(row).getCell(9).getStringCellValue().substring (0, 10);
+
+                String cellNickInst = pertindakan_New_Raw.getRow(row).getCell(24).getStringCellValue();
+                String cellcrByr = pertindakan_New_Raw.getRow(row).getCell(8).getStringCellValue();
+                int cellTotalTarif = (int) pertindakan_New_Raw.getRow(row).getCell(19).getNumericCellValue ();
+                String instXCrbyr = cellNickInst + "~~~" + cellcrByr; // I use T.T because i got no idea dot coma dash etc are used
+
+
+                tanggal.add(cellTanggal);//row
+                nickcrByrXTotalTarif.add(instXCrbyr);//cell
+
+                // increment count in countMap
+                if (!countMap.containsKey(instXCrbyr)) {
+                    countMap.put(instXCrbyr, new HashMap<>());
+                }
+                Map<String, Integer> crBayarCountMap = countMap.get(instXCrbyr);
+                if (!crBayarCountMap.containsKey(cellTanggal)) {
+                    crBayarCountMap.put(cellTanggal, cellTotalTarif);
+                } else {
+                    crBayarCountMap.put(cellTanggal, crBayarCountMap.get(cellTanggal) + cellTotalTarif);
+                }
+            }
+
+//          writing cell
+            pendapatan.getRow (0).createCell(lastCell).setCellValue("Tanggal");
+            int cellStart = lastCell+1;
+            for (String konten : nickcrByrXTotalTarif) {
+                String[] splitValue = konten.split("~~~");
+                String instalasi = splitValue[0];
+                String carabayar = splitValue[1];
+                pendapatan.getRow(0).createCell(cellStart).setCellValue(instalasi);
+                pendapatan.getRow(1).createCell(cellStart).setCellValue(carabayar);
+                cellStart++;
+            }
+
+//          filling row
+            rowStart = 2;
+            int row2LastCell = pendapatan.getRow (rowStart).getLastCellNum ();
+            lastCol = pendapatan.getRow (0).getLastCellNum () + 1;
+            for (String konten : tanggal) {
+                pendapatan.getRow (rowStart).createCell(row2LastCell).setCellValue(konten);
+                colStart = pendapatan.getRow (rowStart).getLastCellNum ();
+                int total = 0;
+                for (String item : nickcrByrXTotalTarif) {
+                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
+                        int count = countMap.get(item).get(konten);
+                        pendapatan.getRow(rowStart).createCell(colStart++).setCellValue(count);
+                        total += count;
+                    } else {
+                        pendapatan.getRow(rowStart).createCell(colStart++).setCellValue(0);
+                    }
+                }
+                pendapatan.getRow(rowStart).createCell(lastCol-1).setCellValue(total); // add row total
+                rowStart++;
+            }
+            System.out.println ("08. " + BookPertindakanNew.getSheetAt (9).getSheetName () + " Completed");
+
+
+
+
+
+//            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
             CellStyle AllBorderCellStyle = BookPertindakanNew.createCellStyle ();
             AllBorderCellStyle.setBorderBottom (BorderStyle.THIN);
@@ -640,7 +722,7 @@ public class LabDone {
             BorderCenterCellStyle.setTopBorderColor (IndexedColors.BLACK.getIndex ());
 
 //          Sheet numbers 3 to 15
-            for (int sheetNum = 2; sheetNum <= 8; sheetNum++) {
+            for (int sheetNum = 2; sheetNum <= 9; sheetNum++) {
                 Sheet currentSheet = BookPertindakanNew.getSheetAt(sheetNum);
                 System.out.println (currentSheet.getSheetName ());
                 for (int rightCell = 0; rightCell < currentSheet.getRow(0).getLastCellNum(); rightCell++) {
@@ -648,7 +730,6 @@ public class LabDone {
                     currentSheet.autoSizeColumn(rightCell);
                     for (int downRow = 1; downRow <= currentSheet.getLastRowNum(); downRow++) {
                         if (currentSheet.getRow (downRow).getCell (rightCell)==null){
-//                            System.out.println (downRow);
                             currentSheet.getRow (downRow).createCell (rightCell).setCellValue ("");
                         }
                         currentSheet.getRow(downRow).getCell(rightCell).setCellStyle(AllBorderCellStyle);
@@ -656,6 +737,12 @@ public class LabDone {
                 }
             }
 
+            if (doneFinal){
+                BookPertindakanNew.removeSheetAt (0);
+                BookPertindakanNew.removeSheetAt (0);
+            }
+
+            System.out.println (formattedDateTime);
         } catch (Exception e) {
             e.printStackTrace ();
         }
@@ -663,9 +750,9 @@ public class LabDone {
 
         try {
             if (doneFinal) {
-                outputStream = new FileOutputStream ("Done Lab " + localDate + ".xlsx");
+                outputStream = new FileOutputStream (fileOutput + "Done Lab " + localDate + ".xlsx");
             } else {
-                outputStream = new FileOutputStream (fileNamePertindakanNew + " half done.xlsx");
+                outputStream = new FileOutputStream (fileOutput + fileNamePertindakanNew + " half done.xlsx");
             }
             BookPertindakanNew.write (outputStream);
         } catch (IOException e) {

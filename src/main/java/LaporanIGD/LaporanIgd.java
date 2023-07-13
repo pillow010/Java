@@ -7,20 +7,24 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class LaporanIgd {
-
     public static void main(String[] args) throws IOException, AssertionError {
 //      specify file name, location, and workbook name.
-        String fileNameIgd = "23 04 igd register";
-        String fileNameIrna = "23 04 irna register";
-        InputStream LaporanIGD = new FileInputStream ("c:\\sat work\\test\\"+fileNameIgd+".xlsx");
-        InputStream laporanIrna = new FileInputStream ("c:\\sat work\\test\\"+fileNameIrna+".xlsx");
-        Workbook bookLaporanIGD = new XSSFWorkbook (LaporanIGD);
+        String localDate         = LocalDate.now().minusMonths (1).format (DateTimeFormatter.ofPattern ("yy MM"));
+        String fileInput         = "C:\\sat work\\test\\1. input\\";
+        String fileOutput        = "C:\\sat work\\test\\2. output\\";
+        String fileNameIgd       = localDate+" igd register";
+        String fileNameIrna      = localDate+" irna register";
+        InputStream LaporanIGD   = new FileInputStream (fileInput+fileNameIgd+".xlsx");
+        InputStream laporanIrna  = new FileInputStream (fileInput+fileNameIrna+".xlsx");
+        Workbook bookLaporanIGD  = new XSSFWorkbook (LaporanIGD);
         Workbook bookLaporanIrna = new XSSFWorkbook (laporanIrna);
-        Sheet register = bookLaporanIGD.getSheetAt (0);
-        Sheet registerIrna = bookLaporanIrna.getSheetAt (0);
+        Sheet register           = bookLaporanIGD.getSheetAt (0);
+        Sheet registerIrna       = bookLaporanIrna.getSheetAt (0);
 
 //      Make Styling (allBorder for content and borderCenter for title)
         CellStyle AllBorderCellStyle = bookLaporanIGD.createCellStyle ();
@@ -571,7 +575,7 @@ public class LaporanIgd {
         System.out.println ("10. "+bookLaporanIGD.getSheetName (10)+" is done");
         bookLaporanIGD.removeSheetAt (0);
 
-        FileOutputStream IGDDone = new FileOutputStream ("Done IGD "+Year + " " + Month + ".xlsx");
+        FileOutputStream IGDDone = new FileOutputStream (fileOutput + "Done IGD "+Year + " " + Month + ".xlsx");
         bookLaporanIGD.write (IGDDone);
 
 
