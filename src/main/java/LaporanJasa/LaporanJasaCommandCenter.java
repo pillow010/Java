@@ -3,7 +3,7 @@ package LaporanJasa;
 import java.io.IOException;
 
 public class LaporanJasaCommandCenter {
-    public static final String fileSource = "C:\\sat work\\test\\3. JKN SUSULAN NOV RAJAL\\";
+    public static final String fileSource = "C:\\sat work\\test\\2. JKN REGULER MEI RAJAL\\";
     public static final String fileOutput = "C:\\sat work\\test\\";
 
     public static void main(String[] args) throws IOException {

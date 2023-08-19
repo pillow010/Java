@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log Filter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h2>Pasien Pulang</h2>
+    <div class="date-inputs">
+        <div>
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date">
+        </div>
+        <div>
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date">
+        </div>
+    </div>
+
+    <button onclick="searchLogs()">Search</button>
+
+    <table id="logs-table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Noreg</th>
+            <th>Name</th>
+            <th>RM</th>
+            <th>Resume</th>
+            <th>CPPT</th>
+            <th>Operasi</th>
+            <th>Laboratorium</th>
+            <th>Radiologi</th>
+            <th>DPJP</th>
+            <th>Ruangan</th>
+        </tr>
+        </thead>
+        <tbody id="logs-container">
+        <!-- The logs will be displayed here after searching -->
+        </tbody>
+    </table>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
