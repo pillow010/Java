@@ -265,8 +265,8 @@ public class LabDone {
 
 //          mapping value
             for (int row = 1; row <= noDuplicate.getLastRowNum(); row++) {
-                String cellcrByr = noDuplicate.getRow(row).getCell(8).getStringCellValue();
-                String cellNickInst = noDuplicate.getRow(row).getCell(24).getStringCellValue();
+                String cellcrByr = noDuplicate.getRow(row).getCell(8).getStringCellValue();     //row header11
+                String cellNickInst = noDuplicate.getRow(row).getCell(24).getStringCellValue(); //column header15
 
                 crByr.add(cellcrByr);
                 nickInstXTindakan.add(cellNickInst);
@@ -344,6 +344,9 @@ public class LabDone {
                 String crByrxTindakan = caraByr + "T.T" + kelamin; // I use T.T because i got no idea dot coma dash etc are used
                 klmnCrByrCount.put (crByrxTindakan, klmnCrByrCount.getOrDefault (crByrxTindakan, 0) + 1);
             }
+
+//            gabung noreg tanggal, map dengan hasil. sehingga setiap noreg tanggal memiliki 1 hasil.
+//            next split noreg tanggal. dan map tanggal, hasil dan count.
 
             klaminPerCrByr.createRow (0).createCell (0).setCellValue ("Jenis Cara Bayar");
             klaminPerCrByr.getRow (0).createCell (1).setCellValue ("Kelamin ");
