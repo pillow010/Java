@@ -1081,7 +1081,7 @@ public class RadHalfDone extends StylerRepo{
             if (doneFinal){
                 outputStream = new FileOutputStream (fileOutput+"Done Rad "+localDate+".xlsx");
             } else {
-                outputStream = new FileOutputStream (fileNamePertindakanNew + " half done.xlsx");
+                outputStream = new FileOutputStream (fileOutput + fileNamePertindakanNew + " half done.xlsx");
             }
             BookPertindakanNew.write(outputStream);
         } catch (IOException e) {

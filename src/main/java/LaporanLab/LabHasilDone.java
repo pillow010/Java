@@ -114,7 +114,7 @@ public class LabHasilDone {
                 Cell cellHasil = sheetHasilRinci.getRow (i).getCell (11);
                 Cell cellPemeriksaan = sheetHasilRinci.getRow (i).getCell (9);
                 if (cellHasil.getStringCellValue ().contains ("/") && cellPemeriksaan.getStringCellValue ().equalsIgnoreCase ("widal")){
-                    cellHasil.setCellValue ("POSITIVE");
+                    cellHasil.setCellValue ("positive");
                 }
                 String keyToLookup = sheetHasilRinci.getRow(i).getCell(0).getStringCellValue();
                 String valueFromMap = perTindakanMap.get(keyToLookup);
@@ -192,270 +192,20 @@ public class LabHasilDone {
                     sheetNumberofWidalFinal=i;
                 }
             }
-////          HBsAg Final
-//////          create place to store value
-//            Set<String> hasil = new TreeSet<> ();
-//            Set<String> klpUmurXHasil = new TreeSet<>();
-//            Map<String, Map<String, Integer>> countMap = new HashMap<>(); // new count map
-//            Sheet sheetHBsAg = newSheetBook.getSheetAt (sheetNumberofHBsAg);
-//            Sheet sheetHBsAgFinal = newSheetBook.getSheetAt (sheetNumberofHBsAgFinal);
-//
-////          mapping value
-//            for (int row = 1; row <= sheetHBsAg.getLastRowNum(); row++) {
-//                String cellKelompokUmur = sheetHBsAg.getRow(row).getCell(15).getStringCellValue();      //row header
-//                String cellHasilPemeriksaan = sheetHBsAg.getRow(row).getCell(11).getStringCellValue();  //column header
-//
-//                hasil.add(cellKelompokUmur);
-//                klpUmurXHasil.add(cellHasilPemeriksaan);
-//
-//                // increment count in countMap
-//                if (!countMap.containsKey(cellHasilPemeriksaan)) {
-//                    countMap.put(cellHasilPemeriksaan, new HashMap<>());
-//                }
-//                Map<String, Integer> kelompokUmurCountMap = countMap.get(cellHasilPemeriksaan);
-//                if (!kelompokUmurCountMap.containsKey(cellKelompokUmur)) {
-//                    kelompokUmurCountMap.put(cellKelompokUmur, 1);
-//                } else {
-//                    kelompokUmurCountMap.put(cellKelompokUmur, kelompokUmurCountMap.get(cellKelompokUmur) + 1);
-//                }
-//            }
-//
-////          writing cell
-//            sheetHBsAgFinal.createRow(0).createCell(0).setCellValue("KLP UMUR TH");
-//            int rowStart = 1;
-//            for (String konten : klpUmurXHasil) {
-//                sheetHBsAgFinal.getRow(0).createCell(rowStart).setCellValue(konten);
-//                rowStart++;
-//            }
-//
-////          filling row
-//            rowStart = 1;
-//            int lastCol = klpUmurXHasil.size() + 1;
-//            for (String konten : hasil) {
-//                int colStart = 1;
-//                sheetHBsAgFinal.createRow(rowStart).createCell(0).setCellValue(konten);
-//                int total = 0;
-//                for (String item : klpUmurXHasil) {
-//                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
-//                        int count = countMap.get(item).get(konten);
-//                        sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(count);
-//                        total += count;
-//                    } else {
-//                        sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(0);
-//                    }
-//                }
-//                sheetHBsAgFinal.getRow(rowStart).createCell(lastCol).setCellValue(total); // add row total
-//                rowStart++;
-//            }
-//
-////          add grand total to last row
-//            sheetHBsAgFinal.createRow(rowStart);
-//            lastCell = sheetHBsAgFinal.getRow (0).getLastCellNum ();
-//            sheetHBsAgFinal.getRow (0).createCell (lastCell).setCellValue ("Grand Total");
-//            sheetHBsAgFinal.getRow(rowStart).createCell(0).setCellValue("Grand Total");
-//            int colStart = 1;
-//            for (String item : klpUmurXHasil) {
-//                int total = 0;
-//                for (String konten : hasil) {
-//                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
-//                        total += countMap.get(item).get(konten);
-//                    }
-//                }
-//                sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(total);
-//            }
-////            sheetHBsAgFinal.getRow(rowStart).createCell(lastCol).setCellValue(sheetHBsAgFinal.getLastRowNum()); // add total number of rows
-//
-//
-////            ----------------------------------------------------------------------------------------------------------
-////          HBsAg Final
-////          create place to store value
-//            hasil = new TreeSet<> ();
-//            klpUmurXHasil = new TreeSet<>();
-//            countMap = new HashMap<>(); // new count map
-//            sheetHBsAg = newSheetBook.getSheetAt (sheetNumberofHBsAg);
-//            sheetHBsAgFinal = newSheetBook.getSheetAt (sheetNumberofHBsAgFinal);
-//
-////          mapping value
-//            for (int row = 1; row <= sheetHBsAg.getLastRowNum(); row++) {
-//                String cellKelompokUmur = sheetHBsAg.getRow(row).getCell(12).getStringCellValue();      //row header
-//                String cellHasilPemeriksaan = sheetHBsAg.getRow(row).getCell(11).getStringCellValue();  //column header
-//
-//                hasil.add(cellKelompokUmur);
-//                klpUmurXHasil.add(cellHasilPemeriksaan);
-//
-//                // increment count in countMap
-//                if (!countMap.containsKey(cellHasilPemeriksaan)) {
-//                    countMap.put(cellHasilPemeriksaan, new HashMap<>());
-//                }
-//                Map<String, Integer> kelompokUmurCountMap = countMap.get(cellHasilPemeriksaan);
-//                if (!kelompokUmurCountMap.containsKey(cellKelompokUmur)) {
-//                    kelompokUmurCountMap.put(cellKelompokUmur, 1);
-//                } else {
-//                    kelompokUmurCountMap.put(cellKelompokUmur, kelompokUmurCountMap.get(cellKelompokUmur) + 1);
-//                }
-//            }
-//
-////          writing cell
-//            sheetHBsAgFinal.createRow(24).createCell(0).setCellValue("KLP UMUR TH");
-//            int cellStart = 1;
-//            for (String konten : klpUmurXHasil) {
-//                sheetHBsAgFinal.getRow(24).createCell(cellStart).setCellValue(konten);
-//                cellStart++;
-//            }
-//
-////          filling row
-//            rowStart = 25;
-//            lastCol = klpUmurXHasil.size() + 1;
-//            for (String konten : hasil) {
-//                colStart = 1;
-//                sheetHBsAgFinal.createRow(rowStart).createCell(0).setCellValue(konten);
-//                int total = 0;
-//                for (String item : klpUmurXHasil) {
-//                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
-//                        int count = countMap.get(item).get(konten);
-//                        sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(count);
-//                        total += count;
-//                    } else {
-//                        sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(0);
-//                    }
-//                }
-//                sheetHBsAgFinal.getRow(rowStart).createCell(lastCol).setCellValue(total); // add row total
-//                rowStart++;
-//            }
-//
-////          add grand total to last row
-//            sheetHBsAgFinal.createRow(rowStart);
-//            lastCell = sheetHBsAgFinal.getRow (24).getLastCellNum ();
-//            sheetHBsAgFinal.getRow (24).createCell (lastCell).setCellValue ("Grand Total");
-//            sheetHBsAgFinal.getRow(rowStart).createCell(0).setCellValue("Grand Total");
-//            colStart = 1;
-//            for (String item : klpUmurXHasil) {
-//                int total = 0;
-//                for (String konten : hasil) {
-//                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
-//                        total += countMap.get(item).get(konten);
-//                    }
-//                }
-//                sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(total);
-//            }
-////            sheetHBsAgFinal.getRow(rowStart).createCell(lastCol).setCellValue();
-
-
-//          WIDAL FINAL
-//          create place to store value
-            Set<String> umur = new TreeSet<>();
-            TreeMap<String, String> noregKlpUmurxHasil = new TreeMap<>();
-            Set<String> klpUmurXHasil = new TreeSet<>();
-            Map<String, Map<String, Integer>> countMap = new HashMap<>(); // new count map
-
-            Sheet sheetWIDAL = newSheetBook.getSheetAt(sheetNumberofWidal);
-            Sheet sheetWIDALFinal = newSheetBook.getSheetAt(sheetNumberofWidalFinal);
-
-            int counter=0;
-//            This line sets up a loop that will iterate through the rows of the data in sheetWIDAL. It starts from the second row (1-based index) because the first row is often used for headers.
-            for (int row = 1; row <= sheetWIDAL.getLastRowNum(); row++) {
-                String cellKelompokUmur = sheetWIDAL.getRow(row).getCell(15).getStringCellValue(); // row header
-                String cellHasilPemeriksaan = sheetWIDAL.getRow(row).getCell(11).getStringCellValue(); // column header
-                String cellnoreg = sheetWIDAL.getRow(row).getCell(0).getStringCellValue();
-
-//            gabung noreg tanggal, map dengan hasil. sehingga setiap noreg tanggal memiliki 1 hasil.
-//            next split noreg tanggal. dan map tanggal, hasil dan count.
-
-                String noregKlpUmur = cellnoreg + "T.T" + cellKelompokUmur;
-                // Check if noreg already exists
-                if (noregKlpUmurxHasil.containsKey(noregKlpUmur)) {
-                    // Check if the current result is "positive" and update if it is
-                    if ("positive".equalsIgnoreCase(cellHasilPemeriksaan)) {
-                        noregKlpUmurxHasil.put(noregKlpUmur, "positive");
-
-                    }
-                } else {
-                    noregKlpUmurxHasil.put(noregKlpUmur, cellHasilPemeriksaan);
-                }
-
-                umur.add(cellKelompokUmur);
-                klpUmurXHasil.add(cellHasilPemeriksaan);
-            }
-
-            for (Map.Entry<String, String> entry : noregKlpUmurxHasil.entrySet ()) {
-                String[] splitValue = entry.getKey ().split("T.T");
-                String klpUmur = splitValue[1];
-                String hasil = entry.getValue ();
-
-
-                if (!countMap.containsKey(hasil)) {
-                    countMap.put(hasil, new HashMap<>());
-                }
-
-                Map<String, Integer> kelompokUmurCountMap = countMap.get(hasil);
-                if (!kelompokUmurCountMap.containsKey(klpUmur)) {
-                    kelompokUmurCountMap.put(klpUmur, 1);
-                } else {
-                    kelompokUmurCountMap.put(klpUmur, kelompokUmurCountMap.get(klpUmur) + 1);
-                }
-            }
-
-////          writing cell
-            sheetWIDALFinal.createRow(0).createCell(0).setCellValue("KLP UMUR TH");
-            int rowStart = 1;
-            for (String konten : klpUmurXHasil) {
-                sheetWIDALFinal.getRow(0).createCell(rowStart).setCellValue(konten);
-                rowStart++;
-            }
-
-//          filling row
-            rowStart = 1;
-            int lastCol = klpUmurXHasil.size() + 1;
-            for (String umurs : umur) {
-                int colStart = 1;
-                sheetWIDALFinal.createRow(rowStart).createCell(0).setCellValue(umurs);
-                int total = 0;
-                for (String hasils : klpUmurXHasil) {
-                    if (countMap.containsKey(hasils) && countMap.get(hasils).containsKey(umurs)) {
-                        int count = countMap.get(hasils).get(umurs);
-                        sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(count);
-                        total += count;
-                    } else {
-                        sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(0);
-                    }
-                }
-                sheetWIDALFinal.getRow(rowStart).createCell(lastCol).setCellValue(total); // add row total
-                rowStart++;
-            }
-
-//          add grand total to last row
-            sheetWIDALFinal.createRow(rowStart);
-            lastCell = sheetWIDALFinal.getRow (0).getLastCellNum ();
-            sheetWIDALFinal.getRow (0).createCell (lastCell).setCellValue ("Grand Total");
-            sheetWIDALFinal.getRow(rowStart).createCell(0).setCellValue("Grand Total");
-            int colStart = 1;
-            for (String item : klpUmurXHasil) {
-                int total = 0;
-                for (String konten : umur) {
-                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
-                        total += countMap.get(item).get(konten);
-                    }
-                }
-                sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(total);
-            }
-//            sheetHBsAgFinal.getRow(rowStart).createCell(lastCol).setCellValue(sheetHBsAgFinal.getLastRowNum()); // add total number of rows
-
-
-//            ----------------------------------------------------------------------------------------------------------
 //          HBsAg Final
 //          create place to store value
-            umur = new TreeSet<> ();
-            klpUmurXHasil = new TreeSet<>();
-            countMap = new HashMap<>(); // new count map
-            sheetWIDAL = newSheetBook.getSheetAt (sheetNumberofWidal);
-            sheetWIDALFinal = newSheetBook.getSheetAt (sheetNumberofWidalFinal);
+            Set<String> hasil = new TreeSet<> ();
+            Set<String> klpUmurXHasil = new TreeSet<>();
+            Map<String, Map<String, Integer>> countMap = new HashMap<>(); // new count map
+            Sheet sheetHBsAg = newSheetBook.getSheetAt (sheetNumberofHBsAg);
+            Sheet sheetHBsAgFinal = newSheetBook.getSheetAt (sheetNumberofHBsAgFinal);
 
 //          mapping value
-            for (int row = 1; row <= sheetWIDAL.getLastRowNum(); row++) {
-                String cellKelompokUmur = sheetWIDAL.getRow(row).getCell(12).getStringCellValue();      //row header
-                String cellHasilPemeriksaan = sheetWIDAL.getRow(row).getCell(11).getStringCellValue();  //column header
+            for (int row = 1; row <= sheetHBsAg.getLastRowNum(); row++) {
+                String cellKelompokUmur = sheetHBsAg.getRow(row).getCell(15).getStringCellValue();      //row header
+                String cellHasilPemeriksaan = sheetHBsAg.getRow(row).getCell(11).getStringCellValue();  //column header
 
-                umur.add(cellKelompokUmur);
+                hasil.add(cellKelompokUmur);
                 klpUmurXHasil.add(cellHasilPemeriksaan);
 
                 // increment count in countMap
@@ -471,37 +221,217 @@ public class LabHasilDone {
             }
 
 //          writing cell
-            sheetWIDALFinal.createRow(24).createCell(0).setCellValue("KLP UMUR TH");
+            sheetHBsAgFinal.createRow(0).createCell(0).setCellValue("KLP UMUR TH");
+            int rowStart = 1;
+            for (String konten : klpUmurXHasil) {
+                sheetHBsAgFinal.getRow(0).createCell(rowStart).setCellValue(konten);
+                rowStart++;
+            }
+
+//          filling row
+            rowStart = 1;
+            int lastCol = klpUmurXHasil.size() + 1;
+            for (String konten : hasil) {
+                int colStart = 1;
+                sheetHBsAgFinal.createRow(rowStart).createCell(0).setCellValue(konten);
+                int total = 0;
+                for (String item : klpUmurXHasil) {
+                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
+                        int count = countMap.get(item).get(konten);
+                        sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(count);
+                        total += count;
+                    } else {
+                        sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(0);
+                    }
+                }
+                sheetHBsAgFinal.getRow(rowStart).createCell(lastCol).setCellValue(total); // add row total
+                rowStart++;
+            }
+
+//          add grand total to last row
+            sheetHBsAgFinal.createRow(rowStart);
+            lastCell = sheetHBsAgFinal.getRow (0).getLastCellNum ();
+            sheetHBsAgFinal.getRow (0).createCell (lastCell).setCellValue ("Grand Total");
+            sheetHBsAgFinal.getRow(rowStart).createCell(0).setCellValue("Grand Total");
+            int colStart = 1;
+            for (String item : klpUmurXHasil) {
+                int total = 0;
+                for (String konten : hasil) {
+                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
+                        total += countMap.get(item).get(konten);
+                    }
+                }
+                sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(total);
+            }
+
+
+//            ----------------------------------------------------------------------------------------------------------
+//          HBsAg Final
+//          create place to store value
+            hasil = new TreeSet<> ();
+            klpUmurXHasil = new TreeSet<>();
+            countMap = new HashMap<>(); // new count map
+            sheetHBsAg = newSheetBook.getSheetAt (sheetNumberofHBsAg);
+            sheetHBsAgFinal = newSheetBook.getSheetAt (sheetNumberofHBsAgFinal);
+
+//          mapping value
+            for (int row = 1; row <= sheetHBsAg.getLastRowNum(); row++) {
+                String cellKelompokUmur = sheetHBsAg.getRow(row).getCell(12).getStringCellValue();      //row header
+                String cellHasilPemeriksaan = sheetHBsAg.getRow(row).getCell(11).getStringCellValue();  //column header
+
+                hasil.add(cellKelompokUmur);
+                klpUmurXHasil.add(cellHasilPemeriksaan);
+
+                // increment count in countMap
+                if (!countMap.containsKey(cellHasilPemeriksaan)) {
+                    countMap.put(cellHasilPemeriksaan, new HashMap<>());
+                }
+                Map<String, Integer> kelompokUmurCountMap = countMap.get(cellHasilPemeriksaan);
+                if (!kelompokUmurCountMap.containsKey(cellKelompokUmur)) {
+                    kelompokUmurCountMap.put(cellKelompokUmur, 1);
+                } else {
+                    kelompokUmurCountMap.put(cellKelompokUmur, kelompokUmurCountMap.get(cellKelompokUmur) + 1);
+                }
+            }
+
+//          writing cell
+            sheetHBsAgFinal.createRow(24).createCell(0).setCellValue("KLP UMUR TH");
             int cellStart = 1;
             for (String konten : klpUmurXHasil) {
-                sheetWIDALFinal.getRow(24).createCell(cellStart).setCellValue(konten);
+                sheetHBsAgFinal.getRow(24).createCell(cellStart).setCellValue(konten);
                 cellStart++;
             }
 
 //          filling row
             rowStart = 25;
             lastCol = klpUmurXHasil.size() + 1;
-            for (String konten : umur) {
+            for (String konten : hasil) {
                 colStart = 1;
-                sheetWIDALFinal.createRow(rowStart).createCell(0).setCellValue(konten);
+                sheetHBsAgFinal.createRow(rowStart).createCell(0).setCellValue(konten);
                 int total = 0;
                 for (String item : klpUmurXHasil) {
                     if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
                         int count = countMap.get(item).get(konten);
+                        sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(count);
+                        total += count;
+                    } else {
+                        sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(0);
+                    }
+                }
+                sheetHBsAgFinal.getRow(rowStart).createCell(lastCol).setCellValue(total); // add row total
+                rowStart++;
+            }
+
+//          add grand total to last row
+            sheetHBsAgFinal.createRow(rowStart);
+            lastCell = sheetHBsAgFinal.getRow (24).getLastCellNum ();
+            sheetHBsAgFinal.getRow (24).createCell (lastCell).setCellValue ("Grand Total");
+            sheetHBsAgFinal.getRow(rowStart).createCell(0).setCellValue("Grand Total");
+            colStart = 1;
+            for (String item : klpUmurXHasil) {
+                int total = 0;
+                for (String konten : hasil) {
+                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
+                        total += countMap.get(item).get(konten);
+                    }
+                }
+                sheetHBsAgFinal.getRow(rowStart).createCell(colStart++).setCellValue(total);
+            }
+
+
+//          WIDAL FINAL
+//          create place to store value
+            Set<String> umur = new TreeSet<>();
+            TreeMap<String, String> noregKlpUmurxHasil = new TreeMap<>();
+            klpUmurXHasil = new TreeSet<>();
+            countMap = new HashMap<>(); // new count map
+
+            Sheet sheetWIDAL = newSheetBook.getSheetAt(sheetNumberofWidal);
+            Sheet sheetWIDALFinal = newSheetBook.getSheetAt(sheetNumberofWidalFinal);
+
+
+            int counter = 0;
+
+            // Iterate through the data
+            for (int row = 1; row <= sheetWIDAL.getLastRowNum(); row++) {
+                String cellKelompokUmur = sheetWIDAL.getRow(row).getCell(15).getStringCellValue(); // Extract age group
+                String cellHasilPemeriksaan = sheetWIDAL.getRow(row).getCell(11).getStringCellValue(); // Extract test result
+                String cellnoreg = sheetWIDAL.getRow(row).getCell(0).getStringCellValue(); // Extract registration number
+
+                // Combine registration number and age group into a single key
+                String noregKlpUmur = cellnoreg + "T.T" + cellKelompokUmur;
+
+                // Check if the combined key already exists in noregKlpUmurxHasil
+                if (noregKlpUmurxHasil.containsKey(noregKlpUmur)) {
+                    // Check if the current result is "positive" and update if it is
+//                    if ("positive".equalsIgnoreCase(cellHasilPemeriksaan)) {
+//                        noregKlpUmurxHasil.put(noregKlpUmur, "positive");
+//                    }
+                    if (cellHasilPemeriksaan.equalsIgnoreCase ("positive")) {
+                        noregKlpUmurxHasil.put (noregKlpUmur, "positive");
+                    }
+                } else {
+                    noregKlpUmurxHasil.put(noregKlpUmur, cellHasilPemeriksaan);
+                }
+
+                // Add unique age groups and test results to respective sets
+                umur.add(cellKelompokUmur);
+                klpUmurXHasil.add(cellHasilPemeriksaan);
+            }
+
+            // Calculate counts for each test result and age group
+            for (Map.Entry<String, String> entry : noregKlpUmurxHasil.entrySet()) {
+                String[] splitValue = entry.getKey().split("T.T");
+                String klpUmur = splitValue[1];
+                String hasil1 = entry.getValue();
+
+                // Ensure that the result exists in countMap
+                if (!countMap.containsKey(hasil1)) {
+                    countMap.put(hasil1, new HashMap<>());
+                }
+
+                Map<String, Integer> kelompokUmurCountMap = countMap.get(hasil1);
+
+                // Increment the count for the current age group
+                if (!kelompokUmurCountMap.containsKey(klpUmur)) {
+                    kelompokUmurCountMap.put(klpUmur, 1);
+                } else {
+                    kelompokUmurCountMap.put(klpUmur, kelompokUmurCountMap.get(klpUmur) + 1);
+                }
+            }
+
+            // Write cell data
+            sheetWIDALFinal.createRow(0).createCell(0).setCellValue("KLP UMUR TH");
+            rowStart = 1;
+            for (String konten : klpUmurXHasil) {
+                sheetWIDALFinal.getRow(0).createCell(rowStart).setCellValue(konten);
+                rowStart++;
+            }
+
+            // Fill rows with counts
+            rowStart = 1;
+            lastCol = klpUmurXHasil.size() + 1;
+            for (String umurs : umur) {
+                colStart = 1;
+                sheetWIDALFinal.createRow(rowStart).createCell(0).setCellValue(umurs);
+                int total = 0;
+                for (String hasils : klpUmurXHasil) {
+                    if (countMap.containsKey(hasils) && countMap.get(hasils).containsKey(umurs)) {
+                        int count = countMap.get(hasils).get(umurs);
                         sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(count);
                         total += count;
                     } else {
                         sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(0);
                     }
                 }
-                sheetWIDALFinal.getRow(rowStart).createCell(lastCol).setCellValue(total); // add row total
+                sheetWIDALFinal.getRow(rowStart).createCell(lastCol).setCellValue(total); // Add row total
                 rowStart++;
             }
 
-//          add grand total to last row
+            // Add grand total to last row
             sheetWIDALFinal.createRow(rowStart);
-            lastCell = sheetWIDALFinal.getRow (24).getLastCellNum ();
-            sheetWIDALFinal.getRow (24).createCell (lastCell).setCellValue ("Grand Total");
+            lastCell = sheetWIDALFinal.getRow(0).getLastCellNum();
+            sheetWIDALFinal.getRow(0).createCell(lastCell).setCellValue("Grand Total");
             sheetWIDALFinal.getRow(rowStart).createCell(0).setCellValue("Grand Total");
             colStart = 1;
             for (String item : klpUmurXHasil) {
@@ -513,79 +443,110 @@ public class LabHasilDone {
                 }
                 sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(total);
             }
-//            sheetHBsAgFinal.getRow(rowStart).createCell(lastCol).setCellValue();
-//            todo next add PIVOT
-////          create place to store value
-//            Set<String> hasil = new TreeSet<> ();
-//            Set<String> nickInstXTindakan = new TreeSet<>();
-//            Map<String, Map<String, Integer>> countMap = new HashMap<>(); // new count map
-//
-////          mapping value
-//            for (int row = 1; row <= noDuplicate.getLastRowNum(); row++) {
-//                String cellcrByr = noDuplicate.getRow(row).getCell(8).getStringCellValue();
-//                String cellNickInst = noDuplicate.getRow(row).getCell(24).getStringCellValue();
-//
-//                hasil.add(cellcrByr);
-//                nickInstXTindakan.add(cellNickInst);
-//
-//                // increment count in countMap
-//                if (!countMap.containsKey(cellNickInst)) {
-//                    countMap.put(cellNickInst, new HashMap<>());
-//                }
-//                Map<String, Integer> crBayarCountMap = countMap.get(cellNickInst);
-//                if (!crBayarCountMap.containsKey(cellcrByr)) {
-//                    crBayarCountMap.put(cellcrByr, 1);
-//                } else {
-//                    crBayarCountMap.put(cellcrByr, crBayarCountMap.get(cellcrByr) + 1);
-//                }
-//            }
-//
-////          writing cell
-//            instCaraBayar.createRow(0).createCell(0).setCellValue("Tanggal");
-//            int rowStart = 1;
-//            for (String konten : nickInstXTindakan) {
-//                instCaraBayar.getRow(0).createCell(rowStart).setCellValue(konten);
-//                rowStart++;
-//            }
-//
-////          filling row
-//            rowStart = 1;
-//            int lastCol = nickInstXTindakan.size() + 1;
-//            for (String konten : hasil) {
-//                int colStart = 1;
-//                instCaraBayar.createRow(rowStart).createCell(0).setCellValue(konten);
-//                int total = 0;
-//                for (String item : nickInstXTindakan) {
-//                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
-//                        int count = countMap.get(item).get(konten);
-//                        instCaraBayar.getRow(rowStart).createCell(colStart++).setCellValue(count);
-//                        total += count;
-//                    } else {
-//                        instCaraBayar.getRow(rowStart).createCell(colStart++).setCellValue(0);
+
+
+//            ----------------------------------------------------------------------------------------------------------
+//          HBsAg Final
+//          create place to store value
+            umur = new TreeSet<> ();
+            klpUmurXHasil = new TreeSet<>();
+            countMap = new HashMap<>(); // new count map
+            sheetWIDAL = newSheetBook.getSheetAt (sheetNumberofWidal);
+            sheetWIDALFinal = newSheetBook.getSheetAt (sheetNumberofWidalFinal);
+
+//          mapping value
+            for (int row = 1; row <= sheetWIDAL.getLastRowNum(); row++) {
+                String cellKelompokUmur = sheetWIDAL.getRow(row).getCell(12).getStringCellValue();      //row header
+                String cellHasilPemeriksaan = sheetWIDAL.getRow(row).getCell(11).getStringCellValue();  //column header
+                String cellnoreg = sheetWIDAL.getRow(row).getCell(0).getStringCellValue(); // Extract registration number
+
+                // Combine registration number and age group into a single key
+                String noregKlpUmur = cellnoreg + "T.T" + cellKelompokUmur;
+
+                // Check if the combined key already exists in noregKlpUmurxHasil
+                if (noregKlpUmurxHasil.containsKey(noregKlpUmur)) {
+                    // Check if the current result is "positive" and update if it is
+//                    if ("positive".equalsIgnoreCase(cellHasilPemeriksaan)) {
+//                        noregKlpUmurxHasil.put(noregKlpUmur, "positive");
 //                    }
-//                }
-//                instCaraBayar.getRow(rowStart).createCell(lastCol).setCellValue(total); // add row total
-//                rowStart++;
-//            }
+                    if (cellHasilPemeriksaan.equalsIgnoreCase ("positive")) {
+                        noregKlpUmurxHasil.put (noregKlpUmur, "positive");
+                    }
+                } else {
+                    noregKlpUmurxHasil.put(noregKlpUmur, cellHasilPemeriksaan);
+                }
 
-//          add grand total to last row
-//            instCaraBayar.createRow(rowStart);
-//            int lastCell = instCaraBayar.getRow (0).getLastCellNum ();
-//            instCaraBayar.getRow (0).createCell (lastCell).setCellValue ("Grand Total");
-//            instCaraBayar.getRow(rowStart).createCell(0).setCellValue("Grand Total");
-//            int colStart = 1;
-//            for (String item : nickInstXTindakan) {
-//                int total = 0;
-//                for (String konten : hasil) {
-//                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
-//                        total += countMap.get(item).get(konten);
-//                    }
-//                }
-//                instCaraBayar.getRow(rowStart).createCell(colStart++).setCellValue(total);
-//            }
-//            instCaraBayar.getRow(rowStart).createCell(lastCol).setCellValue(noDuplicate.getLastRowNum()); // add total number of rows
+                // Add unique age groups and test results to respective sets
+                umur.add(cellKelompokUmur);
+                klpUmurXHasil.add(cellHasilPemeriksaan);
+            }
 
+            // Calculate counts for each test result and age group
+            for (Map.Entry<String, String> entry : noregKlpUmurxHasil.entrySet()) {
+                String[] splitValue = entry.getKey().split("T.T");
+                String klpUmur = splitValue[1];
+                String hasil1 = entry.getValue();
 
+                // Ensure that the result exists in countMap
+                if (!countMap.containsKey(hasil1)) {
+                    countMap.put(hasil1, new HashMap<>());
+                }
+
+                Map<String, Integer> kelompokUmurCountMap = countMap.get(hasil1);
+
+                // Increment the count for the current age group
+                if (!kelompokUmurCountMap.containsKey(klpUmur)) {
+                    kelompokUmurCountMap.put(klpUmur, 1);
+                } else {
+                    kelompokUmurCountMap.put(klpUmur, kelompokUmurCountMap.get(klpUmur) + 1);
+                }
+            }
+
+            // Write cell data
+            sheetWIDALFinal.createRow(24).createCell(0).setCellValue("KLP UMUR TH");
+            rowStart = 1;
+            for (String konten : klpUmurXHasil) {
+                sheetWIDALFinal.getRow(24).createCell(rowStart).setCellValue(konten);
+                rowStart++;
+            }
+
+            // Fill rows with counts
+            rowStart = 25;
+            lastCol = klpUmurXHasil.size() + 1;
+            for (String umurs : umur) {
+                colStart = 1;
+                sheetWIDALFinal.createRow(rowStart).createCell(0).setCellValue(umurs);
+                int total = 0;
+                for (String hasils : klpUmurXHasil) {
+                    if (countMap.containsKey(hasils) && countMap.get(hasils).containsKey(umurs)) {
+                        int count = countMap.get(hasils).get(umurs);
+                        sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(count);
+                        total += count;
+                    } else {
+                        sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(0);
+                    }
+                }
+                sheetWIDALFinal.getRow(rowStart).createCell(lastCol).setCellValue(total); // Add row total
+                rowStart++;
+            }
+
+            // Add grand total to last row
+            sheetWIDALFinal.createRow(rowStart);
+            lastCell = sheetWIDALFinal.getRow(24).getLastCellNum();
+            System.out.println (rowStart);
+            System.out.println (lastCell);
+            sheetWIDALFinal.getRow(24).createCell(lastCell).setCellValue("Grand Total");
+            sheetWIDALFinal.getRow(rowStart).createCell(0).setCellValue("Grand Total");
+            colStart = 1;
+            for (String item : klpUmurXHasil) {
+                int total = 0;
+                for (String konten : umur) {
+                    if (countMap.containsKey(item) && countMap.get(item).containsKey(konten)) {
+                        total += countMap.get(item).get(konten);
+                    }
+                }
+                sheetWIDALFinal.getRow(rowStart).createCell(colStart++).setCellValue(total);
+            }
 
             System.out.println ("total sheet "+newSheetBook.getNumberOfSheets ());
         } catch (Exception e) {
