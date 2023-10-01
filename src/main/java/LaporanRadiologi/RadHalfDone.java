@@ -2,7 +2,6 @@ package LaporanRadiologi;
 
 import StylingLaporan.StylerRepo;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,8 +32,78 @@ public class RadHalfDone extends StylerRepo{
 
     public RadHalfDone(){
         try {
-            InputStream pertindakanNew = new FileInputStream (fileInput + fileNamePertindakanNew + ".xlsx");
-            BookPertindakanNew = new XSSFWorkbook (pertindakanNew);
+
+            File pelayananPenunjang;
+            File pertindakanNew;
+            File radMonitoringF1;
+            File radMonitoringF2;
+            File radResponTime;
+            File xlsPelayananPenunjang  = new File (fileInput + fileNamePelayananPenunjang + ".xls");
+            File xlsxPelayananPenunjang = new File (fileInput + fileNamePelayananPenunjang + ".xlsx");
+            File xlsPertindakanNew      = new File (fileInput + fileNamePertindakanNew + ".xls");
+            File xlsxPertindakanNew     = new File (fileInput + fileNamePertindakanNew + ".xlsx");
+            File xlsRadMonitoringF1     = new File (fileInput + fileNameMonitoringf1 + ".xls");
+            File xlsxRadMonitoringF1    = new File (fileInput + fileNameMonitoringf1 + ".xlsx");
+            File xlsRadMonitoringF2     = new File (fileInput + fileNameMonitoringf2 + ".xls");
+            File xlsxRadMonitoringF2    = new File (fileInput + fileNameMonitoringf2 + ".xlsx");
+            File xlsRadResponTime       = new File (fileInput + fileNameResponTime + ".xls");
+            File xlsxRadResponTime      = new File (fileInput + fileNameResponTime + ".xlsx");
+
+            if (xlsxPelayananPenunjang.exists()) {
+                pelayananPenunjang = xlsxPelayananPenunjang;
+            } else if (xlsPelayananPenunjang.exists()) {
+                pelayananPenunjang = xlsPelayananPenunjang;
+            } else {
+                System.out.println("File not found: " + fileInput + fileNamePelayananPenunjang);
+                return;
+            }
+
+            if (xlsxPertindakanNew.exists()) {
+                pertindakanNew = xlsxPertindakanNew;
+            } else if (xlsPertindakanNew.exists()) {
+                pertindakanNew = xlsPertindakanNew;
+            } else {
+                System.out.println("File not found: " + fileInput + fileNamePertindakanNew);
+                return;
+            }
+
+            if (xlsRadMonitoringF1.exists()) {
+                radMonitoringF1 = xlsRadMonitoringF1;
+            } else if (xlsxRadMonitoringF1.exists()) {
+                radMonitoringF1 = xlsxRadMonitoringF1;
+            } else {
+                System.out.println("File not found: " + fileInput + fileNameMonitoringf1);
+                return;
+            }
+
+            if (xlsRadMonitoringF2.exists()) {
+                radMonitoringF2 = xlsRadMonitoringF2;
+            } else if (xlsxRadMonitoringF2.exists()) {
+                radMonitoringF2 = xlsxRadMonitoringF2;
+            } else {
+                System.out.println("File not found: " + fileInput + fileNameMonitoringf2);
+                return;
+            }
+
+            if (xlsRadResponTime.exists()) {
+                radResponTime = xlsRadResponTime;
+            } else if (xlsxRadResponTime.exists()) {
+                radResponTime = xlsxRadResponTime;
+            } else {
+                System.out.println("File not found: " + fileInput + fileNameResponTime);
+                return;
+            }
+
+            FileInputStream inputStream1= new FileInputStream(pertindakanNew);
+            BookPertindakanNew    = WorkbookFactory.create (inputStream1);
+            Workbook bookMonitoringHasilRadF1 = WorkbookFactory.create (new FileInputStream (radMonitoringF1));
+            Workbook bookMonitoringHasilRadF2 = WorkbookFactory.create (new FileInputStream (radMonitoringF2));
+            Workbook bookPelayananPenunjang = WorkbookFactory.create (new FileInputStream (pelayananPenunjang));
+            Workbook bookRespontime = WorkbookFactory.create (new FileInputStream (radResponTime));
+
+
+//            InputStream pertindakanNew = new FileInputStream (fileInput + fileNamePertindakanNew + ".xlsx");
+//            BookPertindakanNew = new XSSFWorkbook (pertindakanNew);
 
 //          Make Styling
             CellStyle centerTextCellStyle = BookPertindakanNew.createCellStyle ();
@@ -618,19 +687,19 @@ public class RadHalfDone extends StylerRepo{
             System.out.println ("10. " + BookPertindakanNew.getSheetAt (10).getSheetName () + " Completed");
 
 //        buat sheet 11 Jml tndakan per cr Byr pr hri
-            InputStream monitoringF1 = new FileInputStream (fileInput + fileNameMonitoringf1 + ".xlsx");
-            InputStream monitoringF2 = new FileInputStream (fileInput + fileNameMonitoringf2 + ".xlsx");
-            InputStream _pelayananPenunjang = new FileInputStream (fileInput + fileNamePelayananPenunjang + ".xlsx");
-            InputStream _responTime = new FileInputStream (fileInput + fileNameResponTime + ".xlsx");
-            Workbook bookMonitoringHasilRadF1 = new XSSFWorkbook (monitoringF1);
-            Workbook bookMonitoringHasilRadF2 = new XSSFWorkbook (monitoringF2);
-            Workbook bookPelayananPenunjang = new XSSFWorkbook (_pelayananPenunjang);
-            Workbook bookRespontime = new XSSFWorkbook (_responTime);
+//            InputStream monitoringF1 = new FileInputStream (fileInput + fileNameMonitoringf1 + ".xlsx");
+//            InputStream monitoringF2 = new FileInputStream (fileInput + fileNameMonitoringf2 + ".xlsx");
+//            InputStream _pelayananPenunjang = new FileInputStream (fileInput + fileNamePelayananPenunjang + ".xlsx");
+//            InputStream _responTime = new FileInputStream (fileInput + fileNameResponTime + ".xlsx");
+//            Workbook bookMonitoringHasilRadF1 = new XSSFWorkbook (monitoringF1);
+//            Workbook bookMonitoringHasilRadF2 = new XSSFWorkbook (monitoringF2);
+//            Workbook bookPelayananPenunjang = new XSSFWorkbook (_pelayananPenunjang);
+//            Workbook bookRespontime = new XSSFWorkbook (_responTime);
             BookPertindakanNew.createSheet ("9. Monitoring Hasil Rad");
             Sheet monitoringHasilRad = BookPertindakanNew.getSheetAt (11);
             Sheet monitoringHasilRadF1 = bookMonitoringHasilRadF1.getSheetAt (0);
             Sheet monitoringHasilRadF2 = bookMonitoringHasilRadF2.getSheetAt (0);
-            Sheet pelayananPenunjang = bookPelayananPenunjang.getSheetAt (0);
+            Sheet sheetPelayananPenunjang = bookPelayananPenunjang.getSheetAt (0);
             Sheet responTime = bookRespontime.getSheetAt (0);
             System.out.println ("11. " + BookPertindakanNew.getSheetAt (11).getSheetName () + " Start");
             monitoringHasilRad.createRow (0);
@@ -674,18 +743,18 @@ public class RadHalfDone extends StylerRepo{
             }
 
             monitoringHasilRad.getRow (0).createCell (0).setCellValue ("NOREG");
-            // Loop through pelayananPenunjang sheet and update monitoringHasilRad sheet using HashMap
-            for (int row = 1; row <= pelayananPenunjang.getLastRowNum (); row++) {
-                String pelayananPenunjangValue = pelayananPenunjang.getRow (row).getCell (29).getStringCellValue ();
+            // Loop through sheetPelayananPenunjang sheet and update monitoringHasilRad sheet using HashMap
+            for (int row = 1; row <= sheetPelayananPenunjang.getLastRowNum (); row++) {
+                String pelayananPenunjangValue = sheetPelayananPenunjang.getRow (row).getCell (29).getStringCellValue ();
                 List<Integer> monitoringRows = sampleIDHashMap.get (pelayananPenunjangValue);
                 if (monitoringRows != null) {
                     for (Integer monitoringRow : monitoringRows) {
                         monitoringHasilRad.getRow (monitoringRow).createCell (0).setCellValue (
-                                pelayananPenunjang.getRow (row).getCell (0).getStringCellValue () +
-                                        pelayananPenunjang.getRow (row).getCell (1).getStringCellValue () +
-                                        pelayananPenunjang.getRow (row).getCell (2).getStringCellValue () +
-                                        pelayananPenunjang.getRow (row).getCell (3).getStringCellValue () +
-                                        pelayananPenunjang.getRow (row).getCell (4).getStringCellValue ());
+                                sheetPelayananPenunjang.getRow (row).getCell (0).getStringCellValue () +
+                                        sheetPelayananPenunjang.getRow (row).getCell (1).getStringCellValue () +
+                                        sheetPelayananPenunjang.getRow (row).getCell (2).getStringCellValue () +
+                                        sheetPelayananPenunjang.getRow (row).getCell (3).getStringCellValue () +
+                                        sheetPelayananPenunjang.getRow (row).getCell (4).getStringCellValue ());
                     }
                 }
             }
@@ -951,7 +1020,7 @@ public class RadHalfDone extends StylerRepo{
                 Cell nickInstAsalCell = row.getCell (24);
                 if (row.getCell (28).getStringCellValue ().equals ("Kebidanan dan Kandungan")) {
                     boolean matchFound = false;  // initialize flag variable
-                    for (Row pelayananRow : pelayananPenunjang) {
+                    for (Row pelayananRow : sheetPelayananPenunjang) {
                         String noregPelayananPenunjang = pelayananRow.getCell (0).getStringCellValue () +
                                 pelayananRow.getCell (1).getStringCellValue () +
                                 pelayananRow.getCell (2).getStringCellValue () +
@@ -982,7 +1051,7 @@ public class RadHalfDone extends StylerRepo{
                     }
                 } else if (row.getCell (28).getStringCellValue ().equals ("Ponek")) {
                     boolean matchFound = false;  // initialize flag variable
-                    for (Row pelayananRow : pelayananPenunjang) {
+                    for (Row pelayananRow : sheetPelayananPenunjang) {
                         String noregPelayananPenunjang = pelayananRow.getCell (0).getStringCellValue () +
                                 pelayananRow.getCell (1).getStringCellValue () +
                                 pelayananRow.getCell (2).getStringCellValue () +
@@ -1014,7 +1083,7 @@ public class RadHalfDone extends StylerRepo{
 
                 } else if (row.getCell (28).getStringCellValue ().equals ("ISOLASI")) {
                     boolean matchFound = false;  // initialize flag variable
-                    for (Row pelayananRow : pelayananPenunjang) {
+                    for (Row pelayananRow : sheetPelayananPenunjang) {
                         String noregPelayananPenunjang = pelayananRow.getCell (0).getStringCellValue () +
                                 pelayananRow.getCell (1).getStringCellValue () +
                                 pelayananRow.getCell (2).getStringCellValue () +
@@ -1055,7 +1124,6 @@ public class RadHalfDone extends StylerRepo{
                     currentSheet.autoSizeColumn(rightCell);
                     for (int downRow = 1; downRow <= currentSheet.getLastRowNum(); downRow++) {
                         if (currentSheet.getRow (downRow).getCell (rightCell)==null){
-                            System.out.println (downRow);
                             currentSheet.getRow (downRow).createCell (rightCell).setCellValue ("");
                         }
                         currentSheet.getRow(downRow).getCell(rightCell).setCellStyle(AllBorderCellStyle);

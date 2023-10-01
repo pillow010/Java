@@ -3,10 +3,7 @@ package LaporanLab;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,12 +25,43 @@ public class LabDone {
 //        String fileNameHasilRinci     = localDate + " lab hasil rinci";
         String fileNameRegister       = localDate + " lab register";
 
+        File xlsRegister              = new File (fileInput + fileNameRegister + ".xls");
+        File xlsxRegister             = new File (fileInput + fileNameRegister + ".xlsx");
+        File xlsPertindakanNew        = new File (fileInput + fileNamePertindakanNew + ".xls");
+        File xlsxPertindakanNew       = new File (fileInput + fileNamePertindakanNew + ".xlsx");
+
+        File registerPend;
+        File tindakanNew;
+
+        if (xlsxRegister.exists()) {
+            registerPend = xlsxRegister;
+        } else if (xlsRegister.exists()) {
+            registerPend = xlsRegister;
+        } else {
+            System.out.println("File not found: " + fileInput + fileNameRegister);
+            return;
+        }
+
+        if (xlsxPertindakanNew.exists()) {
+            tindakanNew = xlsxPertindakanNew;
+        } else if (xlsPertindakanNew.exists()) {
+            tindakanNew = xlsPertindakanNew;
+        } else {
+            System.out.println("File not found: " + fileInput + fileNamePertindakanNew);
+            return;
+        }
 
         try {
-            InputStream pertindakanNew = new FileInputStream (fileInput + fileNamePertindakanNew + ".xlsx");
-            BookPertindakanNew = new XSSFWorkbook (pertindakanNew);
-            InputStream register = new FileInputStream (fileInput + fileNameRegister + ".xlsx");
-            Workbook bookRegister = new XSSFWorkbook (register);
+//            InputStream pertindakanNew = new FileInputStream (fileInput + fileNamePertindakanNew + ".xlsx");
+//            BookPertindakanNew = new XSSFWorkbook (pertindakanNew);
+//            InputStream register = new FileInputStream (fileInput + fileNameRegister + ".xlsx");
+//            Workbook bookRegister = new XSSFWorkbook (register);
+
+
+            FileInputStream inputStream = new FileInputStream (tindakanNew);
+            FileInputStream inputStream1  = new FileInputStream(registerPend);
+            BookPertindakanNew           = WorkbookFactory.create(inputStream);
+            Workbook bookRegister        = WorkbookFactory.create (inputStream1);
 
 //          taruh pertindakan new ke sheet 0
             Sheet pertindakan_New_Raw = BookPertindakanNew.getSheetAt (0);
@@ -41,7 +69,6 @@ public class LabDone {
             BookPertindakanNew.setSheetName (1, "noDuplicate");
             Sheet Pertindakan = BookPertindakanNew.createSheet ();
             BookPertindakanNew.setSheetName (2, "1. Pertindakan");
-//            System.out.println ("03. " + BookPertindakanNew.getSheetAt (2).getSheetName () + " Start");
 
             Sheet registerSheet = bookRegister.getSheetAt (0);
             BookPertindakanNew.setSheetName (0, "pertindakan_New_Raw");
@@ -680,6 +707,7 @@ public class LabDone {
             rowStart = 2;
             int row2LastCell = pendapatan.getRow (rowStart).getLastCellNum ();
             lastCol = pendapatan.getRow (0).getLastCellNum () + 1;
+//            pendapatan.getRow (0).createCell (lastCell).setCellValue ("Grand Total");
             for (String konten : tanggal) {
                 pendapatan.getRow (rowStart).createCell(row2LastCell).setCellValue(konten);
                 colStart = pendapatan.getRow (rowStart).getLastCellNum ();
@@ -693,6 +721,7 @@ public class LabDone {
                         pendapatan.getRow(rowStart).createCell(colStart++).setCellValue(0);
                     }
                 }
+                pendapatan.getRow (0).createCell (lastCol-1).setCellValue ("Grand Total");
                 pendapatan.getRow(rowStart).createCell(lastCol-1).setCellValue(total); // add row total
                 rowStart++;
             }

@@ -3,10 +3,7 @@ package LaporanIGD;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -19,10 +16,41 @@ public class LaporanIgd {
         String fileOutput        = "C:\\sat work\\test\\2. output\\";
         String fileNameIgd       = localDate+" igd register";
         String fileNameIrna      = localDate+" irna register";
-        InputStream LaporanIGD   = new FileInputStream (fileInput+fileNameIgd+".xlsx");
-        InputStream laporanIrna  = new FileInputStream (fileInput+fileNameIrna+".xlsx");
-        Workbook bookLaporanIGD  = new XSSFWorkbook (LaporanIGD);
-        Workbook bookLaporanIrna = new XSSFWorkbook (laporanIrna);
+//        InputStream LaporanIGD   = new FileInputStream (fileInput+fileNameIgd+".xlsx");
+//        InputStream laporanIrna  = new FileInputStream (fileInput+fileNameIrna+".xlsx");
+//        Workbook bookLaporanIGD  = new XSSFWorkbook (LaporanIGD);
+//        Workbook bookLaporanIrna = new XSSFWorkbook (laporanIrna);
+
+        File registerIGD;
+        File registerIRNA;
+        File xlsRegisterIGD     = new File (fileInput + fileNameIgd + ".xls");
+        File xlsxRegisterIGD    = new File (fileInput + fileNameIgd + ".xlsx");
+        File xlsRegisterIRNA    = new File (fileInput + fileNameIrna + ".xls");
+        File xlsxRegisterIRNA   = new File (fileInput + fileNameIrna + ".xlsx");
+
+        if (xlsxRegisterIGD.exists()) {
+            registerIGD = xlsxRegisterIGD;
+        } else if (xlsRegisterIGD.exists()) {
+            registerIGD = xlsRegisterIGD;
+        } else {
+            System.out.println("File not found: " + fileInput + fileNameIgd);
+            return;
+        }
+
+        if (xlsxRegisterIRNA.exists()) {
+            registerIRNA = xlsxRegisterIRNA;
+        } else if (xlsRegisterIRNA.exists()) {
+            registerIRNA = xlsRegisterIRNA;
+        } else {
+            System.out.println("File not found: " + fileInput + fileNameIrna);
+            return;
+        }
+
+        FileInputStream inputStream = new FileInputStream (registerIGD);
+        FileInputStream inputStream1= new FileInputStream(registerIRNA);
+        Workbook bookLaporanIGD     = WorkbookFactory.create(inputStream);
+        Workbook bookLaporanIrna    = WorkbookFactory.create (inputStream1);
+
         Sheet register           = bookLaporanIGD.getSheetAt (0);
         Sheet registerIrna       = bookLaporanIrna.getSheetAt (0);
 
@@ -142,51 +170,65 @@ public class LaporanIgd {
 
 
         bookLaporanIGD.createSheet ("2.KELAMIN PER TANGGAL");
-        Sheet klaminPerTanggal = bookLaporanIGD.getSheetAt (2);
-        System.out.println ("02. Start doing "+bookLaporanIGD.getSheetName (2));
+        Sheet klaminPerTanggal = bookLaporanIGD.getSheetAt(2);
+        System.out.println("02. Start doing " + bookLaporanIGD.getSheetName(2));
 
-//      use treseet because it sorts automatically
-        Set<String> tanggalRegist = new TreeSet<> ();
-        Set<String> kelamin = new TreeSet<> ();
-        Map<String, Map<String, Integer>> countMap = new HashMap<>(); // new count map
-        for (int row=1;row<=sorted.getLastRowNum ();row++) {
-            String cellTanggalReg = sorted.getRow (row).getCell (1).getStringCellValue ();
-            String cellKelamin = sorted.getRow (row).getCell (6).getStringCellValue ();
+        // Use TreeSet because it sorts automatically
+        Set<String> tanggalRegist = new TreeSet<>();
+        Set<String> kelamin = new TreeSet<>();
+        Map<String, Map<String, Integer>> countMap = new HashMap<>(); // New count map
 
-            tanggalRegist.add (cellTanggalReg);
-            kelamin.add (cellKelamin);
+        for (int row = 1; row <= sorted.getLastRowNum(); row++) {
+            String cellTanggalReg = sorted.getRow(row).getCell(1).getStringCellValue();
+            String cellKelamin = sorted.getRow(row).getCell(6).getStringCellValue();
 
-            // increment count in countMap
-            if (!countMap.containsKey(cellKelamin)) {
-                countMap.put(cellKelamin, new HashMap<>());
-            }
+            tanggalRegist.add(cellTanggalReg);
+            kelamin.add(cellKelamin);
+
+            // Increment count in countMap
+            countMap.computeIfAbsent(cellKelamin, k -> new HashMap<>());
             Map<String, Integer> kelaminCountMap = countMap.get(cellKelamin);
-            if (!kelaminCountMap.containsKey(cellTanggalReg)) {
-                kelaminCountMap.put(cellTanggalReg, 1);
-            } else {
-                kelaminCountMap.put(cellTanggalReg, kelaminCountMap.get(cellTanggalReg) + 1);
-            }
+            kelaminCountMap.merge(cellTanggalReg, 1, Integer::sum);
         }
 
-        klaminPerTanggal.createRow (0).createCell (0).setCellValue ("Kelamin");
-        int rowStart=1;
-        for (String tgl:tanggalRegist) {
-            klaminPerTanggal.getRow (0).createCell (rowStart++).setCellValue (tgl);
+        klaminPerTanggal.createRow(0).createCell(0).setCellValue("Kelamin");
+        int rowStart = 1;
+        for (String tgl : tanggalRegist) {
+            klaminPerTanggal.getRow(0).createCell(rowStart++).setCellValue(tgl);
         }
-        rowStart=1;
-        for (String klmn:kelamin){
-            int colStart=1;
-            klaminPerTanggal.createRow (rowStart).createCell (0).setCellValue (klmn);
-            for (String tgl:tanggalRegist) {
+
+        int currentLastCell = klaminPerTanggal.getRow(0).getLastCellNum();
+        klaminPerTanggal.getRow(0).createCell(currentLastCell).setCellValue("Grand Total");
+
+        int grandTotalL = 0;
+        int grandTotalP = 0;
+
+        rowStart = 1;
+        for (String klmn : kelamin) {
+            int colStart = 1;
+            klaminPerTanggal.createRow(rowStart).createCell(0).setCellValue(klmn);
+            for (String tgl : tanggalRegist) {
                 if (countMap.containsKey(klmn) && countMap.get(klmn).containsKey(tgl)) {
-                    klaminPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(klmn).get(tgl));
+                    int count = countMap.get(klmn).get(tgl);
+                    klaminPerTanggal.getRow(rowStart).createCell(colStart++).setCellValue(count);
+
+                    if (klmn.equalsIgnoreCase("L")) {
+                        grandTotalL += count;
+                    } else if (klmn.equalsIgnoreCase("P")) {
+                        grandTotalP += count;
+                    }
                 } else {
-                    klaminPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                    klaminPerTanggal.getRow(rowStart).createCell(colStart++).setCellValue(0);
                 }
             }
             rowStart++;
         }
-        System.out.println ("02. "+bookLaporanIGD.getSheetName (2)+" is done");
+
+        klaminPerTanggal.getRow(1).createCell(currentLastCell).setCellValue(grandTotalL);
+        klaminPerTanggal.getRow(2).createCell(currentLastCell).setCellValue(grandTotalP);
+
+        System.out.println("02. " + bookLaporanIGD.getSheetName(2) + " is done");
+
 
 
 
@@ -231,19 +273,50 @@ public class LaporanIgd {
         for (String tgl:tanggalRegist) {
             akhirPerTanggal.getRow (0).createCell (rowStart++).setCellValue (tgl);
         }
-        rowStart=1;
-        for (String kondKlr:kondisiAkhirTree){
-            int colStart=1;
-            akhirPerTanggal.createRow (rowStart).createCell (0).setCellValue (kondKlr);
-            for (String tgl:tanggalRegist) {
+        currentLastCell = akhirPerTanggal.getRow(0).getLastCellNum();
+        Row row1 = akhirPerTanggal.getRow(0); // Get the first row
+        Cell cell1 = row1.createCell(currentLastCell); // Create the cell if it doesn't exist
+        cell1.setCellValue("Grand Total");
+
+//        rowStart=1;
+//        for (String kondKlr:kondisiAkhirTree){
+//            int colStart=1;
+//            akhirPerTanggal.createRow (rowStart).createCell (0).setCellValue (kondKlr);
+//            for (String tgl:tanggalRegist) {
+//                if (countMap.containsKey(kondKlr) && countMap.get(kondKlr).containsKey(tgl)) {
+//                    akhirPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(kondKlr).get(tgl));
+//                } else {
+//                    akhirPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+//                }
+//            }
+//            rowStart++;
+//        }
+        rowStart = 1;
+        for (String kondKlr : kondisiAkhirTree) {
+            int colStart = 1;
+            Row currentRow = akhirPerTanggal.createRow(rowStart);
+            currentRow.createCell(0).setCellValue(kondKlr);
+
+            for (String tgl : tanggalRegist) {
+                int cellValue = 0;
                 if (countMap.containsKey(kondKlr) && countMap.get(kondKlr).containsKey(tgl)) {
-                    akhirPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(kondKlr).get(tgl));
-                } else {
-                    akhirPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                    cellValue = countMap.get(kondKlr).get(tgl);
+                }
+                currentRow.createCell(colStart++).setCellValue(cellValue);
+            }
+
+            // Calculate and set the grand total in the last cell of the current row
+            int grandTotal = 0;
+            for (String tgl : tanggalRegist) {
+                if (countMap.containsKey(kondKlr) && countMap.get(kondKlr).containsKey(tgl)) {
+                    grandTotal += countMap.get(kondKlr).get(tgl);
                 }
             }
+            currentRow.createCell(colStart).setCellValue(grandTotal);
+
             rowStart++;
         }
+
         System.out.println ("03. "+bookLaporanIGD.getSheetName (3)+" is done");
 
 
@@ -277,17 +350,50 @@ public class LaporanIgd {
         for (String tgl:tanggalRegist) {
             crBayarPerTangal.getRow (0).createCell (rowStart++).setCellValue (tgl);
         }
-        rowStart=1;
-        for (String caraBayar:caraBayarTree){
-            int colStart=1;
-            crBayarPerTangal.createRow (rowStart).createCell (0).setCellValue (caraBayar);
-            for (String tgl:tanggalRegist) {
+//        currentLastCell = crBayarPerTangal.getRow(0).getLastCellNum();
+//        crBayarPerTangal.getRow(0).createCell(currentLastCell).setCellValue("Grand Total");
+//        rowStart=1;
+//        for (String caraBayar:caraBayarTree){
+//            int colStart=1;
+//            crBayarPerTangal.createRow (rowStart).createCell (0).setCellValue (caraBayar);
+//            for (String tgl:tanggalRegist) {
+//                if (countMap.containsKey(caraBayar) && countMap.get(caraBayar).containsKey(tgl)) {
+//                    crBayarPerTangal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(caraBayar).get(tgl));
+//                } else {
+//                    crBayarPerTangal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+//                }
+//            }
+//            rowStart++;
+//        }
+
+        crBayarPerTangal.createRow(0).createCell(0).setCellValue("Kondisi Keluar");
+        rowStart = 1;
+        for (String tgl : tanggalRegist) {
+            crBayarPerTangal.getRow(0).createCell(rowStart++).setCellValue(tgl);
+        }
+        currentLastCell = crBayarPerTangal.getRow(0).getLastCellNum();
+        crBayarPerTangal.getRow(0).createCell(currentLastCell).setCellValue("Grand Total");
+        rowStart = 1;
+        for (String caraBayar : caraBayarTree) {
+            int colStart = 1;
+            crBayarPerTangal.createRow(rowStart).createCell(0).setCellValue(caraBayar);
+            for (String tgl : tanggalRegist) {
                 if (countMap.containsKey(caraBayar) && countMap.get(caraBayar).containsKey(tgl)) {
-                    crBayarPerTangal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(caraBayar).get(tgl));
+                    crBayarPerTangal.getRow(rowStart).createCell(colStart++).setCellValue(countMap.get(caraBayar).get(tgl));
                 } else {
-                    crBayarPerTangal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                    crBayarPerTangal.getRow(rowStart).createCell(colStart++).setCellValue(0);
                 }
             }
+
+            // Calculate and set the grand total in the last cell of the current row
+            int grandTotal = 0;
+            for (String tgl : tanggalRegist) {
+                if (countMap.containsKey(caraBayar) && countMap.get(caraBayar).containsKey(tgl)) {
+                    grandTotal += countMap.get(caraBayar).get(tgl);
+                }
+            }
+            crBayarPerTangal.getRow(rowStart).createCell(colStart).setCellValue(grandTotal);
+
             rowStart++;
         }
         System.out.println ("04. "+bookLaporanIGD.getSheetName (4)+" is done");
@@ -349,24 +455,55 @@ public class LaporanIgd {
             }
         }
 
-        pasienDokterPerTanggal.createRow (0).createCell (0).setCellValue ("Kondisi Keluar");
-        rowStart=1;
-        for (String tgl:tanggalRegist) {
-            pasienDokterPerTanggal.getRow (0).createCell (rowStart++).setCellValue (tgl);
+//        pasienDokterPerTanggal.createRow (0).createCell (0).setCellValue ("Dokter Registrasi");
+//        rowStart=1;
+//        for (String tgl:tanggalRegist) {
+//            pasienDokterPerTanggal.getRow (0).createCell (rowStart++).setCellValue (tgl);
+//        }
+//        rowStart=1;
+//        for (String drTugas:psnDokterTugas){
+//            int colStart=1;
+//            pasienDokterPerTanggal.createRow (rowStart).createCell (0).setCellValue (drTugas);
+//            for (String tgl:tanggalRegist) {
+//                if (countMap.containsKey(drTugas) && countMap.get(drTugas).containsKey(tgl)) {
+//                    pasienDokterPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(drTugas).get(tgl));
+//                } else {
+//                    pasienDokterPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+//                }
+//            }
+//            rowStart++;
+//        }
+        pasienDokterPerTanggal.createRow(0).createCell(0).setCellValue("Dokter Registrasi");
+        rowStart = 1;
+        for (String tgl : tanggalRegist) {
+            pasienDokterPerTanggal.getRow(0).createCell(rowStart++).setCellValue(tgl);
         }
-        rowStart=1;
-        for (String drTugas:psnDokterTugas){
-            int colStart=1;
-            pasienDokterPerTanggal.createRow (rowStart).createCell (0).setCellValue (drTugas);
-            for (String tgl:tanggalRegist) {
+        currentLastCell = pasienDokterPerTanggal.getRow(0).getLastCellNum();
+        pasienDokterPerTanggal.getRow(0).createCell(currentLastCell).setCellValue("Grand Total");
+        rowStart = 1;
+        for (String drTugas : psnDokterTugas) {
+            int colStart = 1;
+            pasienDokterPerTanggal.createRow(rowStart).createCell(0).setCellValue(drTugas);
+            for (String tgl : tanggalRegist) {
                 if (countMap.containsKey(drTugas) && countMap.get(drTugas).containsKey(tgl)) {
-                    pasienDokterPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(drTugas).get(tgl));
+                    pasienDokterPerTanggal.getRow(rowStart).createCell(colStart++).setCellValue(countMap.get(drTugas).get(tgl));
                 } else {
-                    pasienDokterPerTanggal.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                    pasienDokterPerTanggal.getRow(rowStart).createCell(colStart++).setCellValue(0);
                 }
             }
+
+            // Calculate and set the grand total in the last cell of the current row
+            int grandTotal = 0;
+            for (String tgl : tanggalRegist) {
+                if (countMap.containsKey(drTugas) && countMap.get(drTugas).containsKey(tgl)) {
+                    grandTotal += countMap.get(drTugas).get(tgl);
+                }
+            }
+            pasienDokterPerTanggal.getRow(rowStart).createCell(colStart).setCellValue(grandTotal);
+
             rowStart++;
         }
+
 
         System.out.println ("06. "+bookLaporanIGD.getSheetName (6)+" is done");
 
@@ -398,24 +535,37 @@ public class LaporanIgd {
             }
         }
 
-        subInstalasiCaraMasuk.createRow (0).createCell (0).setCellValue ("Sub Instalasi");
-        rowStart=1;
-        for (String crMsk:caraMasuk) {
-            subInstalasiCaraMasuk.getRow (0).createCell (rowStart++).setCellValue (crMsk);
+        subInstalasiCaraMasuk.createRow(0).createCell(0).setCellValue("Sub Instalasi");
+        rowStart = 1;
+        for (String crMsk : caraMasuk) {
+            subInstalasiCaraMasuk.getRow(0).createCell(rowStart++).setCellValue(crMsk);
         }
-        rowStart=1;
-        for (String subInst:subInstalasi){
-            int colStart=1;
-            subInstalasiCaraMasuk.createRow (rowStart).createCell (0).setCellValue (subInst);
-            for (String crMsk:caraMasuk) {
+        currentLastCell = subInstalasiCaraMasuk.getRow(0).getLastCellNum();
+        subInstalasiCaraMasuk.getRow(0).createCell(currentLastCell).setCellValue("Grand Total");
+        rowStart = 1;
+        for (String subInst : subInstalasi) {
+            int colStart = 1;
+            subInstalasiCaraMasuk.createRow(rowStart).createCell(0).setCellValue(subInst);
+            for (String crMsk : caraMasuk) {
                 if (countMap.containsKey(subInst) && countMap.get(subInst).containsKey(crMsk)) {
-                    subInstalasiCaraMasuk.getRow (rowStart).createCell (colStart++).setCellValue(countMap.get(subInst).get(crMsk));
+                    subInstalasiCaraMasuk.getRow(rowStart).createCell(colStart++).setCellValue(countMap.get(subInst).get(crMsk));
                 } else {
-                    subInstalasiCaraMasuk.getRow (rowStart).createCell (colStart++).setCellValue(0);
+                    subInstalasiCaraMasuk.getRow(rowStart).createCell(colStart++).setCellValue(0);
                 }
             }
+
+            // Calculate and set the grand total in the last cell of the current row
+            int grandTotal = 0;
+            for (String crMsk : caraMasuk) {
+                if (countMap.containsKey(subInst) && countMap.get(subInst).containsKey(crMsk)) {
+                    grandTotal += countMap.get(subInst).get(crMsk);
+                }
+            }
+            subInstalasiCaraMasuk.getRow(rowStart).createCell(currentLastCell).setCellValue(grandTotal);
+
             rowStart++;
         }
+
 
         System.out.println ("07. "+bookLaporanIGD.getSheetName (7)+" is done");
 
